@@ -46,8 +46,8 @@ export function Sidebar() {
         flexShrink: 0,
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: '#05070B',
-        borderRight: '1px solid #141414',
+        background: 'linear-gradient(180deg, rgba(11, 14, 19, 0.40) 0%, #0B0E13 100%)',
+        borderRight: '1px solid #15181C',
       }}
     >
       <nav
