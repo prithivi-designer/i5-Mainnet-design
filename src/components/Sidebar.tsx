@@ -46,7 +46,7 @@ export function Sidebar() {
         flexShrink: 0,
         display: 'flex',
         flexDirection: 'column',
-        background: 'linear-gradient(180deg, rgba(11, 14, 19, 0.40) 0%, #0B0E13 100%)',
+        backgroundColor: '#0B0E13',
         borderRight: '1px solid #15181C',
       }}
     >

@@ -572,7 +572,7 @@
    SHELL OVERRIDES — Sidebar + TopNav baseline
    ============================================================ */
 aside {
-  background: linear-gradient(180deg, rgba(11, 14, 19, 0.40) 0%, #0B0E13 100%) !important;
+  background-color: #0B0E13 !important;
   border-right-color: #15181C !important;
 }
 
