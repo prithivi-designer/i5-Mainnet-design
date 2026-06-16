@@ -1,0 +1,594 @@
+@import "tailwindcss";
+
+/* ============================================================
+   GLOBAL DESIGN TOKENS
+   Exact colors extracted from the source project + screenshots:
+   
+   Background:  #050505 / #0d0d0d  (near-pure black)
+   Card bg:     #0e181c / #121f24  (very dark teal-blue)
+   Card border: #1a2b30 / #23353c  (dark teal-blue border)
+   Primary:     #34d399            (emerald teal-green)
+   Muted text:  #526b75            (blue-green muted)
+   Sidebar:     #0d0d0d            (black)
+   ============================================================ */
+
+@theme {
+  /* ── Typography ─────────────────────────────────────────── */
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, "SFMono-Regular",
+    Menlo, Monaco, Consolas, monospace;
+
+  /* ── Page Background ─────────────────────────────────────── */
+  /* Exact near-black from screenshots */
+  --color-background: #0a0a0a;
+  --color-foreground: #f5f5f5;
+
+  /* ── Cards ───────────────────────────────────────────────── */
+  /* #141414 — slightly lighter than page bg, matching screenshot */
+  --color-card: #141414;
+  --color-card-foreground: #f5f5f5;
+
+  --color-popover: #141414;
+  --color-popover-foreground: #f5f5f5;
+
+  /* ── Primary: Emerald teal-green (#34d399) ─────────────── */
+  --color-primary: #34d399;
+  --color-primary-foreground: #000000;
+
+  /* ── Secondary ───────────────────────────────────────────── */
+  --color-secondary: #1a1a1a;
+  --color-secondary-foreground: #f5f5f5;
+
+  /* ── Muted ───────────────────────────────────────────────── */
+  --color-muted: #1a1a1a;
+  --color-muted-foreground: #6b7280;
+
+  /* ── Accent ──────────────────────────────────────────────── */
+  --color-accent: #1f1f1f;
+  --color-accent-foreground: #34d399;
+
+  /* ── Semantic ────────────────────────────────────────────── */
+  --color-destructive: #fa6432;
+  --color-destructive-foreground: #ffffff;
+
+  --color-success: #34d399;
+  --color-success-foreground: #000000;
+
+  --color-warning: #facc15;
+  --color-warning-foreground: #000000;
+
+  /* ── Borders & Inputs ────────────────────────────────────── */
+  /* #222 very subtle border exactly as shown in screenshot   */
+  --color-border: #222222;
+  /* Input fields are pure black — #0a0a0a                   */
+  --color-input: #0a0a0a;
+  --color-input-foreground: #f5f5f5;
+  --color-ring: #34d399;
+
+  /* ── Brand Palette ───────────────────────────────────────── */
+  --color-brand-cyan: #34d399;
+  --color-brand-orange: #fa6432;
+  --color-brand-purple: #8b5cf6;
+  --color-brand-gold: #facc15;
+  --color-brand-teal-bright: #3ae099;
+  /* Dark muted teal for "Create" / "Get Started" CTA buttons */
+  --color-brand-teal-dark: #0f7d6e;
+
+  /* Sidebar */
+  --color-sidebar-bg: #0d0d0d;
+  --color-sidebar-active-bg: #1a1a1a;
+  --color-sidebar-active-border: #222222;
+  --color-sidebar-text: #6b7280;
+  --color-sidebar-active-text: #f5f5f5;
+
+  /* ── Radius ──────────────────────────────────────────────── */
+  --radius-sm:   6px;
+  --radius:      10px;
+  /* Inputs use 12px matching screenshot */
+  --radius-input: 12px;
+  /* Cards use 20px matching screenshot */
+  --radius-card: 20px;
+  --radius-lg:   16px;
+  --radius-xl:   20px;
+  --radius-2xl:  24px;
+  --radius-full: 9999px;
+
+  /* ── Shadows ─────────────────────────────────────────────── */
+  --shadow-card:    0 4px 24px rgba(0, 0, 0, 0.80);
+  --shadow-dropdown: 0 8px 32px rgba(0, 0, 0, 0.90);
+  --shadow-teal-sm: 0 0 12px rgba(52, 211, 153, 0.12);
+  --shadow-teal:    0 0 24px rgba(52, 211, 153, 0.18);
+  --shadow-teal-lg: 0 0 48px rgba(52, 211, 153, 0.24);
+}
+
+/* ============================================================
+   BASE STYLES
+   ============================================================ */
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    color-scheme: dark;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: #0a0a0a;
+    color: #f5f5f5;
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    color-scheme: dark;
+  }
+
+  ::selection {
+    background-color: rgba(52, 211, 153, 0.22);
+    color: #ffffff;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    color: #f5f5f5;
+  }
+
+  a {
+    color: #34d399;
+    text-decoration: none;
+    transition: color 0.15s ease, opacity 0.15s ease;
+  }
+  a:hover {
+    color: #3ae099;
+  }
+
+  /* =======================================================
+     INPUTS & SELECTS — matching screenshot exactly:
+     • Background: #0a0a0a (pure near-black)
+     • Border: 1px solid #222 (very subtle)
+     • Border-radius: 12px
+     • Height: 48px via padding
+     • Text: #f5f5f5
+     • Placeholder: #6b7280
+     ======================================================= */
+  input, textarea, select {
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+    background-color: #0a0a0a;
+    color: #f5f5f5;
+    border: 1px solid #222222;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 14px;
+    line-height: 1.5;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    outline: none;
+    width: 100%;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: rgba(52, 211, 153, 0.4);
+    box-shadow: 0 0 0 3px rgba(52, 211, 153, 0.07);
+  }
+  input::placeholder, textarea::placeholder {
+    color: #4b5563;
+  }
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+  }
+  select option {
+    background-color: #141414;
+    color: #f5f5f5;
+  }
+
+  button {
+    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
+    cursor: pointer;
+    border: none;
+    outline: none;
+  }
+
+  code, kbd, pre, samp {
+    font-family: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  }
+
+  hr {
+    border-color: #1a2b30;
+    border-top-width: 1px;
+    margin: 1.5rem 0;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  th {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #526b75;
+  }
+
+  :focus-visible {
+    outline: 2px solid rgba(52, 211, 153, 0.55);
+    outline-offset: 2px;
+  }
+}
+
+/* ============================================================
+   COMPONENT UTILITIES
+   ============================================================ */
+@layer utilities {
+  /* ── Scrollbar hide ──────────────────────────────────────── */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* ── Teal glow ───────────────────────────────────────────── */
+  .glow-teal-sm { box-shadow: 0 0 12px rgba(52, 211, 153, 0.12); }
+  .glow-teal    { box-shadow: 0 0 24px rgba(52, 211, 153, 0.18); }
+  .glow-teal-lg { box-shadow: 0 0 48px rgba(52, 211, 153, 0.24); }
+
+  /* ── Gradient heading text (ALPHA TRADE style) ───────────── */
+  .text-gradient-teal {
+    background: linear-gradient(135deg, #34d399 0%, #3ae099 60%, #10b981 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Card surfaces ───────────────────────────────────────── */
+  /*
+   * Matches screenshot:
+   * bg: #141414, border: #222, radius: 20px
+   * Large rounded corners, very dark surface
+   */
+  .card-brand {
+    background: #141414;
+    border: 1px solid #222222;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  }
+  .card-brand:hover {
+    border-color: #2a2a2a;
+    transition: border-color 0.2s ease;
+  }
+
+  /*
+   * Card base style as requested:
+   * border-radius: 1rem;
+   * border: 1px solid #15181C;
+   * background: linear-gradient(180deg, rgba(11, 14, 19, 0.40) 0%, #0B0E13 100%);
+   */
+  .card-base {
+    border-radius: 1rem;
+    border: 1px solid #15181C;
+    background: linear-gradient(180deg, rgba(11, 14, 19, 0.40) 0%, #0B0E13 100%);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .card-base:hover {
+    border-color: #1e2229;
+  }
+
+  /* ── Stat card (leaderboard / dashboard metrics) ────────── */
+  .stat-card {
+    background: #141414;
+    border: 1px solid #222222;
+    border-radius: 20px;
+    padding: 1.25rem 1.5rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .stat-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(52,211,153,0.3), transparent);
+  }
+
+  /* ── Primary CTA button ──────────────────────────────────── */
+  /*
+   * Primary button style as requested:
+   * border-radius: 0.75rem;
+   * background: linear-gradient(279deg, #004A4B 5.03%, #044847 93.75%);
+   * box-shadow: -1px -1px 1px 0 rgba(0, 0, 0, 0.25) inset, 1px 1px 1px 0 rgba(73, 193, 184, 0.70) inset;
+   */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(279deg, #004A4B 5.03%, #044847 93.75%);
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.01em;
+    box-shadow: -1px -1px 1px 0 rgba(0, 0, 0, 0.25) inset, 1px 1px 1px 0 rgba(73, 193, 184, 0.70) inset;
+    transition: background-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease, filter 0.15s ease;
+  }
+  .btn-primary:hover {
+    filter: brightness(1.15);
+    box-shadow: -1px -1px 1px 0 rgba(0, 0, 0, 0.25) inset, 1px 1px 1px 0 rgba(73, 193, 184, 0.70) inset, 0 0 12px rgba(73, 193, 184, 0.3);
+  }
+  .btn-primary:active {
+    transform: scale(0.98);
+  }
+
+  /* ── Secondary Button ────────────────────────────────────── */
+  /*
+   * Secondary Button style as requested:
+   * border-radius: 0.75rem;
+   * border: 1px solid #008C8C;
+   */
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: transparent;
+    color: #e5e7eb;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.75rem;
+    border: 1px solid #008C8C;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .btn-secondary:hover {
+    background: rgba(0, 140, 140, 0.1);
+    color: #ffffff;
+    border-color: #00a3a3;
+  }
+  .btn-secondary:active {
+    transform: scale(0.98);
+  }
+
+
+  /* ── Ghost / secondary button ───────────────────────────── */
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: #111111;
+    color: #9ca3af;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 0.75rem 1.25rem;
+    border-radius: 12px;
+    border: 1px solid #222222;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .btn-ghost:hover {
+    background: #1a1a1a;
+    color: #f5f5f5;
+    border-color: #333333;
+  }
+
+  /* ── Sidebar nav item ────────────────────────────────────── */
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.45rem 0.75rem;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #6b7280;
+    border: 1px solid transparent;
+    transition: background 0.15s ease, color 0.15s ease;
+    position: relative;
+  }
+  .nav-item:hover {
+    background: rgba(255,255,255,0.04);
+    color: #d1d5db;
+  }
+  .nav-item.active {
+    background: #1a1a1a;
+    color: #f5f5f5;
+    border-color: #222222;
+  }
+
+  /* ── ELIGIBLE / status badge ─────────────────────────────── */
+  .badge-teal {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 10px;
+    background: rgba(52, 211, 153, 0.08);
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.2);
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ── "Coming Soon" badge ─────────────────────────────────── */
+  .badge-coming-soon {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: capitalize;
+    color: #34d399;
+    line-height: 1.6;
+  }
+
+  /* ── Search bar ──────────────────────────────────────────── */
+  .search-bar {
+    background: #111111;
+    border: 1px solid #222222;
+    border-radius: 10px;
+    padding: 0.4rem 0.875rem;
+    font-size: 13px;
+    color: #f5f5f5;
+    width: 220px;
+  }
+  .search-bar::placeholder { color: #4b5563; }
+  .search-bar:focus {
+    outline: none;
+    border-color: rgba(52, 211, 153, 0.3);
+    box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.06);
+  }
+
+  /* ── Long / Short trade buttons ──────────────────────────── */
+  .tag-long {
+    padding: 3px 14px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(52, 211, 153, 0.08);
+    color: #34d399;
+    border: 1px solid rgba(52, 211, 153, 0.2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .tag-long:hover { background: rgba(52, 211, 153, 0.18); }
+
+  .tag-short {
+    padding: 3px 14px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(250, 100, 50, 0.08);
+    color: #fa6432;
+    border: 1px solid rgba(250, 100, 50, 0.2);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .tag-short:hover { background: rgba(250, 100, 50, 0.18); }
+
+  /* ── Delivery channel toggle buttons ───────────────────── */
+  /*
+   * Matching screenshot:
+   * Default: #111 bg, #222 border, white text, 12px radius
+   * Selected (Telegram): dark teal bg + teal border
+   */
+  .channel-btn {
+    padding: 0.625rem 1.125rem;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    background: #111111;
+    color: #f5f5f5;
+    border: 1px solid #222222;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .channel-btn:hover {
+    background: #1a1a1a;
+    border-color: #333333;
+  }
+  .channel-btn.selected {
+    background: rgba(15, 125, 110, 0.2);
+    color: #34d399;
+    border-color: rgba(52, 211, 153, 0.45);
+  }
+
+  /* ── Leaderboard rank badges ─────────────────────────────── */
+  .rank-gold   { background: #2a1f00; color: #facc15; border: 1px solid #b45309; border-radius: 6px; padding: 2px 8px; font-weight: 800; }
+  .rank-silver { background: #1a1a22; color: #cbd5e1; border: 1px solid #333; border-radius: 6px; padding: 2px 8px; font-weight: 800; }
+  .rank-bronze { background: #1f1209; color: #b45309; border: 1px solid #6b3e1e; border-radius: 6px; padding: 2px 8px; font-weight: 800; }
+
+  /* ── Animated LIVE dot ───────────────────────────────────── */
+  .live-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 6px #34d399;
+    animation: livePulse 2s ease-in-out infinite;
+  }
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 6px #34d399; }
+    50%       { opacity: 0.5; box-shadow: 0 0 14px #3ae099; }
+  }
+
+  /* ── Background textures ─────────────────────────────────── */
+  .bg-grid {
+    background-image:
+      linear-gradient(rgba(52, 211, 153, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(52, 211, 153, 0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .bg-dots {
+    background-image: radial-gradient(circle, rgba(52, 211, 153, 0.05) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .bg-teal-glow {
+    background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(52, 211, 153, 0.08) 0%, transparent 70%);
+  }
+
+  /* ── Icon box ────────────────────────────────────────────── */
+  .icon-box-teal {
+    width: 2.5rem; height: 2.5rem;
+    border-radius: 10px;
+    background: rgba(52, 211, 153, 0.08);
+    border: 1px solid rgba(52, 211, 153, 0.18);
+    display: flex; align-items: center; justify-content: center;
+    color: #34d399;
+    flex-shrink: 0;
+  }
+
+  /* ── Progress bar ────────────────────────────────────────── */
+  .progress-teal {
+    background: linear-gradient(90deg, #34d399, #3ae099);
+    border-radius: 999px;
+    height: 6px;
+  }
+
+  /* ── Table row ───────────────────────────────────────────── */
+  .table-row-hover { transition: background-color 0.1s ease; }
+  .table-row-hover:hover { background-color: rgba(52, 211, 153, 0.03); }
+}
+
+/* ============================================================
+   CUSTOM SCROLLBAR — Dark teal theme
+   ============================================================ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #222222; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #333333; }
+* { scrollbar-width: thin; scrollbar-color: #222222 transparent; }
+
+/* ============================================================
+   SHELL OVERRIDES — Sidebar + TopNav baseline
+   ============================================================ */
+aside {
+  background-color: #0d0d0d !important;
+  border-right-color: #222222 !important;
+}
+
+header[data-topnav] {
+  background-color: #0d0d0d;
+  border-bottom: 1px solid #222222;
+}
+
+/* ============================================================
+   TRANSITIONS
+   ============================================================ */
+*, *::before, *::after {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom UI shapes */
+.clip-hexagon {
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
