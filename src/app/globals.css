@@ -76,7 +76,7 @@
   --color-brand-teal-dark: #0f7d6e;
 
   /* Sidebar */
-  --color-sidebar-bg: #222;
+  --color-sidebar-bg: #050505;
   --color-sidebar-active-bg: #1a1a1a;
   --color-sidebar-active-border: #222222;
   --color-sidebar-text: #6b7280;
@@ -572,7 +572,7 @@
    SHELL OVERRIDES — Sidebar + TopNav baseline
    ============================================================ */
 aside {
-  background-color: #222 !important;
+  background-color: #050505 !important;
   border-right-color: #15181C !important;
 }
 
