@@ -46,7 +46,7 @@ export function Sidebar() {
         flexShrink: 0,
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: '#0B0E13',
+        backgroundColor: '#222',
         borderRight: '1px solid #15181C',
       }}
     >
