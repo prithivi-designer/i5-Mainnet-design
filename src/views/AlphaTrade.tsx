@@ -86,43 +86,19 @@ export function AlphaTrade() {
           </div>
 
           {/* Right Graphic - Dotted Globe Representation */}
-          <div className="flex-1 w-full flex justify-center lg:justify-end relative h-[400px] md:h-[500px] mt-10 lg:mt-0">
-            <div className="relative w-[320px] h-[320px] md:w-[450px] md:h-[450px] flex items-center justify-center">
-              
+          <div className="flex-1 w-full flex justify-center lg:justify-end relative mt-10 lg:mt-0 z-10">
+            <div className="relative w-[340px] h-[340px] md:w-[480px] md:h-[480px] flex items-center justify-center">
               {/* Background ambient glow */}
-              <div className="absolute w-[60%] h-[60%] bg-[#34d399] rounded-full blur-[140px] opacity-[0.07] pointer-events-none" />
-
-              {/* Orbit Rings */}
-              <div className="absolute inset-0 rounded-full border border-[#1a2b30] opacity-60 scale-[1.1]" />
-              <div className="absolute inset-0 rounded-full border border-dashed border-[#1a2b30] opacity-40 scale-[1.25]" />
-              <div className="absolute inset-0 rounded-full border border-[#0d1619] opacity-30 scale-[1.4]" />
-
-              {/* Decorative Orbit Particles */}
-              <div className="absolute top-[12%] right-[-8%] w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,1)]" />
-              <div className="absolute bottom-[25%] left-[-15%] w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-
-              {/* Globe Sphere */}
-              <div className="relative w-[85%] h-[85%] rounded-full border border-[#1a2b30] bg-gradient-to-tr from-[#000000] to-[#041110] shadow-[inset_0_0_60px_rgba(52,211,153,0.1)] flex items-center justify-center overflow-hidden">
-                {/* Dotted texture overlay */}
-                <div className="absolute inset-0 bg-dots opacity-30 mix-blend-screen" />
-                {/* Wireframe Icon */}
-                <Globe className="w-[110%] h-[110%] text-[#34d399] opacity-[0.25]" strokeWidth={0.5} />
-                <Globe className="w-[110%] h-[110%] text-[#34d399] opacity-[0.15] absolute rotate-45" strokeWidth={0.5} />
-              </div>
-
-              {/* Floating Badges */}
-              <div className="absolute top-[8%] right-[-5%] md:right-[5%] bg-[#080a0c] border border-[#222222] rounded-xl px-4 py-2.5 flex items-center gap-2 shadow-[0_8px_32px_rgba(0,0,0,0.8)] z-20">
-                <TrendingUp className="w-3.5 h-3.5 text-[#34d399]" />
-                <span className="text-[11px] font-bold text-[#8A8E98] tracking-wide">LONG</span>
-                <span className="text-[11px] font-bold text-[#34d399]">+24.6%</span>
-              </div>
-
-              <div className="absolute bottom-[18%] left-[-5%] md:left-[0%] bg-[#080a0c] border border-[#222222] rounded-xl px-4 py-2.5 flex items-center gap-2 shadow-[0_8px_32px_rgba(0,0,0,0.8)] z-20">
-                <TrendingDown className="w-3.5 h-3.5 text-[#fa6432]" />
-                <span className="text-[11px] font-bold text-[#8A8E98] tracking-wide">SHORT</span>
-                <span className="text-[11px] font-bold text-[#fa6432]">-18.3%</span>
-              </div>
-
+              <div className="absolute w-[60%] h-[60%] bg-[#34d399] rounded-full blur-[140px] opacity-[0.08] pointer-events-none" />
+              
+              <Image 
+                src="/alpha-trade-globe.png" 
+                alt="Alpha Trade Network Globe" 
+                width={480} 
+                height={480}
+                className="object-contain w-full h-full max-w-[480px] max-h-[480px]"
+                priority
+              />
             </div>
           </div>
 
