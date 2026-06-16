@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronDown, ArrowDownUp } from 'lucide-react';
+import { ChevronDown, ArrowDownUp, Users, Database, Trophy } from 'lucide-react';
 import { 
   BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
   AreaChart, Area, PieChart, Pie, Cell 
@@ -52,13 +52,23 @@ const tradesData = days.map(day => ({
   unique: Math.floor(Math.random() * 800 + 400),
 }));
 
+// Harmonized colors from our design system
+const assetColorMap: Record<string, string> = {
+  USOIL: '#fa6432',     // brand orange
+  SILVER: '#cbd5e1',    // brand silver/gray
+  US500: '#8b5cf6',     // brand purple
+  USTECH: '#34d399',    // brand teal
+  SMALL2000: '#facc15', // brand gold
+  USBOND: '#a855f7',    // accent purple
+};
+
 const pieData = [
-  { name: 'USOIL', value: 22.7, color: '#c2410c' },
-  { name: 'SILVER', value: 16.4, color: '#94a3b8' },
-  { name: 'US500', value: 16.6, color: '#2563eb' },
-  { name: 'USTECH', value: 5.8, color: '#0ea5e9' },
-  { name: 'SMALL2000', value: 6.7, color: '#8b5cf6' },
-  { name: 'USBOND', value: 5.0, color: '#10b981' },
+  { name: 'USOIL', value: 22.7, color: assetColorMap.USOIL },
+  { name: 'SILVER', value: 16.4, color: assetColorMap.SILVER },
+  { name: 'US500', value: 16.6, color: assetColorMap.US500 },
+  { name: 'USTECH', value: 5.8, color: assetColorMap.USTECH },
+  { name: 'SMALL2000', value: 6.7, color: assetColorMap.SMALL2000 },
+  { name: 'USBOND', value: 5.0, color: assetColorMap.USBOND },
 ];
 
 const liquidityData = [
@@ -71,29 +81,75 @@ const liquidityData = [
   { asset: 'SILVER', icon: 'SILVER', sub: '', type: 'silver', vol: 5.51, oi: 2.96, s: 1.45, s1: 1.95, s10: 2.38, s30: 3.26, s100: 6.42, s1m: 56.42 },
 ];
 
+const getAssetIconObj = (name: string) => {
+  const found = liquidityData.find(item => item.asset === name);
+  if (found) return found;
+  if (name === 'USOIL') return { asset: 'USOIL', icon: 'US', sub: 'OIL', type: 'pill' };
+  return { asset: name, icon: name, sub: '', type: 'default' };
+};
+
 const AssetIcon = ({ asset }: { asset: any }) => {
-  if (asset.type === 'pill') return <div className="text-[8px] bg-red-900/40 border border-red-500/50 text-red-200 w-6 h-6 rounded-full flex flex-col items-center justify-center font-bold font-mono leading-none tracking-tighter"><div className="scale-75">{asset.icon}</div><div className="scale-75 -mt-1">{asset.sub}</div></div>;
-  if (asset.type === 'pill_purple') return <div className="text-[8px] bg-purple-900/40 border border-purple-500/50 text-purple-200 w-6 h-6 rounded-full flex flex-col items-center justify-center font-bold font-mono leading-none tracking-tighter"><div className="scale-75">{asset.icon}</div><div className="scale-75 -mt-1">{asset.sub}</div></div>;
-  if (asset.type === 'gold') return <div className="text-xs bg-yellow-600 border border-yellow-400 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold font-mono leading-none tracking-tighter origin-center"><div className="scale-50">{asset.icon}</div></div>;
-  if (asset.type === 'silver') return <div className="text-xs bg-slate-400 border border-slate-300 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold font-mono leading-none tracking-tighter origin-center"><div className="scale-50">{asset.icon}</div></div>;
-  if (asset.type === 'blue') return <div className="text-xs bg-blue-600 border border-blue-400 text-white w-6 h-6 rounded-full flex items-center justify-center font-bold font-mono leading-none tracking-tighter origin-center"><div className="scale-50">★</div></div>;
-  return <div className="text-[8px] bg-sky-900/40 border border-sky-500/50 text-sky-200 w-6 h-6 rounded-full flex flex-col items-center justify-center font-bold font-mono leading-none tracking-tighter"><div className="scale-75">{asset.icon}</div></div>;
-}
+  if (asset.type === 'pill') {
+    return (
+      <div className="text-[8px] bg-[#fa6432]/10 border border-[#fa6432]/30 text-[#fa6432] w-6 h-6 rounded-full flex flex-col items-center justify-center font-bold font-mono leading-none tracking-tighter shrink-0">
+        <div className="scale-75">{asset.icon}</div>
+        <div className="scale-75 -mt-1">{asset.sub}</div>
+      </div>
+    );
+  }
+  if (asset.type === 'pill_purple') {
+    return (
+      <div className="text-[8px] bg-[#8b5cf6]/10 border border-[#8b5cf6]/30 text-[#8b5cf6] w-6 h-6 rounded-full flex flex-col items-center justify-center font-bold font-mono leading-none tracking-tighter shrink-0">
+        <div className="scale-75">{asset.icon}</div>
+        <div className="scale-75 -mt-1">{asset.sub}</div>
+      </div>
+    );
+  }
+  if (asset.type === 'gold') {
+    return (
+      <div className="text-[10px] bg-[#facc15]/10 border border-[#facc15]/30 text-[#facc15] w-6 h-6 rounded-full flex items-center justify-center font-bold font-mono leading-none tracking-tighter shrink-0">
+        {asset.icon === 'GOLD' ? 'AU' : asset.icon}
+      </div>
+    );
+  }
+  if (asset.type === 'silver') {
+    return (
+      <div className="text-[10px] bg-[#cbd5e1]/10 border border-[#cbd5e1]/30 text-[#cbd5e1] w-6 h-6 rounded-full flex items-center justify-center font-bold font-mono leading-none tracking-tighter shrink-0">
+        {asset.icon === 'SILVER' ? 'AG' : asset.icon}
+      </div>
+    );
+  }
+  if (asset.type === 'blue') {
+    return (
+      <div className="text-[10px] bg-[#3b82f6]/10 border border-[#3b82f6]/30 text-[#3b82f6] w-6 h-6 rounded-full flex items-center justify-center font-bold font-mono leading-none tracking-tighter shrink-0">
+        EUR
+      </div>
+    );
+  }
+  return (
+    <div className="text-[8px] bg-[#34d399]/10 border border-[#34d399]/30 text-[#34d399] w-6 h-6 rounded-full flex flex-col items-center justify-center font-bold font-mono leading-none tracking-tighter shrink-0">
+      <div className="scale-75">{asset.icon}</div>
+    </div>
+  );
+};
 
 const Card = ({ children, className }: { children: React.ReactNode, className?: string }) => (
-  <div className={cn("bg-[#0e181c] border border-[#1b2a30] rounded-xl overflow-hidden", className)}>
+  <div className={cn("card-base overflow-hidden", className)}>
     {children}
   </div>
 );
 
 const SectionTitle = ({ children }: { children: React.ReactNode }) => (
-  <h2 className="text-3xl font-medium text-white text-center my-10">{children}</h2>
+  <h2 className="text-lg font-bold text-white mb-4 mt-10 flex items-center gap-2">
+    <div className="w-1.5 h-4 rounded-full bg-[#34d399] shadow-[0_0_8px_rgba(52,211,153,0.5)]" />
+    {children}
+  </h2>
 );
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-[#0e181c] border border-[#1b2a30] p-3 rounded-lg shadow-xl !font-mono text-xs">
+      <div className="bg-[#0b0e13]/90 backdrop-blur-md border border-[#15181c] p-3 rounded-lg shadow-xl !font-mono text-xs">
         <p className="text-gray-400 mb-2">{label}</p>
         {payload.map((entry: any, index: number) => (
           <div key={index} className="flex items-center gap-2 mt-1">
@@ -110,50 +166,79 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 export function Stats() {
   return (
-    <div className="h-full overflow-y-auto bg-[#070f12] text-[#f5f5f5] font-sans pb-24">
-      <div className="max-w-[1400px] mx-auto p-6 lg:p-10 space-y-8">
-        
-        <h1 className="text-4xl lg:text-[44px] font-medium tracking-tight text-white text-center mt-6 mb-12">Stats</h1>
+    <div className="w-full text-[#f5f5f5] font-sans pb-24">
+      <div className="w-full space-y-8">
 
-        {/* TOP SUMMARY BAR */}
-        <Card className="px-8 py-6 mb-8">
-          <div className="flex flex-wrap items-center justify-between gap-8">
-            <div className="flex flex-col gap-1">
-              <span className="text-sm text-gray-400">Users</span>
-              <span className="text-[28px] font-medium text-white tracking-tight">8,232</span>
+        {/* TIME RANGE SELECTOR */}
+        <div className="flex justify-between items-center mb-4">
+          <p className="text-sm text-gray-400">Overview metrics for the platform.</p>
+          <button className="bg-[#111] hover:bg-[#1a1a1a] border border-[#15181c] text-xs text-gray-300 px-3 py-1.5 rounded-md flex items-center gap-2 transition-colors">
+            All time <ChevronDown className="w-4 h-4 text-gray-500" />
+          </button>
+        </div>
+
+        {/* TOP SUMMARY GRID */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <Card className="p-5 flex flex-col justify-between relative overflow-hidden">
+            <div className="flex items-center gap-3 mb-2 z-10">
+              <Users className="w-5 h-5 text-[#34d399]" />
+              <span className="font-semibold text-sm text-gray-300">Users</span>
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-sm text-gray-400">Volume</span>
-              <span className="text-[28px] font-medium text-white tracking-tight">$3.39B</span>
+            <div className="text-3xl font-bold font-mono text-white mb-1">8,232</div>
+            <div className="text-[#34d399] text-xs font-medium flex items-center gap-1">
+              +142 today
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-sm text-gray-400">Trades</span>
-              <span className="text-[28px] font-medium text-white tracking-tight">6,511,252</span>
+          </Card>
+          
+          <Card className="p-5 flex flex-col justify-between relative overflow-hidden">
+            <div className="flex items-center gap-3 mb-2 z-10">
+              <Database className="w-5 h-5 text-[#34d399]" />
+              <span className="font-semibold text-sm text-gray-300">Volume</span>
             </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-sm text-gray-400">Liquidated</span>
-              <span className="text-[28px] font-medium text-white tracking-tight">$24.5M</span>
+            <div className="text-3xl font-bold font-mono text-white mb-1">$3.39B</div>
+            <div className="text-[#34d399] text-xs font-medium flex items-center gap-1">
+              +$84M last 24h
             </div>
-            <div className="flex items-center ml-auto">
-              <button className="bg-[#121f24] hover:bg-[#1a2b30] border border-[#23353c] text-sm text-gray-300 px-4 py-2 rounded flex items-center gap-2 transition-colors">
-                All time <ChevronDown className="w-4 h-4 text-gray-500" />
-              </button>
+          </Card>
+
+          <Card className="p-5 flex flex-col justify-between relative overflow-hidden">
+            <div className="flex items-center gap-3 mb-2 z-10">
+              <ArrowDownUp className="w-5 h-5 text-[#34d399]" />
+              <span className="font-semibold text-sm text-gray-300">Trades</span>
             </div>
-          </div>
-        </Card>
+            <div className="text-3xl font-bold font-mono text-white mb-1">6,511,252</div>
+            <div className="text-[#34d399] text-xs font-medium flex items-center gap-1">
+              +12,492 last 24h
+            </div>
+          </Card>
+
+          <Card className="p-5 flex flex-col justify-between relative overflow-hidden">
+            <div className="flex items-center gap-3 mb-2 z-10">
+              <Trophy className="w-5 h-5 text-[#fa6432]" />
+              <span className="font-semibold text-sm text-gray-300">Liquidated</span>
+            </div>
+            <div className="text-3xl font-bold font-mono text-white mb-1">$24.5M</div>
+            <div className="text-red-500/80 text-xs font-medium flex items-center gap-1">
+              -$1.2M last 24h
+            </div>
+          </Card>
+        </div>
 
         {/* VOLUME & TRADING */}
         <SectionTitle>Volume & trading</SectionTitle>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Card className="p-6">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-[26px] font-medium tracking-tight text-white">Daily volume</h3>
+              <h3 className="text-lg font-bold tracking-tight text-white">Daily volume</h3>
               <div className="flex items-center gap-3">
-                <button className="bg-[#121f24] hover:bg-[#1a2b30] border border-[#23353c] text-xs text-gray-300 px-3 py-1.5 rounded flex items-center gap-2 transition-colors">
-                  <div className="flex -space-x-1"><div className="w-4 h-4 rounded-full bg-red-900 border border-red-500"/><div className="w-4 h-4 rounded-full bg-blue-900 border border-blue-500"/></div>
+                <button className="bg-[#111] hover:bg-[#1a1a1a] border border-[#15181c] text-xs text-gray-300 px-3 py-1.5 rounded-md flex items-center gap-2 transition-colors">
+                  <div className="flex -space-x-1">
+                    <div className="w-3.5 h-3.5 rounded-full bg-[#fa6432]/20 border border-[#fa6432]/50"/>
+                    <div className="w-3.5 h-3.5 rounded-full bg-[#8b5cf6]/20 border border-[#8b5cf6]/50"/>
+                  </div>
                   23/23 $3.39B <ChevronDown className="w-4 h-4 opacity-50" />
                 </button>
-                <button className="bg-[#121f24] hover:bg-[#1a2b30] border border-[#23353c] text-xs text-gray-300 px-3 py-1.5 rounded flex items-center gap-2 transition-colors">
+                <button className="bg-[#111] hover:bg-[#1a1a1a] border border-[#15181c] text-xs text-gray-300 px-3 py-1.5 rounded-md flex items-center gap-2 transition-colors">
                   Last 12 months <ChevronDown className="w-4 h-4 opacity-50" />
                 </button>
               </div>
@@ -161,14 +246,14 @@ export function Stats() {
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={volumeData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1b2a30" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#15181c" />
                   <XAxis dataKey="name" stroke="#526b75" fontSize={11} tickLine={false} axisLine={false} minTickGap={30} />
                   <YAxis stroke="#526b75" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val}M`} />
-                  <Tooltip content={<CustomTooltip />} cursor={{fill: '#ffffff10'}} />
-                  <Bar dataKey="USOIL" stackId="a" fill="#c2410c" />
-                  <Bar dataKey="US500" stackId="a" fill="#2563eb" />
-                  <Bar dataKey="SILVER" stackId="a" fill="#94a3b8" />
-                  <Bar dataKey="USTECH" stackId="a" fill="#0ea5e9" />
+                  <Tooltip content={<CustomTooltip />} cursor={{fill: '#ffffff08'}} />
+                  <Bar dataKey="USOIL" stackId="a" fill={assetColorMap.USOIL} />
+                  <Bar dataKey="US500" stackId="a" fill={assetColorMap.US500} />
+                  <Bar dataKey="SILVER" stackId="a" fill={assetColorMap.SILVER} />
+                  <Bar dataKey="USTECH" stackId="a" fill={assetColorMap.USTECH} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -176,19 +261,19 @@ export function Stats() {
 
           <Card className="p-6">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-[26px] font-medium tracking-tight text-white">Cumulative volume</h3>
+              <h3 className="text-lg font-bold tracking-tight text-white">Cumulative volume</h3>
             </div>
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={cumVolumeData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1b2a30" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#15181c" />
                   <XAxis dataKey="name" stroke="#526b75" fontSize={11} tickLine={false} axisLine={false} minTickGap={30} />
                   <YAxis stroke="#526b75" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val}B`} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Area type="monotone" dataKey="USOIL" stackId="1" stroke="#c2410c" fill="#c2410c" />
-                  <Area type="monotone" dataKey="US500" stackId="1" stroke="#2563eb" fill="#2563eb" />
-                  <Area type="monotone" dataKey="SILVER" stackId="1" stroke="#94a3b8" fill="#94a3b8" />
-                  <Area type="monotone" dataKey="USTECH" stackId="1" stroke="#0ea5e9" fill="#0ea5e9" />
+                  <Area type="monotone" dataKey="USOIL" stackId="1" stroke={assetColorMap.USOIL} fill={assetColorMap.USOIL} fillOpacity={0.1} />
+                  <Area type="monotone" dataKey="US500" stackId="1" stroke={assetColorMap.US500} fill={assetColorMap.US500} fillOpacity={0.1} />
+                  <Area type="monotone" dataKey="SILVER" stackId="1" stroke={assetColorMap.SILVER} fill={assetColorMap.SILVER} fillOpacity={0.1} />
+                  <Area type="monotone" dataKey="USTECH" stackId="1" stroke={assetColorMap.USTECH} fill={assetColorMap.USTECH} fillOpacity={0.1} />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -198,34 +283,34 @@ export function Stats() {
         {/* TRADES AND TRADERS */}
         <Card className="p-6">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-[26px] font-medium tracking-tight text-white">Trades and traders</h3>
-            <button className="bg-[#121f24] hover:bg-[#1a2b30] border border-[#23353c] text-xs text-gray-300 px-3 py-1.5 rounded flex items-center gap-2 transition-colors">
+            <h3 className="text-lg font-bold tracking-tight text-white">Trades and traders</h3>
+            <button className="bg-[#111] hover:bg-[#1a1a1a] border border-[#15181c] text-xs text-gray-300 px-3 py-1.5 rounded-md flex items-center gap-2 transition-colors">
               Last 12 months <ChevronDown className="w-4 h-4 opacity-50" />
             </button>
           </div>
           <div className="h-[300px] w-full relative">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={tradesData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1b2a30" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#15181c" />
                 <XAxis dataKey="name" stroke="#526b75" fontSize={11} tickLine={false} axisLine={false} minTickGap={30} />
                 <YAxis yAxisId="left" stroke="#526b75" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val) => `${val/1000}K`} />
                 <YAxis yAxisId="right" orientation="right" stroke="#526b75" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val) => `${(val/1000).toFixed(1)}K`} />
-                <Tooltip content={<CustomTooltip />} contentStyle={{ backgroundColor: '#0e181c', border: '1px solid #1b2a30' }} />
-                <Line yAxisId="right" type="monotone" dataKey="unique" stroke="#6366f1" strokeWidth={2} dot={false} name="Unique traders" />
+                <Tooltip content={<CustomTooltip />} />
+                <Line yAxisId="right" type="monotone" dataKey="unique" stroke="#facc15" strokeWidth={2} dot={false} name="Unique traders" />
               </LineChart>
             </ResponsiveContainer>
             <div className="absolute inset-0 pointer-events-none opacity-80 pt-1 pb-4 pr-[35px] pl-[40px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={tradesData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
-                    <Bar yAxisId="left" dataKey="trades" fill="#06b6d4" barSize={10} radius={[2, 2, 0, 0]} name="Trades" />
+                    <Bar yAxisId="left" dataKey="trades" fill="#34d399" barSize={10} radius={[2, 2, 0, 0]} name="Trades" />
                     <YAxis yAxisId="left" domain={[0, 'dataMax']} hide />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </div>
           <div className="flex justify-center mt-4 gap-6 text-sm">
-            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-[#06b6d4]" /> <span className="text-gray-400">Trades</span></div>
-            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-[#6366f1]" /> <span className="text-gray-400">Unique traders</span></div>
+            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-[#34d399]" /> <span className="text-gray-400">Trades</span></div>
+            <div className="flex items-center gap-2"><div className="w-3 h-3 rounded bg-[#facc15]" /> <span className="text-gray-400">Unique traders</span></div>
           </div>
         </Card>
 
@@ -235,18 +320,18 @@ export function Stats() {
           <Card className="p-6">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h3 className="text-[26px] font-medium tracking-tight text-white">Open interest</h3>
+                <h3 className="text-lg font-bold tracking-tight text-white">Open interest</h3>
                 <div className="text-sm text-gray-300 mt-1 font-mono tracking-tight">$18.47M</div>
               </div>
             </div>
             <div className="h-[250px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={marketDynamicsData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1b2a30" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#15181c" />
                   <XAxis dataKey="name" stroke="#526b75" fontSize={11} tickLine={false} axisLine={false} minTickGap={30} />
                   <YAxis stroke="#526b75" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val) => `$${val}M`} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Line type="monotone" dataKey="oi" stroke="#3b82f6" strokeWidth={2} dot={false} />
+                  <Line type="monotone" dataKey="oi" stroke="#34d399" strokeWidth={2} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -254,17 +339,17 @@ export function Stats() {
 
           <Card className="p-6">
             <div className="flex items-center justify-between mb-8">
-              <h3 className="text-[26px] font-medium tracking-tight text-white">Funding rates</h3>
+              <h3 className="text-lg font-bold tracking-tight text-white">Funding rates</h3>
             </div>
             <div className="h-[250px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={marketDynamicsData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1b2a30" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#15181c" />
                   <XAxis dataKey="name" stroke="#526b75" fontSize={11} tickLine={false} axisLine={false} minTickGap={30} />
                   <YAxis stroke="#526b75" fontSize={11} tickLine={false} axisLine={false} tickFormatter={(val) => `${val}%`} />
                   <Tooltip content={<CustomTooltip />} />
-                  <Line type="monotone" dataKey="fund1" stroke="#f59e0b" strokeWidth={1.5} dot={false} />
-                  <Line type="monotone" dataKey="fund2" stroke="#10b981" strokeWidth={1.5} dot={false} />
+                  <Line type="monotone" dataKey="fund1" stroke="#facc15" strokeWidth={1.5} dot={false} />
+                  <Line type="monotone" dataKey="fund2" stroke="#34d399" strokeWidth={1.5} dot={false} />
                   <Line type="monotone" dataKey="fund3" stroke="#8b5cf6" strokeWidth={1.5} dot={false} />
                 </LineChart>
               </ResponsiveContainer>
@@ -275,7 +360,7 @@ export function Stats() {
         {/* MARKET SHARE */}
         <Card className="p-6">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-[26px] font-medium tracking-tight text-white">Market share</h3>
+            <h3 className="text-lg font-bold tracking-tight text-white">Market share</h3>
           </div>
           <div className="flex flex-col md:flex-row items-center gap-12 pt-4">
             <div className="w-[300px] h-[300px] shrink-0">
@@ -304,12 +389,12 @@ export function Stats() {
                 <div key={item.name} className="flex flex-col gap-2">
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-3">
-                      <div className="w-5 h-5 rounded-full bg-red-900 border border-red-500 overflow-hidden text-[8px] flex justify-center items-center font-bold">US</div>
+                      <AssetIcon asset={getAssetIconObj(item.name)} />
                       <span className="font-mono text-gray-200">{item.name}</span>
                     </div>
                     <span className="font-mono text-gray-300">{item.value}%</span>
                   </div>
-                  <div className="w-full h-1.5 bg-[#1b2a30] rounded-full overflow-hidden">
+                  <div className="w-full h-1.5 bg-[#15181c] rounded-full overflow-hidden">
                     <div className="h-full rounded-full" style={{ width: `${item.value}%`, backgroundColor: item.color }} />
                   </div>
                 </div>
@@ -323,20 +408,20 @@ export function Stats() {
         <Card className="p-6">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h3 className="text-[26px] font-medium tracking-tight text-white mb-1">Liquidations</h3>
+              <h3 className="text-lg font-bold tracking-tight text-white mb-1">Liquidations</h3>
               <div className="text-red-500 text-sm font-mono tracking-tight">$24.5M</div>
             </div>
           </div>
           <div className="h-[250px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={volumeData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#1b2a30" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#15181c" />
                 <XAxis dataKey="name" stroke="#526b75" fontSize={11} tickLine={false} axisLine={false} minTickGap={30} />
                 <YAxis stroke="#526b75" fontSize={11} tickLine={false} axisLine={false} tickFormatter={v => `$${v/10}M`} />
-                <Tooltip content={<CustomTooltip />} cursor={{fill: '#ffffff10'}} />
-                <Bar dataKey="USOIL" stackId="a" fill="#b45309" />
-                <Bar dataKey="US500" stackId="a" fill="#1d4ed8" />
-                <Bar dataKey="SILVER" stackId="a" fill="#475569" />
+                <Tooltip content={<CustomTooltip />} cursor={{fill: '#ffffff08'}} />
+                <Bar dataKey="USOIL" stackId="a" fill={assetColorMap.USOIL} />
+                <Bar dataKey="US500" stackId="a" fill={assetColorMap.US500} />
+                <Bar dataKey="SILVER" stackId="a" fill={assetColorMap.SILVER} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -347,7 +432,7 @@ export function Stats() {
         <Card className="p-0 overflow-x-auto">
           <table className="w-full text-left min-w-[900px] border-collapse">
             <thead>
-              <tr className="border-b border-[#1b2a30] text-xs text-gray-400 font-medium">
+              <tr className="bg-[#111]/30 border-b border-[#15181c] text-xs text-gray-400 font-medium uppercase tracking-wider">
                 <th className="px-6 py-4">Asset</th>
                 <th className="px-6 py-4 text-right">Volume</th>
                 <th className="px-6 py-4 text-right">Open interest</th>
@@ -359,9 +444,9 @@ export function Stats() {
                 <th className="px-6 py-4 text-right tracking-tight">Slippage $1m</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1b2a30]">
+            <tbody className="divide-y divide-[#15181c]">
               {liquidityData.map((row, i) => (
-                <tr key={i} className="hover:bg-[#162227] transition-colors group">
+                <tr key={i} className="table-row-hover transition-colors group">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
                       <AssetIcon asset={row} />
@@ -391,18 +476,19 @@ export function Stats() {
         <Card className="p-0 overflow-x-auto mb-10">
           <table className="w-full text-left min-w-[600px] border-collapse">
             <thead>
-              <tr className="border-b border-[#1b2a30] text-xs text-gray-400 font-medium">
+              <tr className="bg-[#111]/30 border-b border-[#15181c] text-xs text-gray-400 font-medium uppercase tracking-wider">
                 <th className="px-6 py-4 w-1/2">Asset <ArrowDownUp className="w-3 h-3 inline-block ml-1 opacity-50" /></th>
                 <th className="px-6 py-4 text-right">24h volume <ArrowDownUp className="w-3 h-3 inline-block ml-1 opacity-50" /></th>
                 <th className="px-6 py-4 text-right w-32">Share <ArrowDownUp className="w-3 h-3 inline-block ml-1 opacity-50" /></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#1b2a30]">
+            <tbody className="divide-y divide-[#15181c]">
               {liquidityData.sort((a,b) => b.vol - a.vol).map((row, i) => {
                 const total = liquidityData.reduce((acc, curr) => acc + curr.vol, 0);
                 const share = (row.vol / total) * 100;
+                const color = assetColorMap[row.asset] || '#34d399';
                 return (
-                  <tr key={i} className="hover:bg-[#162227] transition-colors">
+                  <tr key={i} className="table-row-hover transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <AssetIcon asset={row} />
@@ -414,7 +500,7 @@ export function Stats() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-end gap-3 text-gray-400 text-sm font-mono">
-                        {share.toFixed(1)}% <div className="w-2 h-1 rounded-full bg-blue-500" />
+                        {share.toFixed(1)}% <div className="w-2 h-1 rounded-full" style={{ backgroundColor: color }} />
                       </div>
                     </td>
                   </tr>

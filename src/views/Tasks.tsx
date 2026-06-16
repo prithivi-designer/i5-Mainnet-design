@@ -64,7 +64,7 @@ const WEEKLY_TASKS: Task[] = [
 ];
 
 export function Tasks() {
-  const [activeTab, setActiveTab] = useState<'daily' | 'weekly'>('daily');
+  const [activeTab, setActiveTab] = useState<'daily' | 'weekly' | 'referrals'>('daily');
 
   const tasks = activeTab === 'daily' ? DAILY_TASKS : WEEKLY_TASKS;
   const completedCount = tasks.filter(t => t.completed).length;
@@ -86,11 +86,11 @@ export function Tasks() {
                 <Target className="w-5 h-5 text-[#34d399]" />
               </div>
               <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-[#e8e8e8] to-[#999] tracking-tight">
-                Missions & Rewards
+                Missions & Referrals
               </h1>
             </div>
             <p className="text-gray-400 text-[15px] max-w-lg mt-3 leading-relaxed">
-              Complete your daily and weekly trading tasks to earn XP. Accumulate XP to unlock premium tiers, fee discounts, and exclusive AI agent tools.
+              Complete your daily and weekly trading tasks to earn XP. Accumulate XP to unlock premium tiers, fee discounts, and exclusive AI agent tools, and earn up to 70% fee share by referring users.
             </p>
           </div>
           
@@ -138,6 +138,15 @@ export function Tasks() {
             >
               <ShieldCheck className="w-4 h-4" /> Weekly Tasks
             </button>
+            <button
+              onClick={() => setActiveTab('referrals')}
+              className={cn(
+                "flex-1 md:w-[140px] py-2.5 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2",
+                activeTab === 'referrals' ? "bg-[#34d399]/10 text-[#34d399] shadow-sm" : "text-gray-500 hover:text-white"
+              )}
+            >
+              <Gift className="w-4 h-4" /> Referrals
+            </button>
           </div>
 
           <div className="w-full md:w-[300px] flex flex-col gap-2 px-4 md:px-0">
@@ -159,9 +168,67 @@ export function Tasks() {
           </div>
         </div>
 
-        {/* Task List Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-12">
-          {tasks.map((task) => (
+        {/* Task List Grid or Referrals */}
+        {activeTab === 'referrals' ? (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-12 items-start mt-4">
+            <div className="card-base p-8 space-y-6 border border-[#222] bg-[#0c0c0c]">
+              <div className="flex items-center gap-3">
+                <Gift className="w-6 h-6 text-[#34d399]" />
+                <h2 className="text-2xl font-bold tracking-tight text-white">Refer users</h2>
+              </div>
+              <h3 className="text-4xl md:text-5xl font-bold text-[#34d399] leading-tight tracking-tight">
+                Earn up to 70% fee share
+              </h3>
+              <div className="space-y-2">
+                <h4 className="text-[20px] font-semibold text-white leading-snug">
+                  Reach $10K in trading volume on HyperLiquid
+                </h4>
+                <p className="text-gray-400 text-[15px]">
+                  to create a referral link
+                </p>
+              </div>
+              <div className="space-y-4 pt-4">
+                <div className="flex items-center gap-4">
+                  <div className="flex-1 bg-[#111] border border-[#222] h-3 rounded-full overflow-hidden">
+                    <div className="bg-[#34d399] h-full rounded-full w-[0%]" />
+                  </div>
+                  <span className="text-white text-xl font-medium shrink-0">$10K</span>
+                </div>
+                <p className="text-gray-400 text-[15px]">
+                  $10,000.00 left to unlock this feature
+                </p>
+              </div>
+              <hr className="border-[#222] my-6" />
+              <p className="text-gray-400 text-[15px] leading-relaxed">
+                Activate a referral code to get an 8% fee discount for lifetime on trading volume. <br/>
+                <a href="#" className="text-[#34d399] hover:underline italic">Learn more.</a>
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="card-base p-6 hover:border-[#333] transition-colors border border-[#222] bg-[#0c0c0c]">
+                <h3 className="text-[18px] font-semibold text-white mb-2 tracking-tight">Create and share a referral link</h3>
+                <p className="text-gray-400 leading-relaxed text-[15px]">
+                  When a new user is onboarded with your code, they become your active referral.
+                </p>
+              </div>
+              <div className="card-base p-6 hover:border-[#333] transition-colors border border-[#222] bg-[#0c0c0c]">
+                <h3 className="text-[18px] font-semibold text-white mb-2 tracking-tight">Gift fee discount to your referrals</h3>
+                <p className="text-gray-400 leading-relaxed text-[15px]">
+                  Your referrals get an 8% discount on fees for lifetime on their trading volume.
+                </p>
+              </div>
+              <div className="card-base p-6 hover:border-[#333] transition-colors border border-[#222] bg-[#0c0c0c]">
+                <h3 className="text-[18px] font-semibold text-white mb-2 tracking-tight">Earn Rewards</h3>
+                <p className="text-gray-400 leading-relaxed text-[15px]">
+                  You receive up to 70% of the fee share generated by your referrals.
+                </p>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-12">
+            {tasks.map((task) => (
             <div 
               key={task.id}
               className={cn(
@@ -206,6 +273,7 @@ export function Tasks() {
             </div>
           ))}
         </div>
+        )}
 
       </div>
     </div>

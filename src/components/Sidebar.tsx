@@ -11,8 +11,6 @@ import {
   Activity,
   Users,
   Trophy,
-  Gift,
-  BarChart2,
   ShoppingCart,
   Globe,
   CheckCircle,
@@ -28,15 +26,13 @@ const navItems: NavItem[] = [
   { name: 'Dashboard',         path: '/dashboard',      icon: LayoutDashboard },
   { name: 'Alpha Trade',       path: '/alpha-trade',    icon: Globe },
   { name: 'Trade',             path: '/trade',           icon: LineChart },
-  { name: 'Social Signals',    path: '/social-signals',  icon: TrendingUp },
+  { name: 'Signals',           path: '/social-signals',  icon: TrendingUp },
   { name: 'Agent Marketplace', path: '/marketplace',     icon: ShoppingCart },
   { name: 'Market Radar',      path: '/market-radar',    icon: Activity },
-  { name: 'Tasks',             path: '/tasks',          icon: CheckCircle },
+  { name: 'Missions & Referrals', path: '/tasks',       icon: CheckCircle },
   { name: 'Create Alerts',     path: '/alerts',          icon: Bell },
   { name: 'Community',         path: '/community',       icon: Users },
   { name: 'Leaderboard',       path: '/leaderboard',     icon: Trophy },
-  { name: 'Referrals',         path: '/referrals',       icon: Gift },
-  { name: 'Stats',             path: '/stats',           icon: BarChart2 },
 ];
 
 export function Sidebar() {

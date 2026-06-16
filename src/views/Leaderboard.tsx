@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Trophy, TrendingUp, TrendingDown, Search, ArrowUpDown, Medal, Filter } from 'lucide-react';
+import { Trophy, TrendingUp, TrendingDown, Search, ArrowUpDown, Medal, Filter, BarChart2 } from 'lucide-react';
 import { formatNumber } from '@/lib/utils';
 import { cn } from '@/lib/utils';
+import { Stats } from './Stats';
 
 const MOCK_LEADERBOARD = Array.from({ length: 50 }).map((_, i) => ({
   id: `trader-${i + 1}`,
@@ -17,6 +18,7 @@ const MOCK_LEADERBOARD = Array.from({ length: 50 }).map((_, i) => ({
 })).sort((a, b) => b.pnl - a.pnl).map((user, index) => ({ ...user, rank: index + 1 }));
 
 export function Leaderboard() {
+  const [activeTab, setActiveTab] = useState<'leaderboard' | 'stats'>('leaderboard');
   const [timeframe, setTimeframe] = useState<'Daily' | 'Weekly' | 'Monthly' | 'All Time'>('Weekly');
   const [metric, setMetric] = useState<'PNL' | 'Volume'>('PNL');
   
@@ -31,31 +33,57 @@ export function Leaderboard() {
           <div>
             <div className="flex items-center gap-3 mb-2">
               <Trophy className="w-8 h-8 text-[#facc15]" />
-              <h1 className="text-3xl font-bold tracking-tight text-white">Leaderboard</h1>
+              <h1 className="text-3xl font-bold tracking-tight text-white">Leaderboard & Stats</h1>
             </div>
-            <p className="text-gray-400 text-sm">Top performing traders on the platform by PNL and Volume.</p>
+            <p className="text-gray-400 text-sm">Top performing traders and overall platform statistics.</p>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-4 items-center bg-[#111] p-1.5 rounded-lg border border-[#222]">
-            <div className="flex space-x-1">
-              {(['Daily', 'Weekly', 'Monthly', 'All Time'] as const).map(tf => (
-                 <button
-                   key={tf}
-                   onClick={() => setTimeframe(tf)}
-                   className={cn(
-                     "px-4 py-1.5 rounded-md text-xs font-semibold transition-all duration-200",
-                     timeframe === tf 
-                       ? "bg-[#222] text-white shadow-sm border border-[#333]" 
-                       : "text-gray-500 hover:text-gray-300 hover:bg-[#1a1a1a]"
-                   )}
-                 >
-                   {tf}
-                 </button>
-              ))}
+          {activeTab === 'leaderboard' && (
+            <div className="flex flex-col sm:flex-row gap-4 items-center bg-[#111] p-1.5 rounded-lg border border-[#222]">
+              <div className="flex space-x-1">
+                {(['Daily', 'Weekly', 'Monthly', 'All Time'] as const).map(tf => (
+                   <button
+                     key={tf}
+                     onClick={() => setTimeframe(tf)}
+                     className={cn(
+                       "px-4 py-1.5 rounded-md text-xs font-semibold transition-all duration-200",
+                       timeframe === tf 
+                         ? "bg-[#222] text-white shadow-sm border border-[#333]" 
+                         : "text-gray-500 hover:text-gray-300 hover:bg-[#1a1a1a]"
+                     )}
+                   >
+                     {tf}
+                   </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
+        {/* Tabs */}
+        <div className="flex w-full md:w-auto p-1 bg-[#050505] rounded-xl border border-[#1a1a1a] max-w-sm">
+          <button
+            onClick={() => setActiveTab('leaderboard')}
+            className={cn(
+              "flex-1 py-2.5 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2",
+              activeTab === 'leaderboard' ? "bg-[#34d399]/10 text-[#34d399] shadow-sm" : "text-gray-500 hover:text-white"
+            )}
+          >
+            <Trophy className="w-4 h-4" /> Top Traders
+          </button>
+          <button
+            onClick={() => setActiveTab('stats')}
+            className={cn(
+              "flex-1 py-2.5 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2",
+              activeTab === 'stats' ? "bg-[#34d399]/10 text-[#34d399] shadow-sm" : "text-gray-500 hover:text-white"
+            )}
+          >
+            <BarChart2 className="w-4 h-4" /> Platform Stats
+          </button>
+        </div>
+
+        {activeTab === 'leaderboard' ? (
+          <>
         {/* Top 3 Podium */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8 pb-4">
            {/* 2nd Place */}
@@ -200,6 +228,10 @@ export function Leaderboard() {
             </button>
           </div>
         </div>
+          </>
+        ) : (
+          <Stats />
+        )}
 
       </div>
     </div>

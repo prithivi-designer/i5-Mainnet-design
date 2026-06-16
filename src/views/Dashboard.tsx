@@ -303,9 +303,6 @@ export function Dashboard() {
                           <div className="text-xl font-bold font-mono text-[#34d399]">125 EP</div>
                        </div>
                     </div>
-                    <div className="mt-5 text-[10px] text-[#34d399]/70 flex items-center gap-1 border-t border-[#1a2b30] pt-4">
-                       <Shield className="w-3.5 h-3.5" /> Earn 1 points every 5 points they earn ⓘ
-                    </div>
                  </div>
 
                  {/* Share on X */}
