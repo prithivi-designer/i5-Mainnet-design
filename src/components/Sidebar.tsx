@@ -15,6 +15,7 @@ import {
   BarChart2,
   ShoppingCart,
   Globe,
+  CheckCircle,
 } from 'lucide-react';
 
 interface NavItem {
@@ -30,6 +31,7 @@ const navItems: NavItem[] = [
   { name: 'Social Signals',    path: '/social-signals',  icon: TrendingUp },
   { name: 'Agent Marketplace', path: '/marketplace',     icon: ShoppingCart },
   { name: 'Market Radar',      path: '/market-radar',    icon: Activity },
+  { name: 'Tasks',             path: '/tasks',          icon: CheckCircle },
   { name: 'Create Alerts',     path: '/alerts',          icon: Bell },
   { name: 'Community',         path: '/community',       icon: Users },
   { name: 'Leaderboard',       path: '/leaderboard',     icon: Trophy },

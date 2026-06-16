@@ -71,27 +71,23 @@ const AI_REPLIES = [
   'Funding rate is 0.0013% — neutral. No funding squeeze risk in the next 4h. Good time to hold or add to long.',
 ];
 
-// ─── AI Copilot Overlay ──────────────────────────────────────────────────────
-function CopilotOverlay({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const [mode, setMode]         = useState<'autopilot' | 'copilot' | 'manual'>('autopilot');
-  const [margin, setMargin]     = useState('100');
-  const [tradeStyle, setTradeStyle] = useState('Day');
-  const [strategy, setStrategy] = useState('Max Gain');
+// ─── Main Trade View ─────────────────────────────────────────────────────────
+export function Trade() {
+  const [side, setSide]           = useState<'Long' | 'Short'>('Long');
+  const [orderType, setOrderType] = useState<'MARKET' | 'LIMIT' | 'PRO'>('MARKET');
+  
+  const [tradeMode, setTradeMode] = useState<'autopilot' | 'copilot' | 'manual'>('manual');
   const [messages, setMessages] = useState<ChatMsg[]>(INITIAL_MSGS);
   const [input, setInput]       = useState('');
   const [typing, setTyping]     = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const [margin, setMargin]     = useState('100');
+  const [tradeStyle, setTradeStyle] = useState('Day');
+  const [strategy, setStrategy] = useState('Max Gain');
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, typing, open]);
-
-  // Close on Escape
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
-  }, [onClose]);
+  }, [messages, typing, tradeMode]);
 
   const sendMsg = (text?: string) => {
     const content = (text ?? input).trim();
@@ -109,305 +105,12 @@ function CopilotOverlay({ open, onClose }: { open: boolean; onClose: () => void 
     }, 900 + Math.random() * 700);
   };
 
-  const modes = [
-    { key: 'autopilot' as const, icon: '⚡', label: 'i5 Autopilot', desc: 'Fully automated' },
-    { key: 'copilot'   as const, icon: '🤖', label: 'i5 Copilot',   desc: 'AI assisted' },
-    { key: 'manual'    as const, icon: '✦',  label: 'Manual',       desc: 'Manual control' },
-  ];
-
-  const recentChats = [
-    { id: '1', sentiment: 'Neutral', time: '1m ago', style: 'Day', strategy: 'Max Gain', icon: '😐', iconBg: 'rgba(251,191,36,0.1)', iconColor: '#fbbf24', active: true },
-    { id: '2', sentiment: 'Bullish', time: '12m ago', style: 'Swing', strategy: 'Balanced', icon: '↑', iconBg: 'rgba(52,211,153,0.1)', iconColor: '#34d399', active: false },
-    { id: '3', sentiment: 'Bearish', time: '1h ago', style: 'Scalp', strategy: 'Max Gain', icon: '↓', iconBg: 'rgba(239,68,68,0.1)', iconColor: '#ef4444', active: false },
-    { id: '4', sentiment: 'Neutral', time: '2h ago', style: 'Day', strategy: 'Balanced', icon: '💬', iconBg: 'rgba(20,184,166,0.1)', iconColor: '#14b8a6', active: false },
-    { id: '5', sentiment: 'Bullish', time: '3h ago', style: 'Swing', strategy: 'Max Gain', icon: '↑', iconBg: 'rgba(245,158,11,0.1)', iconColor: '#f59e0b', active: false },
-  ];
-
-  return (
-    <>
-      {/* ── Backdrop ── */}
-      <div
-        onClick={onClose}
-        className="transition-all duration-300"
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 50,
-          background: open ? 'rgba(0,0,0,0.45)' : 'transparent',
-          pointerEvents: open ? 'auto' : 'none',
-          backdropFilter: open ? 'blur(2px)' : 'none',
-        }}
-      />
-
-      {/* ── Slide-in Panel (800px wide) ── */}
-      <div
-        className="flex overflow-hidden shadow-2xl font-sans"
-        style={{
-          position: 'fixed',
-          top: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 50,
-          width: '800px',
-          backgroundColor: '#0d0d0d',
-          borderLeft: '1px solid #222',
-          transform: open ? 'translateX(0)' : 'translateX(100%)',
-          transition: 'transform 0.35s cubic-bezier(0.3, 0, 0.1, 1)',
-        }}
-      >
-        {/* ── Left Column (220px) ── */}
-        <div className="w-[220px] flex flex-col bg-[#0a0a0a] border-r border-[#222]">
-          <div className="h-[52px] flex items-center gap-2.5 px-4 border-b border-[#222] shrink-0">
-            <Sparkles className="w-5 h-5 text-[#34d399]" />
-            <span className="text-white font-bold text-[14px] tracking-wide">AI Agents Hub</span>
-          </div>
-
-          <div className="p-3 flex-1 overflow-y-auto no-scrollbar flex flex-col justify-between">
-            <div>
-              <div className="text-[9px] font-bold text-gray-500 uppercase tracking-[0.15em] mb-3 px-1 mt-1">Select Agent</div>
-              <div className="flex flex-col gap-2 mb-6">
-                {modes.map(m => {
-                  const active = mode === m.key;
-                  return (
-                    <button
-                      key={m.key}
-                      onClick={() => setMode(m.key)}
-                      className="flex items-center justify-between px-3 py-3 rounded-xl transition-all text-left w-full"
-                      style={{
-                        background: active ? 'rgba(52,211,153,0.03)' : '#111',
-                        border: active ? '1px solid rgba(52,211,153,0.4)' : '1px solid #222',
-                      }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-lg shadow-sm"
-                             style={{ background: active ? 'rgba(52,211,153,0.1)' : '#1a1a1a' }}>
-                          {m.icon}
-                        </div>
-                        <div>
-                          <div className="text-[12px] font-bold leading-tight text-white">
-                            {m.label}
-                          </div>
-                          <div className="text-[10px] text-gray-500 mt-0.5">
-                            {m.desc}
-                          </div>
-                        </div>
-                      </div>
-                      {active && (
-                        <div className="w-4 h-4 rounded-full bg-[#34d399]/20 border border-[#34d399] flex items-center justify-center">
-                          <span className="text-[#34d399] text-[9px] font-bold">✓</span>
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="flex items-center justify-between mb-3 px-1">
-                <span className="text-[9px] font-bold text-gray-500 uppercase tracking-[0.15em]">Recent Chats</span>
-                <button className="text-[10px] text-gray-500 hover:text-white transition-colors">View all</button>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                {recentChats.map(chat => (
-                  <button key={chat.id} className="flex flex-col text-left rounded-xl p-3 transition-all hover:border-gray-500 w-full"
-                    style={{
-                      background: '#161616',
-                      border: chat.active ? '1px solid rgba(251,191,36,0.35)' : '1px solid transparent'
-                    }}>
-                    <div className="flex items-center justify-between w-full mb-1">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full flex items-center justify-center text-[12px]"
-                          style={{ background: chat.iconBg, color: chat.iconColor }}>
-                          {chat.icon}
-                        </div>
-                        <div>
-                          <div className="text-[12px] font-bold text-white">{chat.sentiment}</div>
-                          <div className="text-[10px] text-gray-500">{chat.style} • {chat.strategy}</div>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-[10px] text-gray-500 font-sans">{chat.time}</span>
-                        <span className="text-gray-500 font-bold text-[14px]">⋮</span>
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <button className="mt-4 w-full py-2.5 rounded-xl border border-[#222] text-gray-400 hover:text-white transition-colors text-[11px] font-semibold flex items-center justify-center gap-1.5 bg-[#111]">
-              <span>+</span> New Session
-            </button>
-          </div>
-        </div>
-
-        {/* ── Right Column ── */}
-        <div className="flex-1 flex flex-col bg-[#0d0d0d] relative">
-          {/* Header */}
-          <div className="h-[52px] flex items-center justify-between px-4 border-b border-[#222] shrink-0 bg-[#0d0d0d]">
-            <button className="flex items-center gap-2 text-white font-semibold text-[13px] hover:opacity-80 transition-opacity">
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center border border-[#34d399]/30"
-                style={{ background: 'rgba(52,211,153,0.05)' }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="2">
-                  <rect x="2" y="5" width="20" height="14" rx="2" /><path d="M16 12h.01" />
-                </svg>
-              </div>
-              <span>Wallet 1</span>
-              <ChevronDown className="w-3.5 h-3.5 text-gray-500" />
-            </button>
-            <div className="flex items-center gap-2">
-              <button className="text-gray-500 hover:text-white transition-colors p-1.5"><Settings className="w-4 h-4" /></button>
-              <button className="text-gray-500 hover:text-white transition-colors p-1.5"><Bell className="w-4 h-4" /></button>
-              <div className="w-px h-4 bg-[#333] mx-1" />
-              <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors p-1.5 hover:bg-[#222] rounded-md">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-
-          {/* Chat Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
-            <div className="flex items-center justify-center mb-6">
-               <span className="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest text-[#34d399] bg-[#34d399]/10 flex items-center gap-1.5">
-                 <span className="w-1.5 h-1.5 rounded-full bg-[#34d399]" />
-                 Active Session
-               </span>
-            </div>
-            
-            {messages.map(msg => (
-              <div key={msg.id} className={cn('flex', msg.role === 'user' ? 'justify-end' : 'justify-start')}>
-                {msg.role === 'ai' ? (
-                  <div className="flex items-start gap-2.5 max-w-[85%]">
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 border border-[#34d399]/30"
-                      style={{ background: 'rgba(52,211,153,0.1)' }}>
-                      <Bot className="w-4 h-4 text-[#34d399]" />
-                    </div>
-                    <div className="relative px-3.5 py-2.5 rounded-2xl rounded-tl-sm text-[12px] leading-relaxed shadow-sm bg-[#1a1a1a] border border-[#2a2a2a] text-[#e5e7eb] font-sans
-                      before:content-[''] before:absolute before:top-3 before:-left-1.5 before:w-3 before:h-3 before:bg-[#1a1a1a] before:rotate-45 before:border-l before:border-b before:border-[#2a2a2a]">
-                      <div className="font-bold text-[11px] text-[#34d399] mb-1">A&S AI Co-Pilot Online 🟢 —</div>
-                      {msg.content}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="px-3.5 py-2.5 rounded-2xl rounded-tr-sm text-[12px] leading-relaxed text-white shadow-sm max-w-[85%] font-sans"
-                    style={{ background: 'rgba(15,125,110,0.8)', border: '1px solid rgba(52,211,153,0.3)' }}>
-                    {msg.content}
-                  </div>
-                )}
-              </div>
-            ))}
-            {typing && (
-              <div className="flex items-start gap-2.5">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 border border-[#34d399]/30"
-                  style={{ background: 'rgba(52,211,153,0.1)' }}>
-                  <Bot className="w-4 h-4 text-[#34d399]" />
-                </div>
-                <div className="px-4 py-3.5 rounded-2xl rounded-tl-sm flex gap-1.5 items-center bg-[#1a1a1a] border border-[#2a2a2a]">
-                  {[0, 150, 300].map(d => (
-                    <span key={d} className="w-1.5 h-1.5 rounded-full bg-[#34d399] animate-bounce"
-                      style={{ animationDelay: `${d}ms` }} />
-                  ))}
-                </div>
-              </div>
-            )}
-            <div ref={bottomRef} />
-          </div>
-
-          {/* Bottom Config & Entry Area */}
-          <div className="p-3 border-t border-[#222] bg-[#0d0d0d] shrink-0">
-            {/* Setup (Optional) */}
-            <div className="border border-[#222] rounded-2xl p-3 mb-3 bg-[#0d0d0d] relative">
-              <div className="text-[9px] font-bold text-gray-500 uppercase tracking-wider mb-2.5">
-                Setup (Optional)
-              </div>
-              <div className="grid grid-cols-3 gap-2.5">
-                {/* Margin */}
-                <div className="flex flex-col gap-1">
-                  <span className="text-[9px] font-bold text-gray-500 uppercase tracking-[0.1em]">Margin</span>
-                  <div className="flex items-center gap-1.5 px-2.5 py-2 rounded-xl bg-[#0a0a0a] border border-[#222] focus-within:border-gray-500 transition-colors">
-                    <span className="text-gray-500 text-[11px] font-bold">$</span>
-                    <input type="number" value={margin} onChange={e => setMargin(e.target.value)}
-                      className="w-full bg-transparent text-white text-[12px] font-semibold outline-none"
-                      style={{ background: 'transparent', border: 'none', padding: 0, borderRadius: 0, boxShadow: 'none' }} />
-                  </div>
-                </div>
-                {/* Style */}
-                <div className="flex flex-col gap-1">
-                  <span className="text-[9px] font-bold text-gray-500 uppercase tracking-[0.1em]">Style</span>
-                  <div className="flex items-center justify-between px-2.5 py-2 rounded-xl bg-[#0a0a0a] border border-[#222] cursor-pointer hover:border-gray-500 transition-colors">
-                    <span className="text-white text-[12px] font-semibold">{tradeStyle}</span>
-                    <ChevronDown className="w-3.5 h-3.5 text-gray-500" />
-                  </div>
-                </div>
-                {/* Strategy */}
-                <div className="flex flex-col gap-1">
-                  <span className="text-[9px] font-bold text-gray-500 uppercase tracking-[0.1em]">Strategy</span>
-                  <div className="flex items-center justify-between px-2.5 py-2 rounded-xl bg-[#0a0a0a] border border-[#222] cursor-pointer hover:border-gray-500 transition-colors">
-                    <span className="text-white text-[12px] font-semibold">{strategy}</span>
-                    <ChevronDown className="w-3.5 h-3.5 text-gray-500" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* CTA */}
-            <button className="w-full py-4 flex items-center justify-center gap-2 font-bold text-[15px] text-white transition-all hover:opacity-95 active:scale-[0.99] mb-3 font-sans"
-              style={{
-                background: 'linear-gradient(180deg, #025247 0%, #01433a 100%)',
-                border: '1px solid #045a4f',
-                boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.08), 0 4px 12px rgba(0, 0, 0, 0.3)',
-                borderRadius: '16px',
-              }}>
-              Ask Long / Short
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="ml-1 shrink-0">
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </button>
-
-            {/* Chat Input */}
-            <div className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all focus-within:border-gray-500"
-              style={{ background: '#111', border: '1px solid #2a2a2a' }}>
-              <Sparkles className="w-4 h-4 text-[#34d399] shrink-0" />
-              <input type="text" value={input} onChange={e => setInput(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && sendMsg()}
-                placeholder="Message i5 Copilot..."
-                className="flex-1 bg-transparent outline-none text-[12px] text-gray-200 placeholder-gray-600"
-                style={{ background: 'transparent', border: 'none', padding: 0, borderRadius: 0, boxShadow: 'none' }} />
-              <button onClick={() => sendMsg()} disabled={!input.trim()}
-                className="w-7 h-7 flex items-center justify-center rounded-lg transition-all disabled:opacity-30"
-                style={{ background: input.trim() ? '#34d399' : '#111', color: input.trim() ? '#000' : '#666' }}>
-                <Send className="w-3.5 h-3.5" />
-              </button>
-            </div>
-            
-            <div className="mt-2 text-center">
-              <span className="text-[10px] text-gray-600 font-sans tracking-wide">AI may make mistakes. NFA.</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-}
-
-// ─── Main Trade View ─────────────────────────────────────────────────────────
-export function Trade() {
-  const [side, setSide]           = useState<'Long' | 'Short'>('Long');
-  const [orderType, setOrderType] = useState<'MARKET' | 'LIMIT' | 'PRO'>('MARKET');
-  const [copilotOpen, setCopilotOpen] = useState(false);
-
   return (
     <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
-      {/* ── Main Trade View wrapper ── */}
       <div className="h-full bg-[#0a0a0a] text-gray-300 font-mono text-[11px] overflow-hidden flex flex-col pt-2">
 
       {/* ── Top Bar ── */}
       <div className="flex items-center justify-between px-4 pb-2 border-b border-[#222] shrink-0">
-        {/* Left: pair + stats */}
         <div className="flex items-center gap-8">
           <div className="flex items-center gap-2 cursor-pointer group">
             <div className="w-5 h-5 rounded-full bg-[#34d399]/20 flex items-center justify-center border border-[#34d399]/50">
@@ -437,24 +140,10 @@ export function Trade() {
           </div>
         </div>
 
-        {/* Right: Set Alert + Co-Pilot toggle */}
         <div className="flex items-center gap-2 shrink-0">
           <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#333] text-gray-300 hover:text-white hover:border-[#444] transition-all text-[11px] font-semibold">
             <Bell className="w-3 h-3" />
             Set Alert
-          </button>
-          <button
-            onClick={() => setCopilotOpen(v => !v)}
-            className={cn(
-              'flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[11px] font-bold tracking-wide transition-all',
-              copilotOpen
-                ? 'border-[#34d399]/40 text-[#34d399]'
-                : 'bg-[#0f7d6e] border-[#0f7d6e] text-white hover:bg-[#127a6c]'
-            )}
-            style={copilotOpen ? { background: 'rgba(15,125,110,0.15)' } : {}}
-          >
-            <Bot className="w-3 h-3" />
-            Co-Pilot
           </button>
         </div>
       </div>
@@ -626,93 +315,228 @@ export function Trade() {
           </div>
         </div>
 
-        {/* Trade Entry Panel */}
-        <div className="w-[280px] bg-[#0d0d0d] flex flex-col shrink-0 overflow-y-auto no-scrollbar">
-          <div className="p-4 flex gap-2">
-            <button className="flex-1 bg-[#1a1a1a] border border-[#333] hover:border-gray-500 text-white py-2 rounded font-sans text-xs font-semibold tracking-wide transition-colors">Cross</button>
-            <button className="flex-1 bg-[#1a1a1a] border border-[#333] hover:border-gray-500 text-white py-2 rounded font-sans text-xs font-semibold tracking-wide transition-colors">10x</button>
+        {/* Right Panel (Trade Entry / Chat) */}
+        <div className="w-[320px] bg-[#0d0d0d] flex flex-col shrink-0 border-l border-[#222]">
+          {/* Mode Selector */}
+          <div className="flex p-2 gap-1 border-b border-[#222] bg-[#0a0a0a]">
+            {(['autopilot', 'copilot', 'manual'] as const).map(m => {
+              const active = tradeMode === m;
+              const label = m === 'autopilot' ? '15 AI Autopilot' : m === 'copilot' ? 'i5 Copilot' : 'Manual';
+              const icon = m === 'autopilot' ? '⚡' : m === 'copilot' ? '🤖' : '✦';
+              return (
+                <button
+                  key={m}
+                  onClick={() => setTradeMode(m)}
+                  className={cn(
+                    'flex-1 flex flex-col items-center justify-center py-2 rounded-lg transition-all border text-[10px] font-bold tracking-wide gap-1',
+                    active ? 'bg-[#34d399]/10 border-[#34d399]/40 text-[#34d399]' : 'border-transparent text-gray-500 hover:text-white hover:bg-[#111]'
+                  )}
+                >
+                  <span className="text-sm">{icon}</span>
+                  {label}
+                </button>
+              );
+            })}
           </div>
-          <div className="flex border-b border-[#222] px-4 text-xs font-sans font-bold text-gray-500 tracking-wider">
-            {(['MARKET','LIMIT','PRO'] as const).map(t => (
-              <button key={t}
-                onClick={() => setOrderType(t)}
-                className={cn('pb-2 mr-6 transition-colors', orderType === t ? 'text-white border-b-2 border-white' : 'hover:text-white')}>
-                {t}{t === 'PRO' && <ChevronDown className="w-3 h-3 inline ml-0.5" />}
-              </button>
-            ))}
-          </div>
-          <div className="p-4 flex flex-col gap-4">
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-500 uppercase tracking-widest text-[10px]">Available to Trade</span>
-                <span className="text-white font-medium">$0.00</span>
+
+          {tradeMode === 'manual' ? (
+            <div className="flex flex-col flex-1 overflow-y-auto no-scrollbar">
+              <div className="p-4 flex gap-2">
+                <button className="flex-1 bg-[#1a1a1a] border border-[#333] hover:border-gray-500 text-white py-2 rounded font-sans text-xs font-semibold tracking-wide transition-colors">Cross</button>
+                <button className="flex-1 bg-[#1a1a1a] border border-[#333] hover:border-gray-500 text-white py-2 rounded font-sans text-xs font-semibold tracking-wide transition-colors">10x</button>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500 uppercase tracking-widest text-[10px]">Current Position</span>
-                <span className="text-white font-medium">0 HYPE</span>
+              <div className="flex border-b border-[#222] px-4 text-xs font-sans font-bold text-gray-500 tracking-wider">
+                {(['MARKET','LIMIT','PRO'] as const).map(t => (
+                  <button key={t}
+                    onClick={() => setOrderType(t)}
+                    className={cn('pb-2 mr-6 transition-colors', orderType === t ? 'text-white border-b-2 border-white' : 'hover:text-white')}>
+                    {t}{t === 'PRO' && <ChevronDown className="w-3 h-3 inline ml-0.5" />}
+                  </button>
+                ))}
               </div>
-            </div>
-            <div className="flex gap-2">
-              <button onClick={() => setSide('Long')}
-                className={cn('flex-1 py-2 text-sm font-bold rounded transition-colors',
-                  side === 'Long' ? 'bg-[#34d399]/10 text-[#34d399] border border-[#34d399]/30' : 'text-gray-400 border border-transparent hover:text-white')}>
-                Long
-              </button>
-              <button onClick={() => setSide('Short')}
-                className={cn('flex-1 py-2 text-sm font-bold rounded transition-colors',
-                  side === 'Short' ? 'bg-[#fa6432]/10 text-[#fa6432] border border-[#fa6432]/30' : 'text-gray-400 border border-transparent hover:text-white')}>
-                Short
-              </button>
-            </div>
-            <div className="flex p-3 bg-[#111] border border-[#333] rounded items-center focus-within:border-gray-400 transition-colors">
-              <span className="text-gray-500 w-16">Size</span>
-              <input type="text" className="bg-transparent flex-1 outline-none text-right text-white font-medium"
-                placeholder="0.00" style={{ border: 'none', padding: 0, borderRadius: 0 }} />
-              <button className="flex items-center gap-1 text-gray-300 ml-4 pl-4 border-l border-[#333]">
-                USD <ChevronDown className="w-3 h-3" />
-              </button>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="flex-1 h-3 bg-[#1a1a1a] rounded flex items-center relative border border-[#222]">
-                <div className="absolute inset-y-0 left-0 bg-[#fa6432] w-[5%] rounded-l opacity-50" />
-                <div className="absolute left-[5%] -ml-1 w-2 h-4 bg-[#fa6432] rounded-sm" />
-              </div>
-              <div className="bg-[#111] border border-[#333] px-2 py-1 rounded text-gray-400 min-w-[40px] text-center">0%</div>
-            </div>
-            <label className="flex items-center gap-2 text-gray-400 cursor-pointer hover:text-gray-300">
-              <div className="w-3.5 h-3.5 border border-gray-600 rounded-sm bg-[#111]" />
-              <span className="font-sans text-xs tracking-wide">Take Profit / Stop Loss</span>
-            </label>
-            <button className="w-full py-4 flex items-center justify-center gap-2 font-bold font-sans tracking-widest uppercase text-[13px] text-white transition-all hover:opacity-95 active:scale-[0.99] mt-2"
-              style={{
-                background: 'linear-gradient(180deg, #025247 0%, #01433a 100%)',
-                border: '1px solid #045a4f',
-                boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.08), 0 4px 12px rgba(0, 0, 0, 0.3)',
-                borderRadius: '16px',
-              }}>
-              {side} HYPE
-            </button>
-            <div className="space-y-2 mt-2">
-              {[
-                ['Liquidation Price', 'N/A',                    'text-white'],
-                ['Order Value',       '$0.00',                   'text-white'],
-                ['Margin Required',   '$0.00',                   'text-white'],
-                ['Slippage',          'Est: 0.00% / Max 8%',    'text-[#fa6432]'],
-                ['Fees',              '0.0450% / 0.0150%',      'text-white'],
-              ].map(([label, value, cls]) => (
-                <div key={label} className="flex justify-between">
-                  <span className="text-gray-500 uppercase tracking-widest text-[10px]">{label}</span>
-                  <span className={`font-medium ${cls}`}>{value}</span>
+              <div className="p-4 flex flex-col gap-4">
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-500 uppercase tracking-widest text-[10px]">Available to Trade</span>
+                    <span className="text-white font-medium">$0.00</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-500 uppercase tracking-widest text-[10px]">Current Position</span>
+                    <span className="text-white font-medium">0 HYPE</span>
+                  </div>
                 </div>
-              ))}
+                <div className="flex gap-2">
+                  <button onClick={() => setSide('Long')}
+                    className={cn('flex-1 py-2 text-sm font-bold rounded transition-colors',
+                      side === 'Long' ? 'bg-[#34d399]/10 text-[#34d399] border border-[#34d399]/30' : 'text-gray-400 border border-transparent hover:text-white')}>
+                    Long
+                  </button>
+                  <button onClick={() => setSide('Short')}
+                    className={cn('flex-1 py-2 text-sm font-bold rounded transition-colors',
+                      side === 'Short' ? 'bg-[#fa6432]/10 text-[#fa6432] border border-[#fa6432]/30' : 'text-gray-400 border border-transparent hover:text-white')}>
+                    Short
+                  </button>
+                </div>
+                <div className="flex p-3 bg-[#111] border border-[#333] rounded items-center focus-within:border-gray-400 transition-colors">
+                  <span className="text-gray-500 w-16">Size</span>
+                  <input type="text" className="bg-transparent flex-1 outline-none text-right text-white font-medium"
+                    placeholder="0.00" style={{ border: 'none', padding: 0, borderRadius: 0 }} />
+                  <button className="flex items-center gap-1 text-gray-300 ml-4 pl-4 border-l border-[#333]">
+                    USD <ChevronDown className="w-3 h-3" />
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 h-3 bg-[#1a1a1a] rounded flex items-center relative border border-[#222]">
+                    <div className="absolute inset-y-0 left-0 bg-[#fa6432] w-[5%] rounded-l opacity-50" />
+                    <div className="absolute left-[5%] -ml-1 w-2 h-4 bg-[#fa6432] rounded-sm" />
+                  </div>
+                  <div className="bg-[#111] border border-[#333] px-2 py-1 rounded text-gray-400 min-w-[40px] text-center">0%</div>
+                </div>
+                <label className="flex items-center gap-2 text-gray-400 cursor-pointer hover:text-gray-300">
+                  <div className="w-3.5 h-3.5 border border-gray-600 rounded-sm bg-[#111]" />
+                  <span className="font-sans text-xs tracking-wide">Take Profit / Stop Loss</span>
+                </label>
+                <button className="w-full py-4 flex items-center justify-center gap-2 font-bold font-sans tracking-widest uppercase text-[13px] text-white transition-all hover:opacity-95 active:scale-[0.99] mt-2"
+                  style={{
+                    background: 'linear-gradient(180deg, #025247 0%, #01433a 100%)',
+                    border: '1px solid #045a4f',
+                    boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.08), 0 4px 12px rgba(0, 0, 0, 0.3)',
+                    borderRadius: '16px',
+                  }}>
+                  {side} HYPE
+                </button>
+                <div className="space-y-2 mt-2">
+                  {[
+                    ['Liquidation Price', 'N/A',                    'text-white'],
+                    ['Order Value',       '$0.00',                   'text-white'],
+                    ['Margin Required',   '$0.00',                   'text-white'],
+                    ['Slippage',          'Est: 0.00% / Max 8%',    'text-[#fa6432]'],
+                    ['Fees',              '0.0450% / 0.0150%',      'text-white'],
+                  ].map(([label, value, cls]) => (
+                    <div key={label} className="flex justify-between">
+                      <span className="text-gray-500 uppercase tracking-widest text-[10px]">{label}</span>
+                      <span className={`font-medium ${cls}`}>{value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="flex flex-col flex-1 overflow-hidden font-sans">
+              {/* Chat Messages */}
+              <div className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
+                <div className="flex items-center justify-center mb-6">
+                   <span className="px-3 py-1 rounded-full text-[9px] font-bold uppercase tracking-widest text-[#34d399] bg-[#34d399]/10 flex items-center gap-1.5">
+                     <span className="w-1.5 h-1.5 rounded-full bg-[#34d399]" />
+                     Active Session
+                   </span>
+                </div>
+                
+                {messages.map(msg => (
+                  <div key={msg.id} className={cn('flex', msg.role === 'user' ? 'justify-end' : 'justify-start')}>
+                    {msg.role === 'ai' ? (
+                      <div className="flex items-start gap-2.5 max-w-[90%]">
+                        <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 border border-[#34d399]/30"
+                          style={{ background: 'rgba(52,211,153,0.1)' }}>
+                          <Bot className="w-4 h-4 text-[#34d399]" />
+                        </div>
+                        <div className="relative px-3.5 py-2.5 rounded-2xl rounded-tl-sm text-[12px] leading-relaxed shadow-sm bg-[#1a1a1a] border border-[#2a2a2a] text-[#e5e7eb]
+                          before:content-[''] before:absolute before:top-3 before:-left-1.5 before:w-3 before:h-3 before:bg-[#1a1a1a] before:rotate-45 before:border-l before:border-b before:border-[#2a2a2a]">
+                          <div className="font-bold text-[11px] text-[#34d399] mb-1">A&S AI Co-Pilot Online 🟢 —</div>
+                          {msg.content}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="px-3.5 py-2.5 rounded-2xl rounded-tr-sm text-[12px] leading-relaxed text-white shadow-sm max-w-[90%]"
+                        style={{ background: 'rgba(15,125,110,0.8)', border: '1px solid rgba(52,211,153,0.3)' }}>
+                        {msg.content}
+                      </div>
+                    )}
+                  </div>
+                ))}
+                {typing && (
+                  <div className="flex items-start gap-2.5">
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 mt-0.5 border border-[#34d399]/30"
+                      style={{ background: 'rgba(52,211,153,0.1)' }}>
+                      <Bot className="w-4 h-4 text-[#34d399]" />
+                    </div>
+                    <div className="px-4 py-3.5 rounded-2xl rounded-tl-sm flex gap-1.5 items-center bg-[#1a1a1a] border border-[#2a2a2a]">
+                      {[0, 150, 300].map(d => (
+                        <span key={d} className="w-1.5 h-1.5 rounded-full bg-[#34d399] animate-bounce"
+                          style={{ animationDelay: `${d}ms` }} />
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div ref={bottomRef} />
+              </div>
+
+              {/* Bottom Config & Chat Input */}
+              <div className="p-3 border-t border-[#222] bg-[#0d0d0d] shrink-0">
+                {tradeMode === 'copilot' && (
+                  <div className="border border-[#222] rounded-xl p-3 mb-3 bg-[#0d0d0d] relative">
+                    <div className="text-[9px] font-bold text-gray-500 uppercase tracking-wider mb-2.5">
+                      Setup (Optional)
+                    </div>
+                    <div className="grid grid-cols-3 gap-2.5">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[9px] font-bold text-gray-500 uppercase tracking-[0.1em]">Margin</span>
+                        <div className="flex items-center gap-1.5 px-2 py-1.5 rounded bg-[#0a0a0a] border border-[#222] focus-within:border-gray-500 transition-colors">
+                          <span className="text-gray-500 text-[11px] font-bold">$</span>
+                          <input type="number" value={margin} onChange={e => setMargin(e.target.value)}
+                            className="w-full bg-transparent text-white text-[11px] font-semibold outline-none"
+                            style={{ background: 'transparent', border: 'none', padding: 0, borderRadius: 0, boxShadow: 'none' }} />
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[9px] font-bold text-gray-500 uppercase tracking-[0.1em]">Style</span>
+                        <div className="flex items-center justify-between px-2 py-1.5 rounded bg-[#0a0a0a] border border-[#222] cursor-pointer hover:border-gray-500 transition-colors">
+                          <span className="text-white text-[11px] font-semibold">{tradeStyle}</span>
+                          <ChevronDown className="w-3 h-3 text-gray-500" />
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[9px] font-bold text-gray-500 uppercase tracking-[0.1em]">Strategy</span>
+                        <div className="flex items-center justify-between px-2 py-1.5 rounded bg-[#0a0a0a] border border-[#222] cursor-pointer hover:border-gray-500 transition-colors">
+                          <span className="text-white text-[11px] font-semibold">{strategy}</span>
+                          <ChevronDown className="w-3 h-3 text-gray-500" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
+                {tradeMode === 'autopilot' && (
+                  <button className="w-full py-3 flex items-center justify-center gap-2 font-bold text-[13px] text-white transition-all hover:opacity-95 active:scale-[0.99] mb-3 rounded-xl"
+                    style={{
+                      background: 'linear-gradient(180deg, #025247 0%, #01433a 100%)',
+                      border: '1px solid #045a4f',
+                      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.08), 0 4px 12px rgba(0, 0, 0, 0.3)',
+                    }}>
+                    Start Autopilot <Bot className="w-4 h-4 ml-1" />
+                  </button>
+                )}
+
+                <div className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all focus-within:border-gray-500"
+                  style={{ background: '#111', border: '1px solid #2a2a2a' }}>
+                  <Sparkles className="w-4 h-4 text-[#34d399] shrink-0" />
+                  <input type="text" value={input} onChange={e => setInput(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && sendMsg()}
+                    placeholder="Message AI..."
+                    className="flex-1 bg-transparent outline-none text-[12px] text-gray-200 placeholder-gray-600"
+                    style={{ background: 'transparent', border: 'none', padding: 0, borderRadius: 0, boxShadow: 'none' }} />
+                  <button onClick={() => sendMsg()} disabled={!input.trim()}
+                    className="w-7 h-7 flex items-center justify-center rounded-lg transition-all disabled:opacity-30"
+                    style={{ background: input.trim() ? '#34d399' : '#111', color: input.trim() ? '#000' : '#666' }}>
+                    <Send className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
       </div>
-
-      {/* ── AI Co-Pilot overlay (absolute, slides from right) ── */}
-      <CopilotOverlay open={copilotOpen} onClose={() => setCopilotOpen(false)} />
     </div>
   );
 }

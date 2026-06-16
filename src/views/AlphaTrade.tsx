@@ -92,7 +92,7 @@ export function AlphaTrade() {
               <div className="absolute w-[60%] h-[60%] bg-[#34d399] rounded-full blur-[140px] opacity-[0.08] pointer-events-none" />
               
               <Image 
-                src="/alpha-trade-globe.png" 
+                src="/Images/Right_Graphic_Column.png" 
                 alt="Alpha Trade Network Globe" 
                 width={480} 
                 height={480}
