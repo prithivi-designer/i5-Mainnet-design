@@ -167,7 +167,7 @@ export function Tasks() {
   const badgesProgressPercent = Math.round((completedBadgesCount / BADGES.length) * 100);
 
   return (
-    <div className="flex-1 flex flex-col overflow-y-auto bg-[#050505] relative">
+    <div className="h-full flex-1 flex flex-col overflow-y-auto bg-[#050505] relative">
       {/* Background glow effects */}
       <div className="absolute top-0 left-0 w-full h-[400px] bg-gradient-to-b from-[#34d399]/5 to-transparent pointer-events-none" />
       <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] bg-[#34d399]/10 blur-[150px] rounded-full pointer-events-none" />
