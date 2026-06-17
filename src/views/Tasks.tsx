@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Target, CheckCircle2, Circle, Trophy, Star, Gift, Clock, ShieldCheck, TrendingUp, DollarSign } from 'lucide-react';
+import { Target, CheckCircle2, Circle, Trophy, Star, Gift, Clock, ShieldCheck, TrendingUp, DollarSign, Award, Lock, Activity } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Task {
@@ -63,8 +63,71 @@ const WEEKLY_TASKS: Task[] = [
   { id: 'w15', title: 'Reach Top 100 on Arena Leaderboard', xp: 10000, completed: false },
 ];
 
+const BADGES = [
+  {
+    id: 'b1',
+    name: 'Scout',
+    description: 'Level up past the novice tiers by accumulating EP.',
+    requirement: 'Reach 10,000 EP',
+    unlocked: true,
+    icon: '/Images/Badges/scout_badge.png',
+    color: '#00d8ff',
+    rarity: 'Legendary' as const,
+  },
+  {
+    id: 'b2',
+    name: 'First Blood',
+    description: 'Execute your first trade of any size on the platform.',
+    requirement: 'Complete 1 trade',
+    unlocked: true,
+    icon: Target,
+    color: '#34d399',
+    rarity: 'Common' as const,
+  },
+  {
+    id: 'b3',
+    name: 'Autopilot Copilot',
+    description: 'Execute a trade following an AI Trading signal.',
+    requirement: '1 AI signal trade',
+    unlocked: true,
+    icon: Activity,
+    color: '#8b5cf6',
+    rarity: 'Rare' as const,
+  },
+  {
+    id: 'b4',
+    name: 'Streak Master',
+    description: 'Maintain a daily trading streak for a full week.',
+    requirement: '7-day trading streak',
+    unlocked: true,
+    icon: Star,
+    color: '#facc15',
+    rarity: 'Epic' as const,
+  },
+  {
+    id: 'b5',
+    name: 'Whale Rider',
+    description: 'Follow a whale address and copy their trade.',
+    requirement: '1 Whale copy trade',
+    unlocked: false,
+    icon: Trophy,
+    color: '#fa6432',
+    rarity: 'Epic' as const,
+  },
+  {
+    id: 'b6',
+    name: 'Centurion Trader',
+    description: 'Execute 100 successful trades on the platform.',
+    requirement: '100 total trades',
+    unlocked: false,
+    icon: ShieldCheck,
+    color: '#3ae099',
+    rarity: 'Legendary' as const,
+  },
+];
+
 export function Tasks() {
-  const [activeTab, setActiveTab] = useState<'daily' | 'weekly' | 'referrals'>('daily');
+  const [activeTab, setActiveTab] = useState<'daily' | 'weekly' | 'referrals' | 'badges'>('daily');
 
   const tasks = activeTab === 'daily' ? DAILY_TASKS : WEEKLY_TASKS;
   const completedCount = tasks.filter(t => t.completed).length;
@@ -119,46 +182,61 @@ export function Tasks() {
 
         {/* Tabs and Progress */}
         <div className="mb-6 card-base p-1 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex w-full md:w-auto p-1 bg-[#050505] rounded-xl border border-[#1a1a1a]">
+          <div className="flex flex-wrap w-full md:w-auto p-1 bg-[#050505] rounded-xl border border-[#1a1a1a] gap-1">
             <button
               onClick={() => setActiveTab('daily')}
               className={cn(
-                "flex-1 md:w-[140px] py-2.5 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2",
+                "flex-1 md:w-[110px] lg:w-[125px] py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
                 activeTab === 'daily' ? "bg-[#34d399]/10 text-[#34d399] shadow-sm" : "text-gray-500 hover:text-white"
               )}
             >
-              <Clock className="w-4 h-4" /> Daily Tasks
+              <Clock className="w-3.5 h-3.5" /> Daily Tasks
             </button>
             <button
               onClick={() => setActiveTab('weekly')}
               className={cn(
-                "flex-1 md:w-[140px] py-2.5 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2",
+                "flex-1 md:w-[110px] lg:w-[125px] py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
                 activeTab === 'weekly' ? "bg-[#34d399]/10 text-[#34d399] shadow-sm" : "text-gray-500 hover:text-white"
               )}
             >
-              <ShieldCheck className="w-4 h-4" /> Weekly Tasks
+              <ShieldCheck className="w-3.5 h-3.5" /> Weekly Tasks
             </button>
             <button
               onClick={() => setActiveTab('referrals')}
               className={cn(
-                "flex-1 md:w-[140px] py-2.5 text-sm font-bold rounded-lg transition-all flex items-center justify-center gap-2",
+                "flex-1 md:w-[110px] lg:w-[125px] py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
                 activeTab === 'referrals' ? "bg-[#34d399]/10 text-[#34d399] shadow-sm" : "text-gray-500 hover:text-white"
               )}
             >
-              <Gift className="w-4 h-4" /> Referrals
+              <Gift className="w-3.5 h-3.5" /> Referrals
+            </button>
+            <button
+              onClick={() => setActiveTab('badges')}
+              className={cn(
+                "flex-1 md:w-[110px] lg:w-[125px] py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
+                activeTab === 'badges' ? "bg-[#34d399]/10 text-[#34d399] shadow-sm" : "text-gray-500 hover:text-white"
+              )}
+            >
+              <Award className="w-3.5 h-3.5" /> Badges
             </button>
           </div>
 
-          <div className="w-full md:w-[300px] flex flex-col gap-2 px-4 md:px-0">
+          <div className="w-full md:w-[260px] flex flex-col gap-2 px-4 md:px-0">
             <div className="flex justify-between text-xs font-bold">
               <span className="text-gray-400 uppercase tracking-wider">Progress</span>
-              <span className="text-[#34d399]">{completedCount} / {tasks.length} ({progressPercent}%)</span>
+              {activeTab === 'badges' ? (
+                <span className="text-[#34d399]">4 / 6 (67%)</span>
+              ) : activeTab === 'referrals' ? (
+                <span className="text-[#34d399]">0%</span>
+              ) : (
+                <span className="text-[#34d399]">{completedCount} / {tasks.length} ({progressPercent}%)</span>
+              )}
             </div>
             <div className="w-full h-2.5 bg-[#111] rounded-full overflow-hidden border border-[#222]">
               <div 
                 className="h-full rounded-full transition-all duration-1000 ease-out relative"
                 style={{ 
-                  width: `${progressPercent}%`,
+                  width: `${activeTab === 'badges' ? 67 : activeTab === 'referrals' ? 0 : progressPercent}%`,
                   background: 'linear-gradient(90deg, #10b981, #34d399)'
                 }}
               >
@@ -225,6 +303,133 @@ export function Tasks() {
                 </p>
               </div>
             </div>
+          </div>
+        ) : activeTab === 'badges' ? (
+          <div className="space-y-8 pb-12 mt-4">
+            
+            {/* Stats header card */}
+            <div className="card-base p-6 border border-[#222] bg-[#0c0c0c] flex flex-col md:flex-row items-center justify-between gap-6">
+              <div>
+                <h3 className="text-xl font-bold text-white mb-1">Your Achievements & Badges</h3>
+                <p className="text-sm text-gray-400">Unlock unique status badges by completing milestones and trading.</p>
+              </div>
+              <div className="flex items-center gap-6">
+                <div>
+                  <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Badges Unlocked</div>
+                  <div className="text-3xl font-black text-[#34d399] font-mono">4 <span className="text-gray-600 text-lg">/ 6</span></div>
+                </div>
+                <div>
+                  <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Completion</div>
+                  <div className="text-3xl font-black text-white font-mono">67%</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Badges grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {BADGES.map((badge) => {
+                const BadgeIcon = badge.icon;
+                return (
+                  <div 
+                    key={badge.id}
+                    className={cn(
+                      "card-base p-6 flex flex-col items-center text-center transition-all duration-300 relative group overflow-hidden border",
+                      badge.unlocked 
+                        ? "border-[#15181C] bg-[#0b0e13]/40 hover:border-[#34d399]/30 hover:shadow-[0_0_20px_rgba(52,211,153,0.05)]" 
+                        : "border-[#15181C]/50 bg-[#0a0a0a]/20 opacity-55 hover:opacity-75"
+                    )}
+                  >
+                    
+                    {/* Glow effect for unlocked */}
+                    {badge.unlocked && (
+                      <div 
+                        className="absolute top-[-20%] left-[-20%] w-[50%] h-[50%] blur-[40px] rounded-full opacity-20 pointer-events-none transition-transform group-hover:scale-125"
+                        style={{ backgroundColor: badge.color }}
+                      />
+                    )}
+
+                    {/* Badge Icon container */}
+                    <div className="relative mb-5 flex items-center justify-center">
+                      {typeof BadgeIcon === 'string' ? (
+                        <div 
+                          className="w-24 h-24 rounded-full flex items-center justify-center p-2 transition-transform duration-300 group-hover:scale-105"
+                          style={{
+                            background: badge.unlocked ? `radial-gradient(circle, ${badge.color}15 0%, transparent 70%)` : 'none',
+                          }}
+                        >
+                          <img 
+                            src={BadgeIcon} 
+                            alt={badge.name} 
+                            className={cn(
+                              "w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(0,216,255,0.4)]",
+                              !badge.unlocked && "grayscale opacity-40"
+                            )} 
+                          />
+                        </div>
+                      ) : (
+                        <div 
+                          className="w-20 h-20 rounded-full flex items-center justify-center border transition-all duration-300 group-hover:scale-105"
+                          style={{
+                            backgroundColor: badge.unlocked ? `${badge.color}10` : '#111',
+                            borderColor: badge.unlocked ? `${badge.color}40` : '#222',
+                            boxShadow: badge.unlocked ? `0 0 15px ${badge.color}15` : 'none'
+                          }}
+                        >
+                          <BadgeIcon 
+                            className="w-8 h-8 transition-transform duration-300"
+                            style={{ color: badge.unlocked ? badge.color : '#555' }}
+                          />
+                        </div>
+                      )}
+
+                      {/* Lock indicator */}
+                      {!badge.unlocked && (
+                        <div className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-[#111] border border-[#222] flex items-center justify-center shadow-lg">
+                          <Lock className="w-3.5 h-3.5 text-gray-500" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Details */}
+                    <div className="relative z-10 flex-1 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-center gap-2 mb-2">
+                          <span 
+                            className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
+                            style={{ 
+                              backgroundColor: badge.unlocked ? `${badge.color}15` : '#111',
+                              color: badge.unlocked ? badge.color : '#666'
+                            }}
+                          >
+                            {badge.rarity}
+                          </span>
+                          {badge.unlocked && (
+                            <span className="text-[10px] text-gray-500 font-medium">Unlocked</span>
+                          )}
+                        </div>
+                        <h4 className="text-lg font-bold text-white mb-2 tracking-tight group-hover:text-white transition-colors">
+                          {badge.name}
+                        </h4>
+                        <p className="text-xs text-gray-400 leading-relaxed px-2">
+                          {badge.description}
+                        </p>
+                      </div>
+
+                      {/* Requirement/Footer */}
+                      <div className="mt-4 pt-3 border-t border-[#15181C] w-full text-[11px] font-mono text-gray-500">
+                        {badge.unlocked ? (
+                          <span className="text-[#34d399]">Completed</span>
+                        ) : (
+                          <span>Req: {badge.requirement}</span>
+                        )}
+                      </div>
+                    </div>
+
+                  </div>
+                );
+              })}
+            </div>
+
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-12">
