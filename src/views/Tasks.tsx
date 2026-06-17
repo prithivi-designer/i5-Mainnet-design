@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Target, CheckCircle2, Circle, Trophy, Star, Gift, Clock, ShieldCheck, TrendingUp, DollarSign, Award, Lock, Activity } from 'lucide-react';
+import { Target, CheckCircle2, Circle, Trophy, Star, Gift, Clock, ShieldCheck, TrendingUp, DollarSign, Award, Lock, Activity, Flame, Layers, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Task {
@@ -76,47 +76,77 @@ const BADGES = [
   },
   {
     id: 'b2',
-    name: 'First Blood',
+    name: 'Speculator',
     description: 'Execute your first trade of any size on the platform.',
     requirement: 'Complete 1 trade',
     unlocked: true,
-    icon: Target,
+    icon: TrendingUp,
     color: '#34d399',
     rarity: 'Common' as const,
   },
   {
     id: 'b3',
-    name: 'Autopilot Copilot',
+    name: 'Risk Taker',
+    description: 'Open a position with leverage greater than 10x.',
+    requirement: '10x+ leverage trade',
+    unlocked: true,
+    icon: Flame,
+    color: '#fa6432',
+    rarity: 'Common' as const,
+  },
+  {
+    id: 'b4',
+    name: 'Opportunity Hunter',
     description: 'Execute a trade following an AI Trading signal.',
     requirement: '1 AI signal trade',
     unlocked: true,
-    icon: Activity,
+    icon: Target,
     color: '#8b5cf6',
     rarity: 'Rare' as const,
   },
   {
-    id: 'b4',
-    name: 'Streak Master',
-    description: 'Maintain a daily trading streak for a full week.',
-    requirement: '7-day trading streak',
+    id: 'b5',
+    name: 'Position Architect',
+    description: 'Set both Stop Loss and Take Profit orders on a single position.',
+    requirement: 'Bracket order set',
     unlocked: true,
-    icon: Star,
+    icon: Layers,
+    color: '#a8a29e',
+    rarity: 'Rare' as const,
+  },
+  {
+    id: 'b6',
+    name: 'Capital Commander',
+    description: 'Reach a lifetime trading volume of over $50,000.',
+    requirement: '$50,000 trading volume',
+    unlocked: true,
+    icon: Shield,
     color: '#facc15',
     rarity: 'Epic' as const,
   },
   {
-    id: 'b5',
-    name: 'Whale Rider',
-    description: 'Follow a whale address and copy their trade.',
-    requirement: '1 Whale copy trade',
+    id: 'b7',
+    name: 'Volatility Rider',
+    description: 'Complete a profitable trade during high-volatility market events.',
+    requirement: '1 high-vol volatility trade',
     unlocked: false,
-    icon: Trophy,
-    color: '#fa6432',
+    icon: Activity,
+    color: '#ec4899',
     rarity: 'Epic' as const,
   },
   {
-    id: 'b6',
-    name: 'Centurion Trader',
+    id: 'b8',
+    name: 'Alpha Generator',
+    description: 'Maintain a weekly profit percentage higher than 95% of active traders.',
+    requirement: 'Top 5% weekly PnL',
+    unlocked: false,
+    icon: Trophy,
+    color: '#10b981',
+    rarity: 'Legendary' as const,
+  },
+  {
+    id: 'b9',
+    name: 'Yield Conqueror',
     description: 'Execute 100 successful trades on the platform.',
     requirement: '100 total trades',
     unlocked: false,
@@ -132,6 +162,9 @@ export function Tasks() {
   const tasks = activeTab === 'daily' ? DAILY_TASKS : WEEKLY_TASKS;
   const completedCount = tasks.filter(t => t.completed).length;
   const progressPercent = Math.round((completedCount / tasks.length) * 100);
+
+  const completedBadgesCount = BADGES.filter(b => b.unlocked).length;
+  const badgesProgressPercent = Math.round((completedBadgesCount / BADGES.length) * 100);
 
   return (
     <div className="flex-1 flex flex-col overflow-y-auto no-scrollbar bg-[#050505] relative">
@@ -225,7 +258,7 @@ export function Tasks() {
             <div className="flex justify-between text-xs font-bold">
               <span className="text-gray-400 uppercase tracking-wider">Progress</span>
               {activeTab === 'badges' ? (
-                <span className="text-[#34d399]">4 / 6 (67%)</span>
+                <span className="text-[#34d399]">{completedBadgesCount} / {BADGES.length} ({badgesProgressPercent}%)</span>
               ) : activeTab === 'referrals' ? (
                 <span className="text-[#34d399]">0%</span>
               ) : (
@@ -236,7 +269,7 @@ export function Tasks() {
               <div 
                 className="h-full rounded-full transition-all duration-1000 ease-out relative"
                 style={{ 
-                  width: `${activeTab === 'badges' ? 67 : activeTab === 'referrals' ? 0 : progressPercent}%`,
+                  width: `${activeTab === 'badges' ? badgesProgressPercent : activeTab === 'referrals' ? 0 : progressPercent}%`,
                   background: 'linear-gradient(90deg, #10b981, #34d399)'
                 }}
               >
@@ -316,11 +349,11 @@ export function Tasks() {
               <div className="flex items-center gap-6">
                 <div>
                   <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Badges Unlocked</div>
-                  <div className="text-3xl font-black text-[#34d399] font-mono">4 <span className="text-gray-600 text-lg">/ 6</span></div>
+                  <div className="text-3xl font-black text-[#34d399] font-mono">{completedBadgesCount} <span className="text-gray-600 text-lg">/ {BADGES.length}</span></div>
                 </div>
                 <div>
                   <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Completion</div>
-                  <div className="text-3xl font-black text-white font-mono">67%</div>
+                  <div className="text-3xl font-black text-white font-mono">{badgesProgressPercent}%</div>
                 </div>
               </div>
             </div>
