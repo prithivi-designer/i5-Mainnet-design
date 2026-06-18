@@ -101,7 +101,7 @@ export function Marketplace() {
                         backgroundColor: agent.iconBg, 
                         borderColor: agent.iconBorder 
                       }} 
-                      className="w-14 h-14 rounded-2xl flex items-center justify-center border"
+                      className="w-14 h-14 icon-squircle shrink-0"
                     >
                       <Icon style={{ color: agent.iconColor }} className="w-6 h-6" />
                     </div>

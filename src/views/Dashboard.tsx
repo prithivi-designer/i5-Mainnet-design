@@ -4,7 +4,7 @@ import React from 'react';
 import { 
   Bell, Database, ChevronRight, Flame, 
   CheckCircle2, Circle, Gift, Trophy, ArrowRight, 
-  Users, Copy, Shield, ChevronDown
+  Users, Copy, Shield, ChevronDown, Calendar
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { ResponsiveContainer, LineChart, Line } from 'recharts';
@@ -41,8 +41,10 @@ export function Dashboard() {
           
           {/* Trading points */}
           <div className="card-base p-5 flex flex-col justify-between relative overflow-hidden">
-             <div className="flex items-center gap-3 mb-2 z-10">
-                <Bell className="w-5 h-5 text-[#34d399]" />
+             <div className="flex items-center gap-4 mb-2 z-10">
+                <div className="w-10 h-10 icon-squircle shrink-0">
+                   <Bell className="w-5 h-5 text-[#34d399]" />
+                </div>
                 <span className="font-semibold text-sm">Trading points</span>
              </div>
              <div className="text-4xl font-bold font-mono z-10 mb-1">23,456</div>
@@ -60,8 +62,10 @@ export function Dashboard() {
 
           {/* Season points */}
           <div className="card-base p-5 flex flex-col justify-between relative overflow-hidden">
-             <div className="flex items-center gap-3 mb-2 z-10">
-                <Database className="w-5 h-5 text-[#34d399]" />
+             <div className="flex items-center gap-4 mb-2 z-10">
+                <div className="w-10 h-10 icon-squircle shrink-0">
+                   <Database className="w-5 h-5 text-[#34d399]" />
+                </div>
                 <span className="font-semibold text-sm">Season points</span>
              </div>
              <div className="text-4xl font-bold font-mono z-10 mb-1">14,765</div>
@@ -122,18 +126,16 @@ export function Dashboard() {
               <div className="card-base overflow-hidden flex flex-col">
                  {/* Header */}
                  <div className="p-5 border-b border-[#1a2b30] flex justify-between items-center">
-                    <div className="flex items-center gap-3">
-                       <div className="w-8 h-8 rounded-lg bg-teal-500/10 flex items-center justify-center border border-teal-500/20">
-                          <CheckCircle2 className="w-4 h-4 text-[#34d399]" />
+                    <div className="flex items-center gap-4">
+                       <div className="w-14 h-14 icon-squircle shrink-0">
+                          <Calendar className="w-6 h-6 text-[#34d399]" />
                        </div>
                        <div>
-                          <h2 className="text-lg font-bold">Trading Tasks</h2>
-                          <p className="text-xs text-gray-400 mt-0.5">Complete tasks to earn EP and level up faster</p>
+                          <h2 className="text-2xl font-bold">Daily Tasks</h2>
+                          <p className="text-sm text-gray-400 mt-0.5">Complete tasks to earn extra rewards</p>
                        </div>
                     </div>
-                    <div className="text-xs font-medium flex items-center text-teal-400 cursor-pointer hover:underline">
-                      1/4 <ChevronRight className="w-4 h-4 ml-1" />
-                    </div>
+
                  </div>
 
                  {/* Featured Task */}
@@ -141,7 +143,7 @@ export function Dashboard() {
                     <div className="text-[10px] font-bold text-teal-400 uppercase tracking-widest mb-3">Featured Task</div>
                     <div className="relative bg-gradient-to-r from-[#112420] to-[#0c1a17] border border-teal-500/30 rounded-xl p-4 flex flex-col sm:flex-row items-center justify-between shadow-[0_0_20px_rgba(20,184,166,0.05)]">
                        <div className="flex items-center gap-4 mb-4 sm:mb-0">
-                          <div className="w-12 h-12 rounded-full bg-teal-500/20 flex items-center justify-center border border-teal-500/40 shrink-0 shadow-[0_0_10px_rgba(20,184,166,0.2)]">
+                          <div className="w-12 h-12 icon-squircle shrink-0">
                              <div className="text-teal-400 font-bold text-xl font-mono">₿</div>
                           </div>
                           <div>
@@ -199,9 +201,7 @@ export function Dashboard() {
                              <button className="px-4 py-1.5 btn-primary text-xs">Claim</button>
                           </div>
                        </div>
-                       <button className="w-full mt-6 py-2.5 text-xs text-gray-400 hover:text-gray-200 border border-[#1a2b30] rounded-lg transition-colors flex items-center justify-center gap-1">
-                          View 7 More Daily Tasks <ChevronDown className="w-3 h-3" />
-                       </button>
+
                     </div>
 
                     {/* Weekly Tasks */}
@@ -242,16 +242,14 @@ export function Dashboard() {
                              <button className="px-4 py-1.5 btn-secondary text-xs w-[62px]">Go</button>
                           </div>
                        </div>
-                       <button className="w-full mt-6 py-2.5 text-xs text-gray-400 hover:text-gray-200 border border-[#1a2b30] rounded-lg transition-colors flex items-center justify-center gap-1">
-                          View 3 More Weekly Tasks <ChevronDown className="w-3 h-3" />
-                       </button>
+
                     </div>
                  </div>
 
                  {/* Bottom Callout */}
                  <div className="p-5 bg-[#0a0f12] border-t border-[#1a2b30] flex flex-col sm:flex-row items-center justify-between gap-4">
                     <div className="flex items-center gap-4">
-                       <div className="w-12 h-12 rounded-xl bg-teal-500/10 flex items-center justify-center border border-teal-500/20 shrink-0">
+                       <div className="w-12 h-12 icon-squircle shrink-0">
                           <Gift className="w-6 h-6 text-[#34d399]" />
                        </div>
                        <div>
@@ -335,7 +333,7 @@ export function Dashboard() {
               <div className="card-base overflow-hidden flex flex-col lg:flex-1 lg:min-h-0">
                  <div className="p-5 flex justify-between items-center border-b border-[#1a2b30] shrink-0">
                     <div className="flex items-center gap-2.5">
-                       <div className="w-8 h-8 rounded-full bg-teal-500/10 flex items-center justify-center border border-teal-500/20">
+                       <div className="w-8 h-8 icon-squircle shrink-0">
                           <Trophy className="w-4 h-4 text-teal-400" />
                        </div>
                        <h2 className="font-bold text-lg">Top Champions</h2>

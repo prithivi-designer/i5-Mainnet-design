@@ -70,8 +70,8 @@ export function Pro() {
   return (
     <div className="h-full overflow-y-auto p-8 max-w-6xl mx-auto">
       <div className="flex flex-col items-center mb-12 text-center">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-purple to-primary flex items-center justify-center mb-6 shadow-xl shadow-primary/20">
-          <Zap className="w-8 h-8 text-white" />
+        <div className="w-16 h-16 icon-squircle mb-6 shadow-xl shadow-teal-500/10">
+          <Zap className="w-8 h-8 text-[#34d399]" fill="currentColor" />
         </div>
         <h1 className="text-4xl font-bold mb-4 tracking-tight">Upgrade Your Agent</h1>
         <p className="text-lg text-muted-foreground max-w-2xl">

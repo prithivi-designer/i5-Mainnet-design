@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Target, CheckCircle2, Circle, Trophy, Star, Gift, Clock, ShieldCheck, TrendingUp, DollarSign, Award, Lock, Activity, Flame, Layers, Shield } from 'lucide-react';
+import { Target, CheckCircle2, Circle, Trophy, Star, Gift, Clock, ShieldCheck, TrendingUp, DollarSign, Award, Lock, Activity, Flame, Layers, Shield, ChevronRight, ChevronDown, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Task {
@@ -166,6 +166,11 @@ export function Tasks() {
   const completedBadgesCount = BADGES.filter(b => b.unlocked).length;
   const badgesProgressPercent = Math.round((completedBadgesCount / BADGES.length) * 100);
 
+  // Badge Journey Y positions for connecting lines
+  const Y1 = 76;
+  const Y2 = 298;
+  const Y3 = 520;
+
   return (
     <div className="h-full flex-1 flex flex-col overflow-y-auto bg-[#050505] relative">
       {/* Background glow effects */}
@@ -175,52 +180,55 @@ export function Tasks() {
       <div className="max-w-5xl w-full mx-auto p-6 md:p-8 relative z-10 flex-1 flex flex-col font-sans">
         
         {/* Header Section */}
-        <div className="mb-10 flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
-          <div>
-            <div className="flex items-center gap-2.5 mb-2">
-              <div className="w-10 h-10 rounded-xl bg-[#34d399]/10 border border-[#34d399]/20 flex items-center justify-center">
-                <Target className="w-5 h-5 text-[#34d399]" />
-              </div>
-              <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-[#e8e8e8] to-[#999] tracking-tight">
+        <div className="mb-8 flex flex-col xl:flex-row items-start xl:items-start justify-between gap-6">
+          <div className="max-w-xl">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-3 h-3 rounded-full bg-[#00e599] shadow-[0_0_10px_#00e599]" />
+              <h1 className="text-3xl md:text-[32px] font-black text-white tracking-tight leading-none">
                 Missions & Referrals
               </h1>
             </div>
-            <p className="text-gray-400 text-[15px] max-w-lg mt-3 leading-relaxed">
+            <p className="text-[#a0a0a0] text-[15px] leading-relaxed">
               Complete your daily and weekly trading tasks to earn XP. Accumulate XP to unlock premium tiers, fee discounts, and exclusive AI agent tools, and earn up to 70% fee share by referring users.
             </p>
           </div>
           
-          {/* Quick Stats */}
-          <div className="flex items-center gap-4 bg-[#0a0a0a] border border-[#1a1a1a] p-3 rounded-2xl shadow-xl">
-            <div className="flex items-center gap-3 px-3 border-r border-[#222]">
-              <div className="w-8 h-8 rounded-full bg-[#fbbf24]/10 flex items-center justify-center">
-                <Star className="w-4 h-4 text-[#fbbf24]" />
+          {/* Quick Stats - Distinct Cards */}
+          <div className="flex flex-col sm:flex-row items-center gap-4 w-full xl:w-auto">
+            {/* Total XP Card */}
+            <div className="flex items-center gap-4 bg-[#0a0c0f]/80 backdrop-blur-md border border-[#1a1f26] px-5 py-4 rounded-2xl w-full sm:w-[220px]">
+              <div className="w-12 h-12 rounded-full border-2 border-[#fbbf24]/30 flex items-center justify-center shrink-0">
+                <Star className="w-5 h-5 text-[#fbbf24]" />
               </div>
               <div>
-                <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Total XP</div>
-                <div className="text-white font-bold text-lg">12,450</div>
+                <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-0.5">Total XP</div>
+                <div className="text-white font-bold text-xl leading-none">12,450</div>
               </div>
             </div>
-            <div className="flex items-center gap-3 px-3">
-              <div className="w-8 h-8 rounded-full bg-[#34d399]/10 flex items-center justify-center">
-                <Trophy className="w-4 h-4 text-[#34d399]" />
+
+            {/* Current Tier Card */}
+            <div className="flex items-center gap-4 bg-[#0a0c0f]/80 backdrop-blur-md border border-[#1a1f26] px-5 py-4 rounded-2xl w-full sm:w-[220px]">
+              <div className="w-12 h-12 rounded-full border-2 border-[#34d399]/30 flex items-center justify-center shrink-0">
+                <Trophy className="w-5 h-5 text-[#34d399]" />
               </div>
               <div>
-                <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Current Tier</div>
-                <div className="text-white font-bold text-lg">Pro Trader</div>
+                <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-0.5">Current Tier</div>
+                <div className="text-white font-bold text-xl leading-none">Pro Trader</div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Tabs and Progress */}
-        <div className="mb-6 card-base p-1 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex flex-wrap w-full md:w-auto p-1 bg-[#050505] rounded-xl border border-[#1a1a1a] gap-1">
+        <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-6">
+          
+          {/* Navigation Tabs */}
+          <div className="flex w-full md:w-auto p-1 bg-transparent rounded-[14px] border border-[#1a1f26] gap-1">
             <button
               onClick={() => setActiveTab('daily')}
               className={cn(
-                "flex-1 md:w-[110px] lg:w-[125px] py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
-                activeTab === 'daily' ? "bg-[#34d399]/10 text-[#34d399] shadow-sm" : "text-gray-500 hover:text-white"
+                "flex-1 md:w-[110px] py-2.5 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
+                activeTab === 'daily' ? "bg-[#34d399]/10 text-[#34d399]" : "text-gray-400 hover:text-white"
               )}
             >
               <Clock className="w-3.5 h-3.5" /> Daily Tasks
@@ -228,8 +236,8 @@ export function Tasks() {
             <button
               onClick={() => setActiveTab('weekly')}
               className={cn(
-                "flex-1 md:w-[110px] lg:w-[125px] py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
-                activeTab === 'weekly' ? "bg-[#34d399]/10 text-[#34d399] shadow-sm" : "text-gray-500 hover:text-white"
+                "flex-1 md:w-[110px] py-2.5 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
+                activeTab === 'weekly' ? "bg-[#34d399]/10 text-[#34d399]" : "text-gray-400 hover:text-white"
               )}
             >
               <ShieldCheck className="w-3.5 h-3.5" /> Weekly Tasks
@@ -237,8 +245,8 @@ export function Tasks() {
             <button
               onClick={() => setActiveTab('referrals')}
               className={cn(
-                "flex-1 md:w-[110px] lg:w-[125px] py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
-                activeTab === 'referrals' ? "bg-[#34d399]/10 text-[#34d399] shadow-sm" : "text-gray-500 hover:text-white"
+                "flex-1 md:w-[110px] py-2.5 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
+                activeTab === 'referrals' ? "bg-[#34d399]/10 text-[#34d399]" : "text-gray-400 hover:text-white"
               )}
             >
               <Gift className="w-3.5 h-3.5" /> Referrals
@@ -246,23 +254,24 @@ export function Tasks() {
             <button
               onClick={() => setActiveTab('badges')}
               className={cn(
-                "flex-1 md:w-[110px] lg:w-[125px] py-2.5 text-xs font-bold rounded-lg transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
-                activeTab === 'badges' ? "bg-[#34d399]/10 text-[#34d399] shadow-sm" : "text-gray-500 hover:text-white"
+                "flex-1 md:w-[110px] py-2.5 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
+                activeTab === 'badges' ? "border border-[#00e599]/30 bg-[#00e599]/10 text-[#00e599]" : "text-gray-400 hover:text-white"
               )}
             >
               <Award className="w-3.5 h-3.5" /> Badges
             </button>
           </div>
 
-          <div className="w-full md:w-[260px] flex flex-col gap-2 px-4 md:px-0">
-            <div className="flex justify-between text-xs font-bold">
-              <span className="text-gray-400 uppercase tracking-wider">Progress</span>
+          {/* Progress Bar aligned to the right */}
+          <div className="w-full md:w-[320px] flex flex-col gap-2 relative">
+            <div className="flex justify-between text-xs font-bold items-center mb-1">
+              <span className="text-gray-500 uppercase tracking-widest text-[10px]">Progress</span>
               {activeTab === 'badges' ? (
-                <span className="text-[#34d399]">{completedBadgesCount} / {BADGES.length} ({badgesProgressPercent}%)</span>
+                <span className="text-[#00e599] font-mono">{completedBadgesCount} / {BADGES.length} ({badgesProgressPercent}%)</span>
               ) : activeTab === 'referrals' ? (
-                <span className="text-[#34d399]">0%</span>
+                <span className="text-[#00e599] font-mono">0%</span>
               ) : (
-                <span className="text-[#34d399]">{completedCount} / {tasks.length} ({progressPercent}%)</span>
+                <span className="text-[#00e599] font-mono">{completedCount} / {tasks.length} ({progressPercent}%)</span>
               )}
             </div>
             <div className="w-full h-2.5 bg-[#111] rounded-full overflow-hidden border border-[#222]">
@@ -270,10 +279,10 @@ export function Tasks() {
                 className="h-full rounded-full transition-all duration-1000 ease-out relative"
                 style={{ 
                   width: `${activeTab === 'badges' ? badgesProgressPercent : activeTab === 'referrals' ? 0 : progressPercent}%`,
-                  background: 'linear-gradient(90deg, #10b981, #34d399)'
+                  background: 'linear-gradient(90deg, #10b981, #00e599)'
                 }}
               >
-                <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:16px_16px] animate-[shimmer_2s_linear_infinite]" />
+                <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:16px_16px] opacity-30" />
               </div>
             </div>
           </div>
@@ -292,21 +301,28 @@ export function Tasks() {
               </h3>
               <div className="space-y-2">
                 <h4 className="text-[20px] font-semibold text-white leading-snug">
-                  Reach $10K in trading volume on HyperLiquid
+                  Create your custom referral code
                 </h4>
                 <p className="text-gray-400 text-[15px]">
-                  to create a referral link
+                  Share this code with friends to start earning your fee share.
                 </p>
               </div>
               <div className="space-y-4 pt-4">
-                <div className="flex items-center gap-4">
-                  <div className="flex-1 bg-[#111] border border-[#222] h-3 rounded-full overflow-hidden">
-                    <div className="bg-[#34d399] h-full rounded-full w-[0%]" />
+                <div className="flex flex-col sm:flex-row items-center gap-3">
+                  <div className="relative flex-1 w-full">
+                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-mono">hi5.com/ref/</span>
+                    <input 
+                      type="text" 
+                      placeholder="YOUR-CODE" 
+                      className="w-full bg-[#0a0a0a] border border-[#222] rounded-xl pl-[105px] pr-4 py-3.5 text-white font-mono uppercase outline-none focus:border-[#34d399]/50 transition-colors placeholder:text-gray-700" 
+                    />
                   </div>
-                  <span className="text-white text-xl font-medium shrink-0">$10K</span>
+                  <button className="w-full sm:w-auto bg-gradient-to-r from-[#34d399] to-[#2bb280] text-[#050505] font-bold px-8 py-3.5 rounded-xl hover:opacity-90 transition-opacity shrink-0 shadow-[0_0_20px_rgba(52,211,153,0.2)]">
+                    Create Link
+                  </button>
                 </div>
-                <p className="text-gray-400 text-[15px]">
-                  $10,000.00 left to unlock this feature
+                <p className="text-sm text-gray-500">
+                  Codes must be 4-15 characters long and can only contain letters and numbers.
                 </p>
               </div>
               <hr className="border-[#222] my-6" />
@@ -340,127 +356,293 @@ export function Tasks() {
         ) : activeTab === 'badges' ? (
           <div className="space-y-8 pb-12 mt-4">
             
-            {/* Stats header card */}
-            <div className="card-base p-6 border border-[#222] bg-[#0c0c0c] flex flex-col md:flex-row items-center justify-between gap-6">
-              <div>
-                <h3 className="text-xl font-bold text-white mb-1">Your Achievements & Badges</h3>
-                <p className="text-sm text-gray-400">Unlock unique status badges by completing milestones and trading.</p>
-              </div>
-              <div className="flex items-center gap-6">
-                <div>
-                  <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Badges Unlocked</div>
-                  <div className="text-3xl font-black text-[#34d399] font-mono">{completedBadgesCount} <span className="text-gray-600 text-lg">/ {BADGES.length}</span></div>
+            {/* Badges Hero Section */}
+            <div className="flex flex-col lg:flex-row gap-6">
+              
+              {/* Left: Current Badge */}
+              <div className="flex-1 card-base p-8 border border-[#1a1f26] bg-[#0a0c0f] relative overflow-hidden flex flex-col md:flex-row items-center gap-10">
+                {/* Background glow */}
+                <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[#00e599]/10 blur-[100px] rounded-full pointer-events-none" />
+                
+                <div className="w-full flex justify-between items-start md:hidden mb-2">
+                  <span className="text-[11px] font-bold text-[#00e599] tracking-widest uppercase">Current Badge</span>
                 </div>
-                <div>
-                  <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Completion</div>
-                  <div className="text-3xl font-black text-white font-mono">{badgesProgressPercent}%</div>
+
+                <div className="relative shrink-0 w-48 h-48 md:w-56 md:h-56 z-10">
+                  <img src="/badges/scout.png" alt="Scout Badge" className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(0,229,153,0.3)] relative z-10" />
+                  {/* Decorative glowing rim behind the badge */}
+                  <div className="absolute inset-0 rounded-full border border-[#00e599]/20 scale-[1.15] bg-[radial-gradient(circle,rgba(0,229,153,0.1)_0%,transparent_70%)]" />
+                </div>
+
+                <div className="flex-1 w-full z-10 flex flex-col justify-between">
+                  <div>
+                    <div className="hidden md:block text-[11px] font-bold text-[#00e599] tracking-widest uppercase mb-2">Current Badge</div>
+                    <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-4">Scout</h2>
+                    <div className="flex items-center gap-3 mb-6">
+                      <span className="bg-[#00e599]/10 text-[#00e599] border border-[#00e599]/30 px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase shadow-[0_0_10px_rgba(0,229,153,0.1)]">
+                        Legendary
+                      </span>
+                      <span className="text-gray-500 text-sm flex items-center gap-2">
+                        <span className="w-1 h-1 rounded-full bg-gray-500" /> Current Tier
+                      </span>
+                    </div>
+                    <p className="text-[#a0a0a0] text-[15px] leading-relaxed max-w-sm mb-8">
+                      Level up past the novice tiers by accumulating EP.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col gap-5 mt-auto">
+                    <div className="flex justify-between items-end">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full border border-[#fbbf24]/30 bg-[#fbbf24]/10 flex items-center justify-center">
+                          <Star className="w-5 h-5 text-[#fbbf24]" />
+                        </div>
+                        <div>
+                          <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-0.5">XP Earned</div>
+                          <div className="text-xl font-bold text-white leading-none">12,450</div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-0.5">Next Badge</div>
+                        <div className="text-lg font-bold text-[#00e599] leading-none">Speculator</div>
+                      </div>
+                    </div>
+                    
+                    {/* XP Progress Bar */}
+                    <div className="flex items-center gap-4">
+                      <div className="flex-1 h-3.5 bg-[#111] rounded-full overflow-hidden border border-[#222]">
+                        <div className="h-full bg-gradient-to-r from-[#10b981] to-[#00e599] w-[80%] rounded-full shadow-[0_0_10px_rgba(0,229,153,0.3)]" />
+                      </div>
+                      <span className="text-xs font-mono font-bold shrink-0">
+                        <span className="text-[#00e599]">12,000</span> <span className="text-gray-500">/ 15,000 XP (80%)</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right: Badge Progress */}
+              <div className="w-full lg:w-[380px] card-base p-8 border border-[#1a1f26] bg-[#0a0c0f] flex flex-col justify-between">
+                <div className="text-[11px] font-bold text-[#00e599] tracking-widest uppercase mb-8">Badge Progress</div>
+                
+                {/* Circular Chart */}
+                <div className="relative w-48 h-48 mx-auto mb-10">
+                  <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+                    {/* Background Ring */}
+                    <circle cx="50" cy="50" r="45" fill="transparent" stroke="#111" strokeWidth="8" />
+                    {/* Progress Ring (67% of 283 = 190) */}
+                    <circle 
+                      cx="50" cy="50" r="45" 
+                      fill="transparent" 
+                      stroke="url(#progressGradient)" 
+                      strokeWidth="8" 
+                      strokeDasharray="282.7" 
+                      strokeDashoffset="93" 
+                      strokeLinecap="round"
+                      className="drop-shadow-[0_0_10px_rgba(0,229,153,0.4)]"
+                    />
+                    <defs>
+                      <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#10b981" />
+                        <stop offset="100%" stopColor="#00e599" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                    <span className="text-5xl font-black text-white font-mono tracking-tighter">67%</span>
+                    <span className="text-[9px] text-gray-500 font-bold tracking-widest uppercase mt-1">Completion</span>
+                  </div>
+                </div>
+
+                {/* Stat Breakdown */}
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between pb-4 border-b border-[#1a1f26]">
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded border border-[#00e599]/30 bg-[#00e599]/10 flex items-center justify-center">
+                        <ShieldCheck className="w-3.5 h-3.5 text-[#00e599]" />
+                      </div>
+                      <span className="text-[13px] text-gray-400 font-medium">Badges Unlocked</span>
+                    </div>
+                    <span className="text-sm font-mono font-bold"><span className="text-white">6</span> <span className="text-gray-500">/ 9</span></span>
+                  </div>
+                  <div className="flex items-center justify-between pb-4 border-b border-[#1a1f26]">
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded border border-gray-700 bg-gray-800/50 flex items-center justify-center">
+                        <Lock className="w-3.5 h-3.5 text-gray-500" />
+                      </div>
+                      <span className="text-[13px] text-gray-400 font-medium">Badges Locked</span>
+                    </div>
+                    <span className="text-sm font-mono font-bold text-white">3</span>
+                  </div>
+                  <div className="flex items-center justify-between pt-1">
+                    <div className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded border border-[#fbbf24]/30 bg-[#fbbf24]/10 flex items-center justify-center">
+                        <Star className="w-3.5 h-3.5 text-[#fbbf24]" />
+                      </div>
+                      <span className="text-[13px] text-gray-400 font-medium">Rarest Badge</span>
+                    </div>
+                    <span className="text-[13px] text-[#00e599] font-bold">Legendary</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Badges grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {BADGES.map((badge) => {
-                const BadgeIcon = badge.icon;
-                return (
-                  <div 
-                    key={badge.id}
-                    className={cn(
-                      "card-base p-6 flex flex-col items-center text-center transition-all duration-300 relative group overflow-hidden border",
-                      badge.unlocked 
-                        ? "border-[#15181C] bg-[#0b0e13]/40 hover:border-[#34d399]/30 hover:shadow-[0_0_20px_rgba(52,211,153,0.05)]" 
-                        : "border-[#15181C]/50 bg-[#0a0a0a]/20 opacity-55 hover:opacity-75"
-                    )}
-                  >
-                    
-                    {/* Glow effect for unlocked */}
-                    {badge.unlocked && (
-                      <div 
-                        className="absolute top-[-20%] left-[-20%] w-[50%] h-[50%] blur-[40px] rounded-full opacity-20 pointer-events-none transition-transform group-hover:scale-125"
-                        style={{ backgroundColor: badge.color }}
-                      />
-                    )}
-
-                    {/* Badge Icon container */}
-                    <div className="relative mb-5 flex items-center justify-center">
-                      {typeof BadgeIcon === 'string' ? (
-                        <div 
-                          className="w-24 h-24 rounded-full flex items-center justify-center p-2 transition-transform duration-300 group-hover:scale-105"
-                          style={{
-                            background: badge.unlocked ? `radial-gradient(circle, ${badge.color}15 0%, transparent 70%)` : 'none',
-                          }}
-                        >
-                          <img 
-                            src={BadgeIcon} 
-                            alt={badge.name} 
-                            className={cn(
-                              "w-20 h-20 object-contain drop-shadow-[0_0_15px_rgba(0,216,255,0.4)]",
-                              !badge.unlocked && "grayscale opacity-40"
-                            )} 
-                          />
-                        </div>
-                      ) : (
-                        <div 
-                          className="w-20 h-20 rounded-full flex items-center justify-center border transition-all duration-300 group-hover:scale-105"
-                          style={{
-                            backgroundColor: badge.unlocked ? `${badge.color}10` : '#111',
-                            borderColor: badge.unlocked ? `${badge.color}40` : '#222',
-                            boxShadow: badge.unlocked ? `0 0 15px ${badge.color}15` : 'none'
-                          }}
-                        >
-                          <BadgeIcon 
-                            className="w-8 h-8 transition-transform duration-300"
-                            style={{ color: badge.unlocked ? badge.color : '#555' }}
-                          />
-                        </div>
-                      )}
-
-                      {/* Lock indicator */}
-                      {!badge.unlocked && (
-                        <div className="absolute bottom-0 right-0 w-6 h-6 rounded-full bg-[#111] border border-[#222] flex items-center justify-center shadow-lg">
-                          <Lock className="w-3.5 h-3.5 text-gray-500" />
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Details */}
-                    <div className="relative z-10 flex-1 flex flex-col justify-between">
-                      <div>
-                        <div className="flex items-center justify-center gap-2 mb-2">
-                          <span 
-                            className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
-                            style={{ 
-                              backgroundColor: badge.unlocked ? `${badge.color}15` : '#111',
-                              color: badge.unlocked ? badge.color : '#666'
-                            }}
-                          >
-                            {badge.rarity}
-                          </span>
-                          {badge.unlocked && (
-                            <span className="text-[10px] text-gray-500 font-medium">Unlocked</span>
-                          )}
-                        </div>
-                        <h4 className="text-lg font-bold text-white mb-2 tracking-tight group-hover:text-white transition-colors">
-                          {badge.name}
-                        </h4>
-                        <p className="text-xs text-gray-400 leading-relaxed px-2">
-                          {badge.description}
-                        </p>
-                      </div>
-
-                      {/* Requirement/Footer */}
-                      <div className="mt-4 pt-3 border-t border-[#15181C] w-full text-[11px] font-mono text-gray-500">
-                        {badge.unlocked ? (
-                          <span className="text-[#34d399]">Completed</span>
-                        ) : (
-                          <span>Req: {badge.requirement}</span>
-                        )}
-                      </div>
-                    </div>
-
+            {/* Next Badge Strip */}
+            <div className="card-base p-6 border border-[#1a1f26] bg-[#0a0c0f] flex flex-col md:flex-row items-center justify-between gap-6 hover:border-[#00e599]/30 transition-colors cursor-pointer group">
+              <div className="flex items-center gap-6">
+                <div className="w-16 h-16 rounded-full border border-[#00e599]/30 bg-[#00e599]/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                  <TrendingUp className="w-8 h-8 text-[#00e599]" />
+                </div>
+                <div>
+                  <div className="text-[11px] font-bold text-[#00e599] tracking-widest uppercase mb-1">Next Badge</div>
+                  <h3 className="text-xl font-bold text-white mb-1">Speculator</h3>
+                  <p className="text-[#a0a0a0] text-sm">Execute your first trade of any size on the platform.</p>
+                </div>
+              </div>
+              <div className="w-full md:w-[300px] flex items-center gap-6">
+                <div className="flex-1">
+                  <div className="text-[11px] font-bold text-[#00e599] tracking-widest uppercase mb-2">80% Ready</div>
+                  <div className="h-2 bg-[#111] rounded-full overflow-hidden border border-[#222] mb-2">
+                    <div className="h-full bg-[#00e599] w-[80%] rounded-full shadow-[0_0_10px_rgba(0,229,153,0.3)]" />
                   </div>
-                );
-              })}
+                  <div className="text-[11px] font-mono font-bold text-gray-500">
+                    <span className="text-[#00e599]">12,000</span> / 15,000 XP
+                  </div>
+                </div>
+                <ChevronRight className="w-5 h-5 text-gray-600 group-hover:text-white transition-colors" />
+              </div>
+            </div>
+
+            {/* Badge Journey Section */}
+            <div className="card-base p-8 border border-[#1a1f26] bg-[#0a0c0f] overflow-hidden">
+              <div className="flex justify-between items-start mb-12">
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-1 uppercase tracking-widest">Badge Journey</h3>
+                  <p className="text-[#a0a0a0] text-sm">Complete badges in order to unlock the next tier.</p>
+                </div>
+                <div className="flex items-center gap-2 border border-[#222] bg-[#111] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#1a1a1a] transition-colors">
+                  <span className="text-sm font-medium text-gray-300">All Status</span>
+                  <ChevronDown className="w-4 h-4 text-gray-500" />
+                </div>
+              </div>
+
+              {/* Journey Map (Simplified Flex Layout for Desktop/Mobile) */}
+              <div className="relative max-w-4xl mx-auto py-8">
+                
+                {/* Responsive Dotted Connecting Lines Background */}
+                <div className="absolute inset-0 z-0 hidden md:block">
+                  <svg className="w-full h-full" style={{ strokeDasharray: "4, 4" }}>
+                    <path d={`M 16.6% ${Y1} L 83.3% ${Y1}`} stroke="#222" strokeWidth="2" fill="none" />
+                    <path d={`M 12.5% ${Y2} L 87.5% ${Y2}`} stroke="#222" strokeWidth="2" fill="none" />
+                    <path d={`M 33.3% ${Y3} L 66.6% ${Y3}`} stroke="#222" strokeWidth="2" fill="none" />
+                    {/* Vertical drops */}
+                    <path d={`M 83.3% ${Y1} Q 95% ${Y1} 95% ${Y1 + 40} L 95% ${Y2 - 40} Q 95% ${Y2} 87.5% ${Y2}`} stroke="#222" strokeWidth="2" fill="none" />
+                    <path d={`M 12.5% ${Y2} Q 5% ${Y2} 5% ${Y2 + 40} L 5% ${Y3 - 40} Q 5% ${Y3} 33.3% ${Y3}`} stroke="#222" strokeWidth="2" fill="none" />
+                  </svg>
+                </div>
+
+                {/* Row 1 (3 Items) */}
+                <div className="relative z-10 flex flex-col md:flex-row justify-between mb-12 md:mb-24 gap-12 md:gap-0">
+                  <div className="flex flex-col items-center text-center w-full md:w-1/3 relative group cursor-pointer">
+                    <div className="w-20 h-20 mb-3 relative z-10">
+                      <img src="/badges/scout.png" className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(0,229,153,0.3)] group-hover:scale-110 transition-transform" />
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#00e599] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]">
+                        <CheckCircle2 className="w-3 h-3 text-[#0a0c0f]" />
+                      </div>
+                    </div>
+                    <h4 className="text-white font-bold text-base mb-1.5">Scout</h4>
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-[#00e599] bg-[#00e599]/10 px-2 py-0.5 rounded-full border border-[#00e599]/30">Legendary</span>
+                  </div>
+
+                  <div className="flex flex-col items-center text-center w-full md:w-1/3 relative group cursor-pointer">
+                    <div className="w-20 h-20 rounded-full border border-[#00e599]/50 bg-[#00e599]/10 flex items-center justify-center mb-3 relative z-10 group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(0,229,153,0.1)]">
+                      <TrendingUp className="w-8 h-8 text-[#00e599]" />
+                    </div>
+                    <h4 className="text-white font-bold text-base mb-1.5">Speculator</h4>
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-[#00e599] bg-[#00e599]/10 px-2 py-0.5 rounded-full border border-[#00e599]/30">Common</span>
+                  </div>
+
+                  <div className="flex flex-col items-center text-center w-full md:w-1/3 relative group opacity-50 cursor-not-allowed grayscale hover:grayscale-0 transition-all">
+                    <div className="w-20 h-20 rounded-full border border-[#333] bg-[#111] flex items-center justify-center mb-3 relative z-10">
+                      <Flame className="w-8 h-8 text-gray-500" />
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#1a1a1a] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]">
+                        <Lock className="w-2.5 h-2.5 text-gray-400" />
+                      </div>
+                    </div>
+                    <h4 className="text-white font-bold text-base mb-1.5">Risk Taker</h4>
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400 bg-[#1a1a1a] px-2 py-0.5 rounded-full border border-[#333]">Common</span>
+                  </div>
+                </div>
+
+                {/* Row 2 (4 Items) */}
+                <div className="relative z-10 flex flex-col md:flex-row justify-between mb-12 md:mb-24 gap-12 md:gap-0">
+                  <div className="flex flex-col items-center text-center w-full md:w-1/4 relative opacity-50 grayscale">
+                    <div className="w-16 h-16 rounded-full border border-[#333] bg-[#111] flex items-center justify-center mb-3 relative z-10">
+                      <Target className="w-6 h-6 text-gray-500" />
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#1a1a1a] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]"><Lock className="w-2.5 h-2.5 text-gray-400" /></div>
+                    </div>
+                    <h4 className="text-white font-bold text-[13px] mb-1.5">Opportunity Hunter</h4>
+                    <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400 bg-[#1a1a1a] px-2 py-0.5 rounded-full border border-[#333]">Rare</span>
+                  </div>
+
+                  <div className="flex flex-col items-center text-center w-full md:w-1/4 relative opacity-50 grayscale">
+                    <div className="w-16 h-16 rounded-full border border-[#333] bg-[#111] flex items-center justify-center mb-3 relative z-10">
+                      <Activity className="w-6 h-6 text-gray-500" />
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#1a1a1a] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]"><Lock className="w-2.5 h-2.5 text-gray-400" /></div>
+                    </div>
+                    <h4 className="text-white font-bold text-[13px] mb-1.5">Position Architect</h4>
+                    <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400 bg-[#1a1a1a] px-2 py-0.5 rounded-full border border-[#333]">Rare</span>
+                  </div>
+
+                  <div className="flex flex-col items-center text-center w-full md:w-1/4 relative opacity-50 grayscale">
+                    <div className="w-16 h-16 rounded-full border border-[#333] bg-[#111] flex items-center justify-center mb-3 relative z-10">
+                      <Shield className="w-6 h-6 text-gray-500" />
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#1a1a1a] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]"><Lock className="w-2.5 h-2.5 text-gray-400" /></div>
+                    </div>
+                    <h4 className="text-white font-bold text-[13px] mb-1.5">Capital Commander</h4>
+                    <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400 bg-[#1a1a1a] px-2 py-0.5 rounded-full border border-[#333]">Epic</span>
+                  </div>
+
+                  <div className="flex flex-col items-center text-center w-full md:w-1/4 relative opacity-50 grayscale">
+                    <div className="w-16 h-16 rounded-full border border-[#333] bg-[#111] flex items-center justify-center mb-3 relative z-10">
+                      <Zap className="w-6 h-6 text-gray-500" />
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#1a1a1a] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]"><Lock className="w-2.5 h-2.5 text-gray-400" /></div>
+                    </div>
+                    <h4 className="text-white font-bold text-[13px] mb-1.5">Volatility Rider</h4>
+                    <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400 bg-[#1a1a1a] px-2 py-0.5 rounded-full border border-[#333]">Epic</span>
+                  </div>
+                </div>
+
+                {/* Row 3 (2 Items) */}
+                <div className="relative z-10 flex flex-col md:flex-row justify-center mb-8 gap-12 md:gap-32">
+                  <div className="flex flex-col items-center text-center relative opacity-50 grayscale">
+                    <div className="w-20 h-20 rounded-full border border-[#333] bg-[#111] flex items-center justify-center mb-3 relative z-10">
+                      <span className="text-2xl font-serif text-gray-500 italic font-bold">α</span>
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#1a1a1a] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]"><Lock className="w-2.5 h-2.5 text-gray-400" /></div>
+                    </div>
+                    <h4 className="text-white font-bold text-base mb-1.5">Alpha Generator</h4>
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400 bg-[#1a1a1a] px-2 py-0.5 rounded-full border border-[#333]">Epic</span>
+                  </div>
+
+                  <div className="flex flex-col items-center text-center relative opacity-50 grayscale">
+                    <div className="w-20 h-20 rounded-full border border-[#333] bg-[#111] flex items-center justify-center mb-3 relative z-10">
+                      <Trophy className="w-8 h-8 text-gray-500" />
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#1a1a1a] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]"><Lock className="w-2.5 h-2.5 text-gray-400" /></div>
+                    </div>
+                    <h4 className="text-white font-bold text-base mb-1.5">Yield Conqueror</h4>
+                    <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400 bg-[#1a1a1a] px-2 py-0.5 rounded-full border border-[#333]">Legendary</span>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Informational Disclaimer */}
+              <div className="mt-8 flex items-center gap-3 p-4 bg-[#050505] rounded-xl border border-[#1a1f26]">
+                <div className="w-5 h-5 rounded-full border border-gray-600 flex items-center justify-center shrink-0">
+                  <span className="text-gray-400 text-xs italic font-serif">i</span>
+                </div>
+                <p className="text-gray-400 text-sm">Badges must be completed in order. Each badge unlocks the next milestone.</p>
+              </div>
             </div>
 
           </div>

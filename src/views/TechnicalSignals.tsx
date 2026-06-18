@@ -125,7 +125,7 @@ export function TechnicalSignals({ hideHeader, onTradeClick }: { hideHeader?: bo
                   {/* Column 1: Signal detail */}
                   <div className="w-[30%] flex items-center gap-4">
                     {/* Coin Rounded Square */}
-                    <div className="w-12 h-12 rounded-xl bg-[#080808] border border-[#141414] flex items-center justify-center flex-shrink-0">
+                    <div className="w-12 h-12 icon-squircle flex-shrink-0">
                       {signal.asset === 'BTC' && (
                         <div className="w-6 h-6 rounded-full bg-[#f7931a] flex items-center justify-center text-white font-extrabold text-[12px]">₿</div>
                       )}

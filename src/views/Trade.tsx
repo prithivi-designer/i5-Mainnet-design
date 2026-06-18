@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import {
   ChevronDown, Settings, Camera, BookOpen, Scale, Skull, Target,
-  Filter, Share2, X, Send, TrendingUp, Bell, Sparkles, Bot
+  Filter, Share2, X, Send, TrendingUp, Bell, Sparkles, Bot, Settings2, ArrowRightLeft, User, Search, SlidersHorizontal, Info, CheckCircle2, ShieldAlert, Wallet, CreditCard, ChevronRight, Play, Check, Zap, Star, Activity, Download
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -84,6 +84,17 @@ export function Trade() {
   const [margin, setMargin]     = useState('100');
   const [tradeStyle, setTradeStyle] = useState('Day');
   const [strategy, setStrategy] = useState('Max Gain');
+
+  // Autopilot Modals State
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [isOverviewModalOpen, setIsOverviewModalOpen] = useState(false);
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+
+  // Autopilot Configuration State
+  const [selectedStrategy, setSelectedStrategy] = useState('Sharpe Guard V2');
+  const [configTab, setConfigTab] = useState<'Introduction' | 'Configuration'>('Introduction');
+  const [drawdownLimit, setDrawdownLimit] = useState(50);
+  const [overviewAccepted, setOverviewAccepted] = useState(false);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -318,22 +329,27 @@ export function Trade() {
         {/* Right Panel (Trade Entry / Chat) */}
         <div className="w-[320px] bg-[#0d0d0d] flex flex-col shrink-0 border-l border-[#222]">
           {/* Mode Selector */}
-          <div className="flex p-2 gap-1 border-b border-[#222] bg-[#0a0a0a]">
+          <div className="flex px-2 pt-1 gap-1 border-b border-[#222] bg-[#050505]">
             {(['autopilot', 'copilot', 'manual'] as const).map(m => {
               const active = tradeMode === m;
-              const label = m === 'autopilot' ? '15 AI Autopilot' : m === 'copilot' ? 'i5 Copilot' : 'Manual';
-              const icon = m === 'autopilot' ? '⚡' : m === 'copilot' ? '🤖' : '✦';
+              const label = m === 'autopilot' ? 'AI Autopilot' : m === 'copilot' ? 'i5 Copilot' : 'Manual';
+              
               return (
                 <button
                   key={m}
                   onClick={() => setTradeMode(m)}
                   className={cn(
-                    'flex-1 flex flex-col items-center justify-center py-2 rounded-lg transition-all border text-[10px] font-bold tracking-wide gap-1',
-                    active ? 'bg-[#34d399]/10 border-[#34d399]/40 text-[#34d399]' : 'border-transparent text-gray-500 hover:text-white hover:bg-[#111]'
+                    'flex-1 flex flex-col items-center justify-center py-3 relative transition-all text-xs font-bold tracking-wide gap-1.5',
+                    active ? (m === 'autopilot' ? 'text-[#34d399]' : 'text-white') : 'text-gray-500 hover:text-gray-300'
                   )}
                 >
-                  <span className="text-sm">{icon}</span>
+                  {m === 'autopilot' && <Zap className={cn("w-4 h-4", active ? "text-yellow-400 fill-yellow-400" : "text-gray-500")} />}
+                  {m === 'copilot' && <Bot className="w-4 h-4" />}
+                  {m === 'manual' && <Star className={cn("w-4 h-4", active ? "fill-current" : "")} />}
                   {label}
+                  {active && m === 'autopilot' && (
+                    <div className="absolute bottom-0 left-1/4 right-1/4 h-[3px] bg-[#34d399] rounded-t-full shadow-[0_-2px_10px_rgba(52,211,153,0.8)]" />
+                  )}
                 </button>
               );
             })}
@@ -421,7 +437,7 @@ export function Trade() {
                 </div>
               </div>
             </div>
-          ) : (
+          ) : tradeMode === 'copilot' ? (
             <div className="flex flex-col flex-1 overflow-hidden font-sans">
               {/* Chat Messages */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4 no-scrollbar">
@@ -506,16 +522,7 @@ export function Trade() {
                   </div>
                 )}
                 
-                {tradeMode === 'autopilot' && (
-                  <button className="w-full py-3 flex items-center justify-center gap-2 font-bold text-[13px] text-white transition-all hover:opacity-95 active:scale-[0.99] mb-3 rounded-xl"
-                    style={{
-                      background: 'linear-gradient(180deg, #025247 0%, #01433a 100%)',
-                      border: '1px solid #045a4f',
-                      boxShadow: 'inset 0 1px 0 0 rgba(255, 255, 255, 0.08), 0 4px 12px rgba(0, 0, 0, 0.3)',
-                    }}>
-                    Start Autopilot <Bot className="w-4 h-4 ml-1" />
-                  </button>
-                )}
+                {/* Autopilot old start button removed */}
 
                 <div className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all focus-within:border-gray-500"
                   style={{ background: '#111', border: '1px solid #2a2a2a' }}>
@@ -533,8 +540,396 @@ export function Trade() {
                 </div>
               </div>
             </div>
+          ) : (
+            <div className="flex flex-col flex-1 p-5 gap-6 overflow-y-auto no-scrollbar font-sans bg-[#050505] relative">
+               {/* 1. Header Area */}
+               <div className="flex justify-between items-center px-1">
+                 <div className="flex items-center gap-4">
+                   <div className="w-12 h-12 rounded-2xl bg-[#0a0a0a] border border-[#222] flex items-center justify-center shadow-lg">
+                     <Bot className="w-6 h-6 text-[#34d399]" />
+                   </div>
+                   <div className="flex flex-col">
+                     <span className="text-white font-bold text-xl leading-tight tracking-wide">AI Autopilot</span>
+                     <span className="text-[#34d399] font-bold text-[15px] leading-tight tracking-wide">Ready to execute</span>
+                     <div className="flex items-center gap-1.5 mt-1.5">
+                       <span className="text-[10px] text-gray-500 tracking-wider">AI is monitoring the market</span>
+                       <span className="flex h-1.5 w-1.5 relative">
+                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#34d399] opacity-75"></span>
+                         <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#34d399]"></span>
+                       </span>
+                       <span className="text-[9px] text-[#34d399] font-bold tracking-widest">LIVE</span>
+                     </div>
+                   </div>
+                 </div>
+                 
+                 {/* Gauge Widget */}
+                 <div className="w-20 h-20 rounded-full border border-[#222] bg-[#0a0a0a] relative flex flex-col items-center justify-center animate-glow-pulse shadow-[0_0_15px_rgba(52,211,153,0.15)] mr-2 shrink-0">
+                    <span className="text-white font-bold text-sm tracking-wider">BTC</span>
+                    <span className="text-[#34d399] text-[10px] font-bold tracking-wider">Bullish</span>
+                    <svg className="w-10 h-5 absolute bottom-3" viewBox="0 0 100 40" preserveAspectRatio="none">
+                      <path d="M0,30 L20,25 L40,35 L60,15 L80,20 L100,5" fill="none" stroke="#34d399" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+                    </svg>
+                 </div>
+               </div>
+
+               {/* 2. Mission Status Card */}
+               <div className="bg-[#0a0a0a] border border-[#222] rounded-[20px] p-4 shadow-2xl flex flex-col relative overflow-hidden mt-2">
+                 {/* Header */}
+                 <div className="flex justify-between items-center relative z-10 mb-6">
+                   <div className="flex items-center gap-2">
+                     <Activity className="w-4 h-4 text-gray-500 shrink-0" />
+                     <span className="text-gray-400 text-[9px] font-bold uppercase tracking-[0.15em] whitespace-nowrap">Mission Status</span>
+                   </div>
+                   <div className="flex items-center gap-1.5 px-2 py-1 rounded-full border border-[#34d399]/30 shrink-0">
+                     <span className="text-[#34d399] text-[9px] font-bold tracking-wide">Favorable</span>
+                     <CheckCircle2 className="w-3 h-3 text-[#34d399]" />
+                   </div>
+                 </div>
+
+                 {/* Animated Radar Centerpiece */}
+                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none mt-2">
+                    {/* Sine Waves */}
+                    <div className="absolute w-full flex items-center justify-between px-4 opacity-40">
+                      <svg className="w-[45%] h-10 animate-wave-pulse" viewBox="0 0 100 40" preserveAspectRatio="none" style={{ animationDelay: '0ms' }}>
+                        <path d="M0,20 Q25,0 50,20 T100,20" fill="none" stroke="#34d399" strokeWidth="1" opacity="0.5" />
+                        <path d="M0,20 Q25,40 50,20 T100,20" fill="none" stroke="#34d399" strokeWidth="1" opacity="0.3" />
+                      </svg>
+                      <svg className="w-[45%] h-10 animate-wave-pulse transform rotate-180" viewBox="0 0 100 40" preserveAspectRatio="none" style={{ animationDelay: '500ms' }}>
+                        <path d="M0,20 Q25,0 50,20 T100,20" fill="none" stroke="#34d399" strokeWidth="1" opacity="0.5" />
+                        <path d="M0,20 Q25,40 50,20 T100,20" fill="none" stroke="#34d399" strokeWidth="1" opacity="0.3" />
+                      </svg>
+                    </div>
+
+                    {/* Concentric Rings */}
+                    <div className="relative w-24 h-24 flex items-center justify-center">
+                      <div className="absolute w-full h-full border border-[#34d399]/20 rounded-full animate-pulse-ring" style={{ animationDelay: '0s' }} />
+                      <div className="absolute w-full h-full border border-[#34d399]/20 rounded-full animate-pulse-ring" style={{ animationDelay: '0.6s' }} />
+                      <div className="absolute w-full h-full border border-[#34d399]/20 rounded-full animate-pulse-ring" style={{ animationDelay: '1.2s' }} />
+                      <div className="w-8 h-8 rounded-full bg-[#34d399]/10 border border-[#34d399]/30 flex items-center justify-center z-10 shadow-[0_0_30px_rgba(52,211,153,0.4)]">
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#34d399] shadow-[0_0_15px_#34d399]" />
+                      </div>
+                    </div>
+                 </div>
+
+                 {/* Stats Grid */}
+                 <div className="grid grid-cols-2 gap-y-6 gap-x-3 relative z-10 mt-[60px] pt-6 border-t border-[#1a1a1a]">
+                   <div className="flex items-center gap-2.5 min-w-0">
+                     <div className="w-9 h-9 icon-squircle shrink-0">
+                       <Wallet className="w-4 h-4 text-[#34d399]" />
+                     </div>
+                     <div className="flex flex-col min-w-0">
+                       <span className="text-white font-bold font-mono text-[15px] leading-tight truncate">$0.00</span>
+                       <span className="text-gray-500 text-[9px] tracking-wide mt-0.5 truncate">Portfolio Balance</span>
+                     </div>
+                   </div>
+                   <div className="flex items-center gap-2.5 min-w-0">
+                     <div className="w-9 h-9 icon-squircle shrink-0">
+                       <span className="text-[#34d399] font-bold text-[15px]">$</span>
+                     </div>
+                     <div className="flex flex-col min-w-0">
+                       <span className="text-white font-bold font-mono text-[15px] leading-tight truncate">$0.00</span>
+                       <span className="text-gray-500 text-[9px] tracking-wide mt-0.5 truncate">Available to Trade</span>
+                     </div>
+                   </div>
+                   <div className="flex items-center gap-2.5 pt-3 border-t border-[#1a1a1a] min-w-0">
+                     <div className="w-9 h-9 icon-squircle shrink-0">
+                       <div className="w-5 h-5 rounded-full bg-[#f7931a] flex items-center justify-center">
+                         <span className="text-white text-[9px] font-bold">₿</span>
+                       </div>
+                     </div>
+                     <div className="flex flex-col min-w-0">
+                       <div className="flex items-center gap-1.5">
+                         <span className="text-white font-bold font-mono text-[15px] leading-tight truncate">BTC</span>
+                         <ChevronDown className="w-3.5 h-3.5 text-gray-500 shrink-0" />
+                       </div>
+                       <span className="text-gray-500 text-[9px] tracking-wide mt-0.5 truncate">Trading Asset</span>
+                     </div>
+                   </div>
+                   <div className="flex items-center gap-2.5 pt-3 border-t border-[#1a1a1a] min-w-0">
+                     <div className="w-9 h-9 icon-squircle shrink-0">
+                       <Target className="w-4 h-4 text-[#34d399]" />
+                     </div>
+                     <div className="flex flex-col min-w-0">
+                       <div className="flex items-center gap-1.5">
+                         <span className="text-white font-bold font-mono text-[15px] leading-tight truncate">TWAP</span>
+                         <CheckCircle2 className="w-3.5 h-3.5 text-[#34d399] shrink-0" />
+                       </div>
+                       <span className="text-gray-500 text-[9px] tracking-wide mt-0.5 truncate">Execution Strategy</span>
+                     </div>
+                   </div>
+                 </div>
+               </div>
+
+               {/* 3. Engage AI Button */}
+               <button onClick={() => setIsOverviewModalOpen(true)} className="relative w-full py-5 rounded-2xl overflow-hidden group transition-all active:scale-[0.98] mt-2 shadow-[0_0_30px_rgba(52,211,153,0.15)]">
+                 <div className="absolute inset-0 bg-gradient-to-r from-[#1a4a38] via-[#2fb080] to-[#1a4a38] opacity-80 group-hover:opacity-100 transition-opacity" />
+                 <div className="absolute inset-[1px] rounded-[15px] bg-gradient-to-r from-[#0a2e22] via-[#1a6649] to-[#0a2e22]" />
+                 <div className="absolute inset-0 shadow-[inset_0_2px_20px_rgba(52,211,153,0.25)] rounded-2xl" />
+                 <div className="relative z-10 flex flex-col items-center justify-center gap-1">
+                   <div className="flex items-center gap-2.5">
+                     <div className="w-7 h-7 rounded-full bg-[#050505]/60 flex items-center justify-center backdrop-blur-sm shadow-[0_0_15px_rgba(52,211,153,0.6)]">
+                       <Play className="w-3.5 h-3.5 fill-[#34d399] text-[#34d399] ml-0.5" />
+                     </div>
+                     <span className="text-white font-bold text-[19px] tracking-wide shadow-black drop-shadow-md">Engage AI</span>
+                   </div>
+                   <span className="text-[#34d399] text-[11px] font-medium tracking-wide opacity-80">Start automated execution</span>
+                 </div>
+               </button>
+
+               {/* 4. Bottom Action Buttons */}
+               <div className="flex gap-2">
+                 <button onClick={() => setIsTransferModalOpen(true)} className="flex-1 bg-[#0a0a0a] border border-[#222] hover:border-[#333] rounded-2xl p-3 flex items-center gap-2 transition-colors active:scale-[0.98] min-w-0">
+                   <div className="w-9 h-9 icon-squircle shrink-0">
+                     <Download className="w-4 h-4 text-[#34d399]" />
+                   </div>
+                   <div className="flex flex-col items-start min-w-0">
+                     <span className="text-white font-bold text-[13px] tracking-wide truncate w-full text-left">Add Funds</span>
+                     <span className="text-gray-500 text-[9px] tracking-wide mt-0.5 truncate w-full text-left">Deposit to start</span>
+                   </div>
+                 </button>
+                 <button onClick={() => setIsSettingsModalOpen(true)} className="flex-1 bg-[#0a0a0a] border border-[#222] hover:border-[#333] rounded-2xl p-3 flex items-center gap-2 transition-colors active:scale-[0.98] min-w-0">
+                   <div className="w-9 h-9 icon-squircle shrink-0">
+                     <SlidersHorizontal className="w-4 h-4 text-[#34d399]" />
+                   </div>
+                   <div className="flex flex-col items-start min-w-0">
+                     <span className="text-white font-bold text-[13px] tracking-wide truncate w-full text-left">Settings</span>
+                     <span className="text-gray-500 text-[9px] tracking-wide mt-0.5 truncate w-full text-left">Preferences</span>
+                   </div>
+                 </button>
+               </div>
+
+               {/* Footer Warning */}
+               <div className="text-center mt-auto pb-4 pt-6">
+                 <span className="text-[11px] text-gray-600 font-medium tracking-wider flex items-center justify-center gap-3">
+                   <ShieldAlert className="w-5 h-5 text-[#333]" /> 
+                   <div className="flex flex-col items-start leading-[1.4]">
+                     <span>AI-generated trade suggestions.</span>
+                     <span>Always review before execution.</span>
+                   </div>
+                 </span>
+               </div>
+            </div>
           )}
         </div>
+      {/* Autopilot Settings Modal */}
+      {isSettingsModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 font-sans">
+          <div className="w-full max-w-4xl bg-[#0a0a0a] border border-[#222] rounded-2xl shadow-2xl flex overflow-hidden max-h-[80vh]">
+            {/* Left Sidebar */}
+            <div className="w-64 border-r border-[#222] flex flex-col bg-[#050505] shrink-0">
+              <div className="p-4 border-b border-[#222] flex justify-between items-center">
+                <span className="font-bold text-white tracking-wide">Strategies</span>
+                <button onClick={() => setIsSettingsModalOpen(false)} className="text-gray-500 hover:text-white">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="p-4 flex gap-2">
+                <button className="flex-1 pb-1 border-b-2 border-[#34d399] text-white text-xs font-bold uppercase tracking-wider">Official</button>
+                <button className="flex-1 pb-1 border-b-2 border-transparent text-gray-500 hover:text-white text-xs font-bold uppercase tracking-wider">My</button>
+              </div>
+              <div className="px-4 pb-4">
+                <div className="bg-[#111] border border-[#222] rounded flex items-center px-2 py-1.5 focus-within:border-gray-500 transition-colors">
+                  <Search className="w-3.5 h-3.5 text-gray-500 mr-2" />
+                  <input type="text" placeholder="Search..." className="bg-transparent text-xs text-white outline-none w-full placeholder-gray-600" />
+                </div>
+              </div>
+              <div className="flex-1 overflow-y-auto no-scrollbar px-4 pb-4 space-y-2">
+                {['Futures Grid', 'Sharpe Guard V2', 'DCA Bot', 'TWAP'].map(strat => (
+                  <div key={strat} onClick={() => setSelectedStrategy(strat)} className={cn('p-3 rounded-xl border cursor-pointer transition-all', selectedStrategy === strat ? 'bg-[#34d399]/10 border-[#34d399]/30' : 'bg-[#111] border-[#222] hover:border-[#333]')}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className={cn('text-sm font-bold', selectedStrategy === strat ? 'text-[#34d399]' : 'text-white')}>{strat}</span>
+                      {selectedStrategy === strat && <CheckCircle2 className="w-3.5 h-3.5 text-[#34d399]" />}
+                    </div>
+                    <span className="text-[10px] text-gray-500">Official Strategy</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Pane */}
+            <div className="flex-1 flex flex-col bg-[#0a0a0a]">
+              <div className="p-6 border-b border-[#222] flex items-center justify-between">
+                <div>
+                  <h2 className="text-xl font-bold text-white tracking-wide">{selectedStrategy}</h2>
+                  <span className="text-xs text-[#34d399] bg-[#34d399]/10 px-2 py-0.5 rounded mt-1 inline-block">Pro</span>
+                </div>
+                <div className="flex gap-4">
+                   <button onClick={() => setConfigTab('Introduction')} className={cn('pb-1 text-sm font-bold tracking-wide transition-colors', configTab === 'Introduction' ? 'text-white border-b-2 border-[#34d399]' : 'text-gray-500 hover:text-gray-300')}>Introduction</button>
+                   <button onClick={() => setConfigTab('Configuration')} className={cn('pb-1 text-sm font-bold tracking-wide transition-colors', configTab === 'Configuration' ? 'text-white border-b-2 border-[#34d399]' : 'text-gray-500 hover:text-gray-300')}>Configuration</button>
+                </div>
+              </div>
+              
+              <div className="flex-1 overflow-y-auto p-6 no-scrollbar">
+                {configTab === 'Introduction' ? (
+                  <div className="space-y-6">
+                    <p className="text-gray-400 text-sm leading-relaxed">
+                      This strategy systematically scales into positions during high volatility events, dynamically adjusting sizing based on the Sharpe ratio and real-time funding rates to optimize risk-adjusted returns.
+                    </p>
+                    
+                    <div className="grid grid-cols-4 gap-4">
+                      {[
+                        ['Est. APR', '42.5%', 'text-[#34d399]'],
+                        ['Total Return', '+18.2%', 'text-white'],
+                        ['Win Rate', '68.4%', 'text-white'],
+                        ['Max Drawdown', '-12.1%', 'text-[#fa6432]']
+                      ].map(([l, v, c]) => (
+                        <div key={l} className="bg-[#111] border border-[#222] p-3 rounded-xl flex flex-col items-center justify-center gap-1">
+                           <span className="text-[9px] text-gray-500 uppercase tracking-widest text-center">{l}</span>
+                           <span className={`text-lg font-bold font-mono ${c}`}>{v}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="bg-[#111] border border-[#222] rounded-xl p-4 h-48 flex items-end relative overflow-hidden group">
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#34d399]/5 to-transparent" />
+                      {/* Fake Chart Lines */}
+                      <svg className="w-full h-full absolute inset-0" preserveAspectRatio="none" viewBox="0 0 100 100">
+                        <path d="M0,80 Q10,70 20,75 T40,50 T60,60 T80,30 T100,20 L100,100 L0,100 Z" fill="rgba(52,211,153,0.05)" />
+                        <path d="M0,80 Q10,70 20,75 T40,50 T60,60 T80,30 T100,20" fill="none" stroke="#34d399" strokeWidth="1" />
+                      </svg>
+                      <span className="absolute top-4 left-4 text-xs font-bold text-gray-400">Backtest Performance (90D)</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    <div>
+                       <h3 className="text-sm font-bold text-white mb-3">Trading Scope</h3>
+                       <div className="flex gap-3">
+                         <label className="flex items-center gap-2 bg-[#111] border border-[#333] px-4 py-2 rounded-lg cursor-pointer hover:border-gray-500 transition-all">
+                           <input type="checkbox" defaultChecked className="accent-[#34d399]" />
+                           <span className="text-sm font-bold text-white">BTC</span>
+                           <span className="text-xs text-gray-500">$65,028</span>
+                         </label>
+                         <label className="flex items-center gap-2 bg-[#111] border border-[#222] px-4 py-2 rounded-lg cursor-pointer hover:border-gray-500 transition-all opacity-50">
+                           <input type="checkbox" className="accent-[#34d399]" />
+                           <span className="text-sm font-bold text-white">ETH</span>
+                           <span className="text-xs text-gray-500">$3,421</span>
+                         </label>
+                       </div>
+                    </div>
+                    
+                    <div>
+                       <h3 className="text-sm font-bold text-white mb-3 flex items-center justify-between">
+                         Risk Control
+                         <span className="text-[10px] text-[#fa6432] bg-[#fa6432]/10 px-2 py-0.5 rounded font-bold uppercase tracking-wider">High Importance</span>
+                       </h3>
+                       <div className="bg-[#111] border border-[#222] p-4 rounded-xl space-y-4">
+                         <div className="flex justify-between items-center">
+                           <span className="text-xs text-gray-400 font-medium">Initial Equity Drawdown Limit</span>
+                           <span className="text-sm font-bold text-white font-mono">{drawdownLimit}%</span>
+                         </div>
+                         <input type="range" min="30" max="80" step="10" value={drawdownLimit} onChange={(e) => setDrawdownLimit(Number(e.target.value))} className="w-full accent-[#34d399]" />
+                         <div className="flex justify-between">
+                           {[30, 40, 50, 60, 70, 80].map(val => (
+                             <button key={val} onClick={() => setDrawdownLimit(val)} className={cn('text-[10px] font-bold px-2 py-1 rounded transition-colors', drawdownLimit === val ? 'bg-[#34d399]/20 text-[#34d399]' : 'text-gray-500 hover:text-white')}>
+                               {val}%
+                             </button>
+                           ))}
+                         </div>
+                       </div>
+                       <p className="text-[10px] text-gray-500 mt-2 leading-relaxed">
+                         The strategy will automatically halt trading and close all open positions if the account equity falls below the set drawdown limit relative to the initial equity.
+                       </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="p-4 border-t border-[#222] bg-[#050505] flex items-center justify-between shrink-0">
+                <span className="text-[10px] text-gray-500 tracking-wider">Powered by Minara</span>
+                <button onClick={() => setIsSettingsModalOpen(false)} className="px-8 py-2.5 rounded-xl font-bold text-sm tracking-wide text-[#050505] bg-[#34d399] hover:bg-[#2fb080] shadow-[0_0_15px_rgba(52,211,153,0.3)] transition-all active:scale-[0.98]">
+                  Apply and Start
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Autopilot Overview Modal */}
+      {isOverviewModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 font-sans">
+          <div className="w-full max-w-md bg-[#0a0a0a] border border-[#222] rounded-2xl shadow-2xl p-6 relative">
+            <button onClick={() => setIsOverviewModalOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+            <div className="w-12 h-12 rounded-full bg-[#111] border border-[#222] flex items-center justify-center mb-4">
+              <Info className="w-6 h-6 text-[#34d399]" />
+            </div>
+            <h2 className="text-xl font-bold text-white tracking-wide mb-3">Autopilot Overview</h2>
+            <p className="text-sm text-gray-400 leading-relaxed mb-6">
+              You're about to enable Autopilot, an AI-powered trading mode that automatically manages positions and risk based on market data and signals. 
+              <br/><br/>
+              Autopilot trading involves significant risk and does not guarantee profits. By proceeding, you acknowledge that you understand the risks.
+            </p>
+            <label className="flex items-start gap-3 cursor-pointer group mb-6">
+              <div className={cn('w-5 h-5 rounded border mt-0.5 flex items-center justify-center transition-colors', overviewAccepted ? 'bg-[#34d399] border-[#34d399]' : 'border-gray-600 group-hover:border-gray-400')}>
+                {overviewAccepted && <Check className="w-3.5 h-3.5 text-black" />}
+              </div>
+              <input type="checkbox" className="hidden" checked={overviewAccepted} onChange={(e) => setOverviewAccepted(e.target.checked)} />
+              <span className="text-sm text-gray-300 group-hover:text-white transition-colors">I have read and accept the above warnings.</span>
+            </label>
+            <div className="flex gap-3">
+              <button onClick={() => setIsOverviewModalOpen(false)} className="flex-1 py-3 rounded-xl font-bold text-sm text-white bg-[#111] border border-[#333] hover:bg-[#1a1a1a] transition-colors">Cancel</button>
+              <button disabled={!overviewAccepted} onClick={() => setIsOverviewModalOpen(false)} className="flex-1 py-3 rounded-xl font-bold text-sm text-black bg-[#34d399] hover:bg-[#2fb080] disabled:opacity-50 disabled:cursor-not-allowed transition-all">Next</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Perps Wallet Deposit Modal */}
+      {isTransferModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 font-sans">
+          <div className="w-full max-w-sm bg-[#0a0a0a] border border-[#222] rounded-2xl shadow-2xl p-6 relative">
+             <button onClick={() => setIsTransferModalOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors">
+              <X className="w-5 h-5" />
+            </button>
+            <h2 className="text-lg font-bold text-white tracking-wide mb-6">Perps Wallet Deposit</h2>
+            
+            <div className="space-y-4">
+              <div className="bg-[#111] border border-[#222] rounded-xl p-3 flex items-center justify-between cursor-pointer hover:border-[#333] transition-colors">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#8b5cf6] to-[#3b82f6]" />
+                  <span className="text-sm font-bold text-white">Wallet 1</span>
+                </div>
+                <ChevronDown className="w-4 h-4 text-gray-500" />
+              </div>
+
+              <button className="w-full py-3 rounded-xl font-bold text-sm text-[#050505] bg-white hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
+                <Wallet className="w-4 h-4" /> On-chain Deposit
+              </button>
+
+              <div className="relative flex py-2 items-center">
+                <div className="flex-grow border-t border-[#222]"></div>
+                <span className="flex-shrink-0 mx-4 text-xs font-bold text-gray-500 uppercase tracking-widest">Deposit with Card</span>
+                <div className="flex-grow border-t border-[#222]"></div>
+              </div>
+
+              <div className="space-y-2">
+                <button className="w-full bg-[#111] border border-[#222] hover:border-[#444] rounded-xl p-4 flex items-center justify-between group transition-all">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded bg-[#5e38f6] flex items-center justify-center">
+                      <CreditCard className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-sm font-bold text-white">MoonPay</span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
+                </button>
+
+                <button className="w-full bg-[#111] border border-[#222] hover:border-[#444] rounded-xl p-4 flex items-center justify-between group transition-all">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded bg-[#1cc988] flex items-center justify-center">
+                      <CreditCard className="w-4 h-4 text-white" />
+                    </div>
+                    <span className="text-sm font-bold text-white">Banxa Pay</span>
+                  </div>
+                  <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       </div>
       </div>
     </div>

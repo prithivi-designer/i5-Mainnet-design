@@ -114,7 +114,7 @@ export function AlphaTrade() {
 
             {/* Feature 1 */}
             <div className="flex gap-6 items-start relative z-10">
-              <div className="w-14 h-14 rounded-2xl bg-[#0a1010] border border-[#101b1a] flex items-center justify-center shrink-0">
+              <div className="w-14 h-14 icon-squircle shrink-0">
                 <Zap className="w-6 h-6 text-[#34d399]" />
               </div>
               <div className="flex flex-col pt-1">
@@ -127,8 +127,8 @@ export function AlphaTrade() {
 
             {/* Feature 2 */}
             <div className="flex gap-6 items-start relative z-10">
-              <div className="w-14 h-14 rounded-2xl bg-[#0a0d14] border border-[#101520] flex items-center justify-center shrink-0">
-                <Shield className="w-6 h-6 text-[#60a5fa]" />
+              <div className="w-14 h-14 icon-squircle shrink-0">
+                <Shield className="w-6 h-6 text-[#34d399]" />
               </div>
               <div className="flex flex-col pt-1">
                 <h3 className="text-sm font-bold text-white tracking-widest uppercase mb-2">Non-Custodial</h3>
@@ -140,7 +140,7 @@ export function AlphaTrade() {
 
             {/* Feature 3 */}
             <div className="flex gap-6 items-start relative z-10">
-              <div className="w-14 h-14 rounded-2xl bg-[#0a1410] border border-[#10201a] flex items-center justify-center shrink-0">
+              <div className="w-14 h-14 icon-squircle shrink-0">
                 <Users className="w-6 h-6 text-[#34d399]" />
               </div>
               <div className="flex flex-col pt-1">
