@@ -21,28 +21,28 @@ const AlphaIcon = (props: any) => (
 );
 
 // High-fidelity glowing 3D metallic hexagon badge container
-function HexagonBadge({ 
-  icon: Icon, 
-  iconSrc, 
-  color, 
-  glowColor, 
-  locked, 
-  unlocked, 
-  size = "w-20 h-20" 
-}: { 
-  icon?: any; 
-  iconSrc?: string; 
-  color: string; 
-  glowColor: string; 
-  locked: boolean; 
-  unlocked: boolean; 
-  size?: string; 
+function HexagonBadge({
+  icon: Icon,
+  iconSrc,
+  color,
+  glowColor,
+  locked,
+  unlocked,
+  size = "w-20 h-20"
+}: {
+  icon?: any;
+  iconSrc?: string;
+  color: string;
+  glowColor: string;
+  locked: boolean;
+  unlocked: boolean;
+  size?: string;
 }) {
   return (
     <div className={cn("relative flex items-center justify-center select-none group", size)}>
       {/* Outer glow ring */}
       {!locked && (
-        <div 
+        <div
           className="absolute inset-0 transition-opacity duration-300 opacity-60 group-hover:opacity-100 filter blur-md"
           style={{
             color: glowColor,
@@ -59,31 +59,31 @@ function HexagonBadge({
       {!iconSrc ? (
         <svg viewBox="0 0 100 100" className="w-full h-full relative z-10 drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]">
           <defs>
-            <linearGradient id={`grad-border-${color.replace('#','')}`} x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id={`grad-border-${color.replace('#', '')}`} x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor={locked ? "#333" : "#ffffff"} stopOpacity={locked ? 0.3 : 0.8} />
               <stop offset="40%" stopColor={color} stopOpacity={locked ? 0.1 : 0.4} />
               <stop offset="60%" stopColor={color} stopOpacity={locked ? 0.1 : 0.4} />
               <stop offset="100%" stopColor={locked ? "#222" : "#000000"} stopOpacity={locked ? 0.4 : 0.9} />
             </linearGradient>
-            <linearGradient id={`grad-bg-${color.replace('#','')}`} x1="0%" y1="0%" x2="0%" y2="100%">
+            <linearGradient id={`grad-bg-${color.replace('#', '')}`} x1="0%" y1="0%" x2="0%" y2="100%">
               <stop offset="0%" stopColor="#0c0e12" />
               <stop offset="100%" stopColor="#040506" />
             </linearGradient>
           </defs>
 
           {/* Inner Background Fill */}
-          <polygon 
-            points="50,7 87,28.5 87,71.5 50,93 13,71.5 13,28.5" 
-            fill={`url(#grad-bg-${color.replace('#','')})`}
+          <polygon
+            points="50,7 87,28.5 87,71.5 50,93 13,71.5 13,28.5"
+            fill={`url(#grad-bg-${color.replace('#', '')})`}
           />
 
           {/* Inner Glow Border */}
           {!locked && (
-            <polygon 
-              points="50,9 85,29.5 85,70.5 50,91 15,70.5 15,29.5" 
-              fill="none" 
-              stroke={color} 
-              strokeWidth="1.5" 
+            <polygon
+              points="50,9 85,29.5 85,70.5 50,91 15,70.5 15,29.5"
+              fill="none"
+              stroke={color}
+              strokeWidth="1.5"
               strokeOpacity="0.4"
               className="animate-pulse"
               style={{ animationDuration: '3s' }}
@@ -91,19 +91,19 @@ function HexagonBadge({
           )}
 
           {/* Main Metallic Outer Hexagon Border */}
-          <polygon 
-            points="50,5 89,27.5 89,72.5 50,95 11,72.5 11,27.5" 
-            fill="none" 
-            stroke={`url(#grad-border-${color.replace('#','')})`} 
-            strokeWidth="3.5" 
+          <polygon
+            points="50,5 89,27.5 89,72.5 50,95 11,72.5 11,27.5"
+            fill="none"
+            stroke={`url(#grad-border-${color.replace('#', '')})`}
+            strokeWidth="3.5"
           />
 
           {/* Subtle Inner Bevel Hexagon Border */}
-          <polygon 
-            points="50,7 87,28.5 87,71.5 50,93 13,71.5 13,28.5" 
-            fill="none" 
-            stroke={locked ? "#1f2937" : "#111827"} 
-            strokeWidth="1" 
+          <polygon
+            points="50,7 87,28.5 87,71.5 50,93 13,71.5 13,28.5"
+            fill="none"
+            stroke={locked ? "#1f2937" : "#111827"}
+            strokeWidth="1"
           />
         </svg>
       ) : (
@@ -120,9 +120,9 @@ function HexagonBadge({
           locked ? "opacity-35 grayscale" : "opacity-90"
         )}>
           {Icon ? (
-            <Icon 
-              className="w-[38%] h-[38%]" 
-              style={{ color: locked ? "#4b5563" : color }} 
+            <Icon
+              className="w-[38%] h-[38%]"
+              style={{ color: locked ? "#4b5563" : color }}
               strokeWidth={2}
             />
           ) : null}
@@ -215,7 +215,7 @@ const BADGES = [
     icon: '/Images/Badges/scout_badge.png',
     color: '#00e599',
     glowColor: 'rgba(0, 229, 153, 0.4)',
-    rarity: 'Legendary' as const,
+    rarity: 'Common' as const,
   },
   {
     id: 'b2',
@@ -335,9 +335,9 @@ export function Tasks() {
       {/* Background glow effects */}
       <div className="absolute top-0 left-0 w-full h-[400px] bg-gradient-to-b from-[#34d399]/5 to-transparent pointer-events-none" />
       <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] bg-[#34d399]/10 blur-[150px] rounded-full pointer-events-none" />
-      
+
       <div className="max-w-5xl w-full mx-auto p-6 md:p-8 relative z-10 flex-1 flex flex-col font-sans">
-        
+
         {/* Navigation Tabs (Moved above Header Section) */}
         <div className="flex w-full md:w-auto p-1 bg-transparent rounded-[14px] border border-[#1a1f26] gap-1 max-w-max mb-6">
           <button
@@ -388,12 +388,12 @@ export function Tasks() {
                   Missions & Referrals
                 </h1>
               </div>
-              
+
               <p className="text-[#a0a0a0] text-[15px] leading-relaxed">
                 Complete your daily and weekly trading tasks to earn XP. Accumulate XP to unlock premium tiers, fee discounts, and exclusive AI agent tools, and earn up to 70% fee share by referring users.
               </p>
             </div>
-            
+
             {/* Quick Stats - Distinct Cards */}
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full xl:w-auto">
               {/* Total XP Card */}
@@ -435,9 +435,9 @@ export function Tasks() {
                 )}
               </div>
               <div className="w-full h-2.5 bg-[#111] rounded-full overflow-hidden border border-[#222]">
-                <div 
+                <div
                   className="h-full rounded-full transition-all duration-1000 ease-out relative"
-                  style={{ 
+                  style={{
                     width: `${activeTab === 'referrals' ? 0 : progressPercent}%`,
                     background: 'linear-gradient(90deg, #10b981, #00e599)'
                   }}
@@ -472,10 +472,10 @@ export function Tasks() {
                 <div className="flex flex-col sm:flex-row items-center gap-3">
                   <div className="relative flex-1 w-full">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-mono">hi5.com/ref/</span>
-                    <input 
-                      type="text" 
-                      placeholder="YOUR-CODE" 
-                      className="w-full bg-[#0a0a0a] border border-[#222] rounded-xl pl-[105px] pr-4 py-3.5 text-white font-mono uppercase outline-none focus:border-[#34d399]/50 transition-colors placeholder:text-gray-700" 
+                    <input
+                      type="text"
+                      placeholder="YOUR-CODE"
+                      className="w-full bg-[#0a0a0a] border border-[#222] rounded-xl pl-[105px] pr-4 py-3.5 text-white font-mono uppercase outline-none focus:border-[#34d399]/50 transition-colors placeholder:text-gray-700"
                     />
                   </div>
                   <button className="w-full sm:w-auto bg-gradient-to-r from-[#34d399] to-[#2bb280] text-[#050505] font-bold px-8 py-3.5 rounded-xl hover:opacity-90 transition-opacity shrink-0 shadow-[0_0_20px_rgba(52,211,153,0.2)]">
@@ -488,7 +488,7 @@ export function Tasks() {
               </div>
               <hr className="border-[#222] my-6" />
               <p className="text-gray-400 text-[15px] leading-relaxed">
-                Activate a referral code to get an 8% fee discount for lifetime on trading volume. <br/>
+                Activate a referral code to get an 8% fee discount for lifetime on trading volume. <br />
                 <a href="#" className="text-[#34d399] hover:underline italic">Learn more.</a>
               </p>
             </div>
@@ -516,19 +516,19 @@ export function Tasks() {
           </div>
         ) : activeTab === 'badges' ? (
           <div className="space-y-8 pb-12 mt-6">
-            
+
             {/* SECTION 1: Current Badge Hero Info (No outer card border) */}
             <div className="relative flex flex-col md:flex-row items-center gap-8 md:gap-16 py-4">
               {/* Left Side: Large Scout Badge with glowing rim */}
               <div className="relative shrink-0 w-56 h-56 md:w-64 md:h-64 flex items-center justify-center">
-                <img 
-                  src="/Images/Badges/scout_badge.png" 
-                  alt="Scout Badge" 
-                  className="w-[85%] h-[85%] object-contain drop-shadow-[0_0_35px_rgba(0,229,153,0.45)] relative z-10" 
+                <img
+                  src="/Images/Badges/scout_badge.png"
+                  alt="Scout Badge"
+                  className="w-[85%] h-[85%] object-contain drop-shadow-[0_0_35px_rgba(0,229,153,0.45)] relative z-10"
                 />
                 {/* Decorative glowing rim behind the badge */}
                 <div className="absolute inset-0 rounded-full scale-[1.1] bg-[radial-gradient(circle,rgba(0,229,153,0.15)_0%,transparent_75%)] animate-pulse" style={{ animationDuration: '4s' }} />
-                
+
                 {/* Dotted target rings */}
                 <div className="absolute inset-0 border border-[#00e599]/15 rounded-full scale-[1.12] border-dashed" />
                 <div className="absolute inset-0 border border-[#00e599]/5 rounded-full scale-[1.22] border-dashed" />
@@ -543,11 +543,11 @@ export function Tasks() {
                     <span className="text-[10px] font-extrabold tracking-[0.25em] uppercase">Current Badge</span>
                     <span className="w-5 h-[1.5px] bg-[#00e599]/40" />
                   </div>
-                  
+
                   <h2 className="text-5xl md:text-[56px] font-black text-white tracking-tight mb-4 leading-none">
                     Scout
                   </h2>
-                  
+
                   <div className="flex items-center gap-3 mb-5">
                     <span className="bg-[#00e599]/10 text-[#00e599] border border-[#00e599]/30 px-3.5 py-1 rounded-full text-[10px] font-black tracking-widest uppercase shadow-[0_0_12px_rgba(0,229,153,0.15)]">
                       Legendary
@@ -556,7 +556,7 @@ export function Tasks() {
                       <span className="w-1.5 h-1.5 rounded-full bg-[#00e599] shadow-[0_0_8px_#00e599]" /> Current Tier
                     </span>
                   </div>
-                  
+
                   <p className="text-[#a0a0a0] text-[15px] leading-relaxed max-w-md mb-8">
                     Level up past the novice tiers by accumulating EP.
                   </p>
@@ -574,10 +574,10 @@ export function Tasks() {
                       <div className="text-2xl font-black text-white leading-none font-mono">12,450</div>
                     </div>
                   </div>
-                  
+
                   {/* Vertical Divider */}
                   <div className="hidden sm:block h-10 w-[1px] bg-[#1a1f26]" />
-                  
+
                   {/* Next Unlock Mini-Card */}
                   <div className="w-full sm:w-auto flex-1 max-w-[280px]">
                     <div className="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-2">Next Unlock</div>
@@ -616,12 +616,12 @@ export function Tasks() {
                 </div>
                 <span className="text-3xl font-black text-[#00e599] font-mono leading-none">80%</span>
               </div>
-              
+
               {/* Custom pointed gradient progress bar */}
               <div className="w-full h-5 bg-[#07090b] rounded-full border border-[#1a1f26] relative overflow-hidden">
-                <div 
+                <div
                   className="h-full rounded-full transition-all duration-1000 ease-out relative"
-                  style={{ 
+                  style={{
                     width: '80%',
                     background: 'linear-gradient(90deg, #10b981, #00e599)'
                   }}
@@ -632,7 +632,7 @@ export function Tasks() {
                   </div>
 
                   {/* Diagonal stripe overlay */}
-                  <div 
+                  <div
                     className="absolute inset-0 opacity-15"
                     style={{
                       backgroundImage: 'linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent)',
@@ -641,7 +641,7 @@ export function Tasks() {
                   />
                 </div>
               </div>
-              
+
               <div className="flex justify-between items-center mt-4 text-xs font-semibold">
                 <span className="font-mono text-gray-400">
                   <span className="text-[#00e599] font-bold">12,000</span> <span className="text-gray-600">/ 15,000 XP</span>
@@ -667,29 +667,29 @@ export function Tasks() {
 
               {/* Journey Map Layout */}
               <div className="relative max-w-4xl mx-auto py-8">
-                
+
                 {/* Desktop Journey Layout (Visible on Desktop only) */}
                 <div className="hidden md:block relative h-[380px] w-full mt-4">
                   {/* Responsive Dotted Connecting Lines Background */}
                   <div className="absolute inset-0 z-0">
                     <svg className="w-full h-full" viewBox="0 0 1000 380" preserveAspectRatio="none" style={{ pointerEvents: "none" }}>
                       {/* Active/Completed line */}
-                      <path 
-                        d="M 100,80 L 300,80" 
-                        stroke="#00e599" 
-                        strokeWidth="2.5" 
-                        strokeDasharray="5, 5" 
-                        fill="none" 
+                      <path
+                        d="M 100,80 L 300,80"
+                        stroke="#00e599"
+                        strokeWidth="2.5"
+                        strokeDasharray="5, 5"
+                        fill="none"
                       />
                       {/* Locked line */}
-                      <path 
-                        d="M 300,80 L 900,80 C 945,80 965,120 965,180 L 35,180 C 35,240 55,280 200,280 L 800,280 C 845,280 875,280 910,310" 
-                        stroke="#1c232e" 
-                        strokeWidth="2" 
-                        strokeDasharray="5, 5" 
-                        fill="none" 
+                      <path
+                        d="M 300,80 L 900,80 C 945,80 965,120 965,180 L 35,180 C 35,240 55,280 200,280 L 800,280 C 845,280 875,280 910,310"
+                        stroke="#1c232e"
+                        strokeWidth="2"
+                        strokeDasharray="5, 5"
+                        fill="none"
                       />
-                      
+
                       {/* Connection Dots */}
                       {/* Dot 1 (Active) */}
                       <circle cx="200" cy="80" r="4.5" fill="#050505" stroke="#00e599" strokeWidth="2.5" />
@@ -718,7 +718,7 @@ export function Tasks() {
                         return { left: `${(index - 5) * 20 + 20}%`, top: '280px' };
                       }
                     };
-                    
+
                     const getRarityColorClasses = (rarity: string) => {
                       switch (rarity.toLowerCase()) {
                         case 'legendary':
@@ -735,13 +735,13 @@ export function Tasks() {
                     const pos = getBadgePosition(idx);
                     const isLocked = !badge.unlocked && !badge.active;
                     return (
-                      <div 
-                        key={badge.id} 
+                      <div
+                        key={badge.id}
                         className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center text-center group cursor-pointer z-10 w-32"
                         style={{ left: pos.left, top: pos.top }}
                       >
-                        <HexagonBadge 
-                          icon={typeof badge.icon !== 'string' ? badge.icon : undefined} 
+                        <HexagonBadge
+                          icon={typeof badge.icon !== 'string' ? badge.icon : undefined}
                           iconSrc={typeof badge.icon === 'string' ? badge.icon : undefined}
                           color={badge.color}
                           glowColor={badge.glowColor}
@@ -757,7 +757,7 @@ export function Tasks() {
                         </h4>
                         <span className={cn(
                           "text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border mt-1.5 transition-colors",
-                          badge.unlocked || badge.active 
+                          badge.unlocked || badge.active
                             ? getRarityColorClasses(badge.rarity)
                             : "text-gray-500 bg-[#161a22]/50 border-gray-800"
                         )}>
@@ -772,7 +772,7 @@ export function Tasks() {
                 <div className="md:hidden grid grid-cols-2 sm:grid-cols-3 gap-y-10 gap-x-4 py-4 relative z-10">
                   {BADGES.map((badge) => {
                     const isLocked = !badge.unlocked && !badge.active;
-                    
+
                     const getRarityColorClasses = (rarity: string) => {
                       switch (rarity.toLowerCase()) {
                         case 'legendary':
@@ -788,8 +788,8 @@ export function Tasks() {
 
                     return (
                       <div key={badge.id} className="flex flex-col items-center text-center group">
-                        <HexagonBadge 
-                          icon={typeof badge.icon !== 'string' ? badge.icon : undefined} 
+                        <HexagonBadge
+                          icon={typeof badge.icon !== 'string' ? badge.icon : undefined}
                           iconSrc={typeof badge.icon === 'string' ? badge.icon : undefined}
                           color={badge.color}
                           glowColor={badge.glowColor}
@@ -805,7 +805,7 @@ export function Tasks() {
                         </h4>
                         <span className={cn(
                           "text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border mt-1.5",
-                          badge.unlocked || badge.active 
+                          badge.unlocked || badge.active
                             ? getRarityColorClasses(badge.rarity)
                             : "text-gray-500 bg-[#161a22]/50 border-gray-800"
                         )}>
@@ -831,50 +831,50 @@ export function Tasks() {
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pb-12">
             {tasks.map((task) => (
-            <div 
-              key={task.id}
-              className={cn(
-                "card-base p-4 md:p-5 flex items-center gap-4 group transition-all duration-300",
-                task.completed ? "border-[#34d399]/20 bg-[#34d399]/[0.02]" : "hover:border-[#333] hover:bg-[#111]/50"
-              )}
-            >
-              <div className="shrink-0 relative">
-                {task.completed ? (
-                  <div className="relative">
-                    <CheckCircle2 className="w-7 h-7 text-[#34d399] relative z-10" />
-                    <div className="absolute inset-0 bg-[#34d399] blur-md opacity-30 rounded-full" />
-                  </div>
-                ) : (
-                  <Circle className="w-7 h-7 text-gray-700 group-hover:text-gray-500 transition-colors" />
+              <div
+                key={task.id}
+                className={cn(
+                  "card-base p-4 md:p-5 flex items-center gap-4 group transition-all duration-300",
+                  task.completed ? "border-[#34d399]/20 bg-[#34d399]/[0.02]" : "hover:border-[#333] hover:bg-[#111]/50"
                 )}
-              </div>
-              
-              <div className="flex-1 min-w-0">
-                <h3 className={cn(
-                  "font-bold text-[15px] truncate transition-colors",
-                  task.completed ? "text-gray-300 line-through decoration-gray-600" : "text-gray-200 group-hover:text-white"
-                )}>
-                  {task.title}
-                </h3>
-                <div className="flex items-center gap-1.5 mt-1">
-                  <div className={cn(
-                    "flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider",
-                    task.completed ? "text-gray-500 bg-[#1a1a1a]" : "text-[#fbbf24] bg-[#fbbf24]/10"
+              >
+                <div className="shrink-0 relative">
+                  {task.completed ? (
+                    <div className="relative">
+                      <CheckCircle2 className="w-7 h-7 text-[#34d399] relative z-10" />
+                      <div className="absolute inset-0 bg-[#34d399] blur-md opacity-30 rounded-full" />
+                    </div>
+                  ) : (
+                    <Circle className="w-7 h-7 text-gray-700 group-hover:text-gray-500 transition-colors" />
+                  )}
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <h3 className={cn(
+                    "font-bold text-[15px] truncate transition-colors",
+                    task.completed ? "text-gray-300 line-through decoration-gray-600" : "text-gray-200 group-hover:text-white"
                   )}>
-                    <Star className="w-3 h-3" />
-                    +{task.xp} XP
+                    {task.title}
+                  </h3>
+                  <div className="flex items-center gap-1.5 mt-1">
+                    <div className={cn(
+                      "flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold tracking-wider",
+                      task.completed ? "text-gray-500 bg-[#1a1a1a]" : "text-[#fbbf24] bg-[#fbbf24]/10"
+                    )}>
+                      <Star className="w-3 h-3" />
+                      +{task.xp} XP
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {!task.completed && (
-                <button className="btn-primary py-1.5 px-4 text-[12px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">
-                  Go
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
+                {!task.completed && (
+                  <button className="btn-primary py-1.5 px-4 text-[12px] font-bold opacity-0 group-hover:opacity-100 transition-opacity">
+                    Go
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
         )}
 
       </div>
