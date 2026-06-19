@@ -336,10 +336,10 @@ export function Tasks() {
       <div className="absolute top-0 left-0 w-full h-[400px] bg-gradient-to-b from-[#34d399]/5 to-transparent pointer-events-none" />
       <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] bg-[#34d399]/10 blur-[150px] rounded-full pointer-events-none" />
 
-      <div className="max-w-5xl w-full mx-auto p-6 md:p-8 relative z-10 flex-1 flex flex-col font-sans">
+      <div className="max-w-5xl w-full mx-auto p-4 md:p-6 relative z-10 flex-1 flex flex-col font-sans">
 
         {/* Navigation Tabs (Moved above Header Section) */}
-        <div className="flex w-full md:w-auto p-1 bg-transparent rounded-[14px] border border-[#1a1f26] gap-1 max-w-max mb-6">
+        <div className="flex w-full md:w-auto p-1 bg-transparent rounded-[14px] border border-[#1a1f26] gap-1 max-w-max mb-4">
           <button
             onClick={() => setActiveTab('daily')}
             className={cn(
@@ -515,12 +515,12 @@ export function Tasks() {
             </div>
           </div>
         ) : activeTab === 'badges' ? (
-          <div className="space-y-8 pb-12 mt-6">
+          <div className="space-y-4 pb-4 mt-2">
 
             {/* SECTION 1: Current Badge Hero Info (No outer card border) */}
-            <div className="relative flex flex-col md:flex-row items-center gap-8 md:gap-16 py-4">
+            <div className="relative flex flex-col md:flex-row items-center gap-4 md:gap-8 py-2">
               {/* Left Side: Large Scout Badge with glowing rim */}
-              <div className="relative shrink-0 w-56 h-56 md:w-64 md:h-64 flex items-center justify-center">
+              <div className="relative shrink-0 w-36 h-36 md:w-48 md:h-48 flex items-center justify-center">
                 <img
                   src="/Images/Badges/scout_badge.png"
                   alt="Scout Badge"
@@ -538,17 +538,17 @@ export function Tasks() {
               <div className="flex-1 w-full flex flex-col justify-between">
                 <div>
                   {/* CURRENT BADGE Header with dashes */}
-                  <div className="flex items-center gap-3 mb-3 text-[#00e599]/85">
+                  <div className="flex items-center gap-3 mb-2 text-[#00e599]/85">
                     <span className="w-5 h-[1.5px] bg-[#00e599]/40" />
                     <span className="text-[10px] font-extrabold tracking-[0.25em] uppercase">Current Badge</span>
                     <span className="w-5 h-[1.5px] bg-[#00e599]/40" />
                   </div>
 
-                  <h2 className="text-5xl md:text-[56px] font-black text-white tracking-tight mb-4 leading-none">
+                  <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-2 leading-none">
                     Scout
                   </h2>
 
-                  <div className="flex items-center gap-3 mb-5">
+                  <div className="flex items-center gap-3 mb-3">
                     <span className="bg-[#00e599]/10 text-[#00e599] border border-[#00e599]/30 px-3.5 py-1 rounded-full text-[10px] font-black tracking-widest uppercase shadow-[0_0_12px_rgba(0,229,153,0.15)]">
                       Legendary
                     </span>
@@ -557,13 +557,13 @@ export function Tasks() {
                     </span>
                   </div>
 
-                  <p className="text-[#a0a0a0] text-[15px] leading-relaxed max-w-md mb-8">
+                  <p className="text-[#a0a0a0] text-sm leading-relaxed max-w-md mb-4">
                     Level up past the novice tiers by accumulating EP.
                   </p>
                 </div>
 
                 {/* Stats Breakdown Row */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-8 sm:gap-12 pt-5 border-t border-[#1a1f26]">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 pt-3 border-t border-[#1a1f26]">
                   {/* XP Earned */}
                   <div className="flex items-center gap-3">
                     <div className="w-11 h-11 rounded-full border border-[#fbbf24]/30 bg-[#fbbf24]/5 flex items-center justify-center shadow-[0_0_15px_rgba(251,191,36,0.08)]">
@@ -602,8 +602,8 @@ export function Tasks() {
             </div>
 
             {/* SECTION 2: Progress to Speculator (Card Box) */}
-            <div className="card-base p-6 md:p-8 border border-[#1a1f26] bg-[#0a0c0f]/80 backdrop-blur-md rounded-3xl relative overflow-hidden">
-              <div className="flex justify-between items-end mb-4">
+            <div className="card-base p-4 md:p-5 border border-[#1a1f26] bg-[#0a0c0f]/80 backdrop-blur-md rounded-2xl relative overflow-hidden">
+              <div className="flex justify-between items-end mb-3">
                 <div>
                   <h3 className="text-xs font-black text-[#00e599] uppercase tracking-[0.2em] mb-1">
                     Progress to Speculator
@@ -653,11 +653,11 @@ export function Tasks() {
             </div>
 
             {/* SECTION 3: Badge Journey */}
-            <div className="card-base p-6 md:p-8 border border-[#1a1f26] bg-[#0a0c0f]/80 backdrop-blur-md rounded-3xl overflow-hidden">
-              <div className="flex justify-between items-start mb-10">
+            <div className="card-base p-4 md:p-5 border border-[#1a1f26] bg-[#0a0c0f]/80 backdrop-blur-md rounded-2xl overflow-hidden">
+              <div className="flex justify-between items-start mb-4">
                 <div>
                   <h3 className="text-xs font-black text-[#00e599] uppercase tracking-[0.2em] mb-1">Badge Journey</h3>
-                  <p className="text-gray-400 text-sm">Complete badges in order to unlock the next tier.</p>
+                  <p className="text-gray-400 text-xs">Complete badges in order to unlock the next tier.</p>
                 </div>
                 <div className="flex items-center gap-2 border border-[#1a1f26] bg-[#080a0d] px-3.5 py-2 rounded-xl cursor-pointer hover:bg-[#11161d] transition-colors">
                   <span className="text-xs font-bold text-gray-300">All Status</span>
@@ -666,16 +666,16 @@ export function Tasks() {
               </div>
 
               {/* Journey Map Layout */}
-              <div className="relative max-w-4xl mx-auto py-8">
+              <div className="relative max-w-4xl mx-auto py-2">
 
                 {/* Desktop Journey Layout (Visible on Desktop only) */}
-                <div className="hidden md:block relative h-[380px] w-full mt-4">
+                <div className="hidden md:block relative h-[220px] w-full mt-2">
                   {/* Responsive Dotted Connecting Lines Background */}
                   <div className="absolute inset-0 z-0">
-                    <svg className="w-full h-full" viewBox="0 0 1000 380" preserveAspectRatio="none" style={{ pointerEvents: "none" }}>
+                    <svg className="w-full h-full" viewBox="0 0 1000 220" preserveAspectRatio="none" style={{ pointerEvents: "none" }}>
                       {/* Active/Completed line */}
                       <path
-                        d="M 100,80 L 300,80"
+                        d="M 100,50 L 300,50"
                         stroke="#00e599"
                         strokeWidth="2.5"
                         strokeDasharray="5, 5"
@@ -683,7 +683,7 @@ export function Tasks() {
                       />
                       {/* Locked line */}
                       <path
-                        d="M 300,80 L 900,80 C 945,80 965,120 965,180 L 35,180 C 35,240 55,280 200,280 L 800,280 C 845,280 875,280 910,310"
+                        d="M 300,50 L 900,50 C 945,50 965,80 965,110 L 35,110 C 35,140 55,170 200,170 L 800,170 C 845,170 875,170 910,190"
                         stroke="#1c232e"
                         strokeWidth="2"
                         strokeDasharray="5, 5"
@@ -692,19 +692,19 @@ export function Tasks() {
 
                       {/* Connection Dots */}
                       {/* Dot 1 (Active) */}
-                      <circle cx="200" cy="80" r="4.5" fill="#050505" stroke="#00e599" strokeWidth="2.5" />
+                      <circle cx="200" cy="50" r="4.5" fill="#050505" stroke="#00e599" strokeWidth="2.5" />
                       {/* Dot 2 (Active/Transition) */}
-                      <circle cx="400" cy="80" r="4.5" fill="#050505" stroke="#00e599" strokeWidth="2.5" />
+                      <circle cx="400" cy="50" r="4.5" fill="#050505" stroke="#00e599" strokeWidth="2.5" />
                       {/* Dot 3 (Locked) */}
-                      <circle cx="600" cy="80" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
+                      <circle cx="600" cy="50" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
                       {/* Dot 4 (Locked) */}
-                      <circle cx="800" cy="80" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
+                      <circle cx="800" cy="50" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
                       {/* Dot 5 (Locked) */}
-                      <circle cx="300" cy="280" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
+                      <circle cx="300" cy="170" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
                       {/* Dot 6 (Locked) */}
-                      <circle cx="500" cy="280" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
+                      <circle cx="500" cy="170" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
                       {/* Dot 7 (Locked) */}
-                      <circle cx="700" cy="280" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
+                      <circle cx="700" cy="170" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
                     </svg>
                   </div>
 
@@ -713,9 +713,9 @@ export function Tasks() {
                     // Helper to calculate center percentages
                     const getBadgePosition = (index: number) => {
                       if (index < 5) {
-                        return { left: `${index * 20 + 10}%`, top: '80px' };
+                        return { left: `${index * 20 + 10}%`, top: '50px' };
                       } else {
-                        return { left: `${(index - 5) * 20 + 20}%`, top: '280px' };
+                        return { left: `${(index - 5) * 20 + 20}%`, top: '170px' };
                       }
                     };
 
@@ -747,7 +747,7 @@ export function Tasks() {
                           glowColor={badge.glowColor}
                           locked={isLocked}
                           unlocked={badge.unlocked}
-                          size="w-[72px] h-[72px]"
+                          size="w-[60px] h-[60px]"
                         />
                         <h4 className={cn(
                           "font-bold text-xs mt-3 transition-colors tracking-tight truncate w-full px-1",
@@ -795,7 +795,7 @@ export function Tasks() {
                           glowColor={badge.glowColor}
                           locked={isLocked}
                           unlocked={badge.unlocked}
-                          size="w-[72px] h-[72px]"
+                          size="w-[60px] h-[60px]"
                         />
                         <h4 className={cn(
                           "font-bold text-xs mt-3 transition-colors",
