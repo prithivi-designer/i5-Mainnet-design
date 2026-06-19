@@ -563,14 +563,14 @@ export function Tasks() {
                 </div>
 
                 {/* Stats Breakdown Row */}
-                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 sm:gap-8 pt-3 border-t border-[#1a1f26]">
+                <div className="mt-2 flex flex-col sm:flex-row items-stretch sm:items-center border border-[#1a1f26] bg-[#080a0d] rounded-xl p-4 gap-6 relative">
                   {/* XP Earned */}
-                  <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-full border border-[#fbbf24]/30 bg-[#fbbf24]/5 flex items-center justify-center shadow-[0_0_15px_rgba(251,191,36,0.08)]">
+                  <div className="flex-1 flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full border border-[#fbbf24]/30 bg-[#fbbf24]/5 flex items-center justify-center shadow-[0_0_15px_rgba(251,191,36,0.08)]">
                       <Star className="w-5 h-5 text-[#fbbf24]" fill="none" />
                     </div>
                     <div>
-                      <div className="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-0.5">XP Earned</div>
+                      <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-0.5">XP Earned</div>
                       <div className="text-2xl font-black text-white leading-none font-mono">12,450</div>
                     </div>
                   </div>
@@ -578,77 +578,93 @@ export function Tasks() {
                   {/* Vertical Divider */}
                   <div className="hidden sm:block h-10 w-[1px] bg-[#1a1f26]" />
 
-                  {/* Next Unlock Mini-Card */}
-                  <div className="w-full sm:w-auto flex-1 max-w-[280px]">
-                    <div className="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-2">Next Unlock</div>
-                    <div className="flex items-center justify-between bg-[#080a0d] border border-[#141920] hover:border-[#00e599]/30 px-4 py-3 rounded-2xl cursor-pointer group transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.4)]">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full border border-[#00e599]/30 bg-[#00e599]/5 flex items-center justify-center shrink-0 relative shadow-[0_0_12px_rgba(0,229,153,0.1)]">
-                          <TrendingUp className="w-4.5 h-4.5 text-[#00e599]" />
-                          <div className="absolute inset-0 rounded-full border border-[#00e599]/10 scale-110" />
-                        </div>
-                        <div>
-                          <div className="text-sm font-black text-white group-hover:text-[#00e599] transition-colors">Speculator</div>
-                          <div className="inline-block mt-0.5 text-[8px] font-extrabold text-[#00e599] bg-[#00e599]/10 border border-[#00e599]/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
-                            Common
-                          </div>
+                  {/* Next Unlock */}
+                  <div className="flex-1 flex items-center justify-between cursor-pointer group">
+                    <div className="flex items-center gap-4">
+                      {/* Small Hexagon Badge for Speculator */}
+                      <div className="relative w-12 h-12 flex items-center justify-center">
+                        <HexagonBadge
+                          icon={TrendingUp}
+                          color="#10b981"
+                          glowColor="transparent"
+                          locked={false}
+                          unlocked={false}
+                          size="w-12 h-12"
+                        />
+                      </div>
+                      <div>
+                        <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-0.5">Next Unlock</div>
+                        <div className="text-base font-black text-white group-hover:text-[#00e599] transition-colors leading-none mb-1">Speculator</div>
+                        <div className="inline-block text-[8px] font-extrabold text-[#10b981] bg-[#10b981]/10 border border-[#10b981]/30 px-1.5 py-0.5 rounded-full uppercase tracking-wider">
+                          Common
                         </div>
                       </div>
-                      <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
                     </div>
+                    <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
                   </div>
                 </div>
               </div>
             </div>
 
             {/* SECTION 2: Progress to Speculator (Card Box) */}
-            <div className="card-base p-4 md:p-5 border border-[#1a1f26] bg-[#0a0c0f]/80 backdrop-blur-md rounded-2xl relative overflow-hidden">
-              <div className="flex justify-between items-end mb-3">
-                <div>
-                  <h3 className="text-xs font-black text-[#00e599] uppercase tracking-[0.2em] mb-1">
-                    Progress to Speculator
-                  </h3>
-                  <div className="flex items-center gap-2 text-xs text-gray-400">
-                    <span className="text-white font-bold">Scout</span>
-                    <span className="text-gray-600">→</span>
-                    <span className="text-[#00e599] font-bold">Speculator</span>
+            <div className="card-base p-5 border border-[#1a1f26] bg-[#0a0c0f]/80 backdrop-blur-md rounded-2xl relative overflow-hidden">
+              <h3 className="text-xs font-black text-[#00e599] uppercase tracking-[0.15em] mb-6">
+                XP Progress to Speculator
+              </h3>
+
+              {/* Progress Bar Container */}
+              <div className="flex items-center gap-4 mb-8">
+                {/* Current Badge (Scout) */}
+                <div className="flex items-center gap-3 shrink-0">
+                  <div className="w-6 h-6 rounded-full border-[3px] border-[#00e599] bg-[#00e599]/10 shadow-[0_0_12px_rgba(0,229,153,0.3)]" />
+                  <div>
+                    <div className="text-[13px] font-bold text-white leading-tight">Scout</div>
+                    <div className="text-[10px] text-[#00e599] font-medium leading-tight">Current</div>
                   </div>
                 </div>
-                <span className="text-3xl font-black text-[#00e599] font-mono leading-none">80%</span>
-              </div>
 
-              {/* Custom pointed gradient progress bar */}
-              <div className="w-full h-5 bg-[#07090b] rounded-full border border-[#1a1f26] relative overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all duration-1000 ease-out relative"
-                  style={{
-                    width: '80%',
-                    background: 'linear-gradient(90deg, #10b981, #00e599)'
-                  }}
-                >
-                  {/* Pointy Diamond Head / Chevron end overlay */}
-                  <div className="absolute right-0 top-0 bottom-0 w-3 flex items-center justify-end">
-                    <div className="w-0 h-0 border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent border-l-[10px] border-l-[#00e599] translate-x-[3px]" />
+                {/* Progress Bar Line */}
+                <div className="flex-1 relative h-1.5 bg-[#1c232e] rounded-full mx-1">
+                  <div className="absolute left-0 top-0 bottom-0 bg-[#00e599] rounded-full shadow-[0_0_10px_#00e599]" style={{ width: '80%' }} />
+                  {/* Thumb / Diamond */}
+                  <div className="absolute top-1/2 -translate-y-1/2 flex flex-col items-center" style={{ left: '80%' }}>
+                    <div className="w-3.5 h-3.5 bg-[#00e599] rotate-45 shadow-[0_0_12px_#00e599]" />
+                    <div className="absolute top-5 text-[11px] font-bold text-[#00e599]">80%</div>
                   </div>
+                  {/* Small gray circle at the end of the line */}
+                  <div className="absolute right-[-4px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full border-2 border-gray-500 bg-[#0a0c0f]" />
+                </div>
 
-                  {/* Diagonal stripe overlay */}
-                  <div
-                    className="absolute inset-0 opacity-15"
-                    style={{
-                      backgroundImage: 'linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent)',
-                      backgroundSize: '16px 16px'
-                    }}
-                  />
+                {/* Next Badge (Speculator) */}
+                <div className="flex items-center gap-3 shrink-0">
+                  <div className="relative flex items-center justify-center">
+                    <HexagonBadge
+                      icon={TrendingUp}
+                      color="#10b981"
+                      glowColor="transparent"
+                      locked={false}
+                      unlocked={false}
+                      size="w-10 h-10"
+                    />
+                  </div>
+                  <div>
+                    <div className="text-[13px] font-bold text-white leading-tight">Speculator</div>
+                    <div className="text-[10px] text-gray-400 font-medium leading-tight">Unlock</div>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex justify-between items-center mt-4 text-xs font-semibold">
-                <span className="font-mono text-gray-400">
-                  <span className="text-[#00e599] font-bold">12,000</span> <span className="text-gray-600">/ 15,000 XP</span>
-                </span>
-                <span className="text-gray-400">
-                  <span className="text-[#00e599] font-bold">3,000 XP</span> <span className="text-gray-600">to unlock Speculator</span>
-                </span>
+              {/* Bottom Text Row */}
+              <div className="grid grid-cols-3 items-center text-[11px] text-gray-400 border-t border-[#1a1f26]/60 pt-4 px-1">
+                <div className="text-left font-medium">
+                  <span className="text-[#00e599] font-mono font-bold">12,000 XP</span> / 15,000 XP
+                </div>
+                <div className="text-center font-medium">
+                  <span className="text-[#00e599] font-mono font-bold">3,000 XP</span> remaining
+                </div>
+                <div className="text-right font-medium">
+                  80% to next unlock
+                </div>
               </div>
             </div>
 
