@@ -1,8 +1,149 @@
 'use client';
 
 import { useState } from 'react';
-import { Target, CheckCircle2, Circle, Trophy, Star, Gift, Clock, ShieldCheck, TrendingUp, DollarSign, Award, Lock, Activity, Flame, Layers, Shield, ChevronRight, ChevronDown, Zap, Check } from 'lucide-react';
+import { Target, CheckCircle2, Circle, Trophy, Star, Gift, Clock, ShieldCheck, TrendingUp, DollarSign, Award, Lock, Activity, Flame, Layers, Shield, ChevronRight, ChevronDown, Zap, Check, Crown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+// Custom high-fidelity SVG icons to match mockup
+const DraftingCompassIcon = (props: any) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <circle cx="12" cy="5" r="1.5" />
+    <path d="M12 6.5 L7 20" />
+    <path d="M12 6.5 L17 20" />
+    <path d="M9 15 L15 15" />
+  </svg>
+);
+
+const AlphaIcon = (props: any) => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M20 8 C16 8, 10 12, 8 14 C6 16, 4 16, 4 12 C4 8, 6 8, 8 10 C10 12, 16 16, 20 16" />
+  </svg>
+);
+
+// High-fidelity glowing 3D metallic hexagon badge container
+function HexagonBadge({ 
+  icon: Icon, 
+  iconSrc, 
+  color, 
+  glowColor, 
+  locked, 
+  unlocked, 
+  size = "w-20 h-20" 
+}: { 
+  icon?: any; 
+  iconSrc?: string; 
+  color: string; 
+  glowColor: string; 
+  locked: boolean; 
+  unlocked: boolean; 
+  size?: string; 
+}) {
+  return (
+    <div className={cn("relative flex items-center justify-center select-none group", size)}>
+      {/* Outer glow ring */}
+      {!locked && (
+        <div 
+          className="absolute inset-0 transition-opacity duration-300 opacity-60 group-hover:opacity-100 filter blur-md"
+          style={{
+            color: glowColor,
+            filter: `drop-shadow(0 0 12px ${glowColor})`
+          }}
+        >
+          <svg viewBox="0 0 100 100" className="w-full h-full fill-current opacity-20">
+            <polygon points="50,5 89,27.5 89,72.5 50,95 11,72.5 11,27.5" />
+          </svg>
+        </div>
+      )}
+
+      {/* Main SVG Badge Frame - only if NOT rendering a custom image badge */}
+      {!iconSrc ? (
+        <svg viewBox="0 0 100 100" className="w-full h-full relative z-10 drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]">
+          <defs>
+            <linearGradient id={`grad-border-${color.replace('#','')}`} x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor={locked ? "#333" : "#ffffff"} stopOpacity={locked ? 0.3 : 0.8} />
+              <stop offset="40%" stopColor={color} stopOpacity={locked ? 0.1 : 0.4} />
+              <stop offset="60%" stopColor={color} stopOpacity={locked ? 0.1 : 0.4} />
+              <stop offset="100%" stopColor={locked ? "#222" : "#000000"} stopOpacity={locked ? 0.4 : 0.9} />
+            </linearGradient>
+            <linearGradient id={`grad-bg-${color.replace('#','')}`} x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#0c0e12" />
+              <stop offset="100%" stopColor="#040506" />
+            </linearGradient>
+          </defs>
+
+          {/* Inner Background Fill */}
+          <polygon 
+            points="50,7 87,28.5 87,71.5 50,93 13,71.5 13,28.5" 
+            fill={`url(#grad-bg-${color.replace('#','')})`}
+          />
+
+          {/* Inner Glow Border */}
+          {!locked && (
+            <polygon 
+              points="50,9 85,29.5 85,70.5 50,91 15,70.5 15,29.5" 
+              fill="none" 
+              stroke={color} 
+              strokeWidth="1.5" 
+              strokeOpacity="0.4"
+              className="animate-pulse"
+              style={{ animationDuration: '3s' }}
+            />
+          )}
+
+          {/* Main Metallic Outer Hexagon Border */}
+          <polygon 
+            points="50,5 89,27.5 89,72.5 50,95 11,72.5 11,27.5" 
+            fill="none" 
+            stroke={`url(#grad-border-${color.replace('#','')})`} 
+            strokeWidth="3.5" 
+          />
+
+          {/* Subtle Inner Bevel Hexagon Border */}
+          <polygon 
+            points="50,7 87,28.5 87,71.5 50,93 13,71.5 13,28.5" 
+            fill="none" 
+            stroke={locked ? "#1f2937" : "#111827"} 
+            strokeWidth="1" 
+          />
+        </svg>
+      ) : (
+        /* Image-based badge (like Scout) - needs to fill container */
+        <div className="w-[85%] h-[85%] relative z-10 flex items-center justify-center drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]">
+          <img src={iconSrc} className="w-full h-full object-contain" alt="Badge Image" />
+        </div>
+      )}
+
+      {/* Render Icon Content Overlay (for non-image badges) */}
+      {!iconSrc && (
+        <div className={cn(
+          "absolute inset-0 flex items-center justify-center z-20 transition-transform duration-300 group-hover:scale-110",
+          locked ? "opacity-35 grayscale" : "opacity-90"
+        )}>
+          {Icon ? (
+            <Icon 
+              className="w-[38%] h-[38%]" 
+              style={{ color: locked ? "#4b5563" : color }} 
+              strokeWidth={2}
+            />
+          ) : null}
+        </div>
+      )}
+
+      {/* Status Indicators overlay (checkmark or lock) at top-right */}
+      <div className="absolute top-[2%] right-[2%] z-30 drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+        {unlocked ? (
+          <div className="w-5.5 h-5.5 rounded-full bg-[#00e599] border-2 border-[#0a0c0f] flex items-center justify-center">
+            <CheckCircle2 className="w-3.5 h-3.5 text-[#0a0c0f]" strokeWidth={3.5} />
+          </div>
+        ) : locked ? (
+          <div className="w-5.5 h-5.5 rounded-full bg-[#161a22] border-2 border-[#0a0c0f] flex items-center justify-center">
+            <Lock className="w-3 text-gray-500" strokeWidth={2.5} />
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
 
 interface Task {
   id: string;
@@ -70,8 +211,10 @@ const BADGES = [
     description: 'Level up past the novice tiers by accumulating EP.',
     requirement: 'Reach 10,000 EP',
     unlocked: true,
+    active: false,
     icon: '/Images/Badges/scout_badge.png',
-    color: '#00d8ff',
+    color: '#00e599',
+    glowColor: 'rgba(0, 229, 153, 0.4)',
     rarity: 'Legendary' as const,
   },
   {
@@ -79,9 +222,11 @@ const BADGES = [
     name: 'Speculator',
     description: 'Execute your first trade of any size on the platform.',
     requirement: 'Complete 1 trade',
-    unlocked: true,
+    unlocked: false,
+    active: true,
     icon: TrendingUp,
-    color: '#34d399',
+    color: '#10b981',
+    glowColor: 'rgba(16, 185, 129, 0.4)',
     rarity: 'Common' as const,
   },
   {
@@ -89,9 +234,11 @@ const BADGES = [
     name: 'Risk Taker',
     description: 'Open a position with leverage greater than 10x.',
     requirement: '10x+ leverage trade',
-    unlocked: true,
+    unlocked: false,
+    active: false,
     icon: Flame,
-    color: '#fa6432',
+    color: '#f97316',
+    glowColor: 'rgba(249, 115, 22, 0.4)',
     rarity: 'Common' as const,
   },
   {
@@ -99,9 +246,11 @@ const BADGES = [
     name: 'Opportunity Hunter',
     description: 'Execute a trade following an AI Trading signal.',
     requirement: '1 AI signal trade',
-    unlocked: true,
+    unlocked: false,
+    active: false,
     icon: Target,
-    color: '#8b5cf6',
+    color: '#a855f7',
+    glowColor: 'rgba(168, 85, 247, 0.4)',
     rarity: 'Rare' as const,
   },
   {
@@ -109,9 +258,11 @@ const BADGES = [
     name: 'Position Architect',
     description: 'Set both Stop Loss and Take Profit orders on a single position.',
     requirement: 'Bracket order set',
-    unlocked: true,
-    icon: Layers,
-    color: '#a8a29e',
+    unlocked: false,
+    active: false,
+    icon: DraftingCompassIcon,
+    color: '#3b82f6',
+    glowColor: 'rgba(59, 130, 246, 0.4)',
     rarity: 'Rare' as const,
   },
   {
@@ -119,9 +270,11 @@ const BADGES = [
     name: 'Capital Commander',
     description: 'Reach a lifetime trading volume of over $50,000.',
     requirement: '$50,000 trading volume',
-    unlocked: true,
-    icon: Shield,
-    color: '#facc15',
+    unlocked: false,
+    active: false,
+    icon: Crown,
+    color: '#eab308',
+    glowColor: 'rgba(234, 179, 8, 0.4)',
     rarity: 'Epic' as const,
   },
   {
@@ -130,8 +283,10 @@ const BADGES = [
     description: 'Complete a profitable trade during high-volatility market events.',
     requirement: '1 high-vol volatility trade',
     unlocked: false,
+    active: false,
     icon: Activity,
-    color: '#ec4899',
+    color: '#f59e0b',
+    glowColor: 'rgba(245, 158, 11, 0.4)',
     rarity: 'Epic' as const,
   },
   {
@@ -140,9 +295,11 @@ const BADGES = [
     description: 'Maintain a weekly profit percentage higher than 95% of active traders.',
     requirement: 'Top 5% weekly PnL',
     unlocked: false,
-    icon: Trophy,
-    color: '#10b981',
-    rarity: 'Legendary' as const,
+    active: false,
+    icon: AlphaIcon,
+    color: '#ef4444',
+    glowColor: 'rgba(239, 68, 68, 0.4)',
+    rarity: 'Epic' as const,
   },
   {
     id: 'b9',
@@ -150,8 +307,10 @@ const BADGES = [
     description: 'Execute 100 successful trades on the platform.',
     requirement: '100 total trades',
     unlocked: false,
-    icon: ShieldCheck,
-    color: '#3ae099',
+    active: false,
+    icon: Trophy,
+    color: '#14b8a6',
+    glowColor: 'rgba(20, 184, 166, 0.4)',
     rarity: 'Legendary' as const,
   },
 ];
@@ -356,74 +515,81 @@ export function Tasks() {
             </div>
           </div>
         ) : activeTab === 'badges' ? (
-          <div className="space-y-6 pb-12 mt-4">
+          <div className="space-y-8 pb-12 mt-6">
             
-            {/* Single Unified Card wrapping all progression UI */}
-            <div className="card-base p-6 md:p-8 border border-[#1a1f26] bg-[#0a0c0f] relative overflow-hidden flex flex-col gap-6">
-              {/* Background glow */}
-              <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[#00e599]/10 blur-[100px] rounded-full pointer-events-none" />
-              
-              {/* SECTION 1: Current Badge Info */}
-              <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
-                <div className="relative shrink-0 w-48 h-48 md:w-56 md:h-56">
-                  <img src="/Images/Badges/scout_badge.png" alt="Scout Badge" className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(0,229,153,0.3)] relative z-10" />
-                  {/* Decorative glowing rim behind the badge */}
-                  <div className="absolute inset-0 rounded-full border border-[#00e599]/20 scale-[1.15] bg-[radial-gradient(circle,rgba(0,229,153,0.1)_0%,transparent_70%)]" />
+            {/* SECTION 1: Current Badge Hero Info (No outer card border) */}
+            <div className="relative flex flex-col md:flex-row items-center gap-8 md:gap-16 py-4">
+              {/* Left Side: Large Scout Badge with glowing rim */}
+              <div className="relative shrink-0 w-56 h-56 md:w-64 md:h-64 flex items-center justify-center">
+                <img 
+                  src="/Images/Badges/scout_badge.png" 
+                  alt="Scout Badge" 
+                  className="w-[85%] h-[85%] object-contain drop-shadow-[0_0_35px_rgba(0,229,153,0.45)] relative z-10" 
+                />
+                {/* Decorative glowing rim behind the badge */}
+                <div className="absolute inset-0 rounded-full scale-[1.1] bg-[radial-gradient(circle,rgba(0,229,153,0.15)_0%,transparent_75%)] animate-pulse" style={{ animationDuration: '4s' }} />
+                
+                {/* Dotted target rings */}
+                <div className="absolute inset-0 border border-[#00e599]/15 rounded-full scale-[1.12] border-dashed" />
+                <div className="absolute inset-0 border border-[#00e599]/5 rounded-full scale-[1.22] border-dashed" />
+              </div>
+
+              {/* Right Side: Badge Info */}
+              <div className="flex-1 w-full flex flex-col justify-between">
+                <div>
+                  {/* CURRENT BADGE Header with dashes */}
+                  <div className="flex items-center gap-3 mb-3 text-[#00e599]/85">
+                    <span className="w-5 h-[1.5px] bg-[#00e599]/40" />
+                    <span className="text-[10px] font-extrabold tracking-[0.25em] uppercase">Current Badge</span>
+                    <span className="w-5 h-[1.5px] bg-[#00e599]/40" />
+                  </div>
+                  
+                  <h2 className="text-5xl md:text-[56px] font-black text-white tracking-tight mb-4 leading-none">
+                    Scout
+                  </h2>
+                  
+                  <div className="flex items-center gap-3 mb-5">
+                    <span className="bg-[#00e599]/10 text-[#00e599] border border-[#00e599]/30 px-3.5 py-1 rounded-full text-[10px] font-black tracking-widest uppercase shadow-[0_0_12px_rgba(0,229,153,0.15)]">
+                      Legendary
+                    </span>
+                    <span className="text-gray-400 text-xs flex items-center gap-2 font-semibold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#00e599] shadow-[0_0_8px_#00e599]" /> Current Tier
+                    </span>
+                  </div>
+                  
+                  <p className="text-[#a0a0a0] text-[15px] leading-relaxed max-w-md mb-8">
+                    Level up past the novice tiers by accumulating EP.
+                  </p>
                 </div>
 
-                <div className="flex-1 w-full flex flex-col justify-between">
-                  <div>
-                    {/* Decorative CURRENT BADGE Header */}
-                    <div className="flex items-center gap-2 mb-2 text-[#00e599]">
-                      <span className="w-6 h-[1.5px] bg-[#00e599]/40" />
-                      <span className="text-[10px] font-extrabold tracking-[0.2em] uppercase">Current Badge</span>
-                      <span className="w-6 h-[1.5px] bg-[#00e599]/40" />
+                {/* Stats Breakdown Row */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-8 sm:gap-12 pt-5 border-t border-[#1a1f26]">
+                  {/* XP Earned */}
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded-full border border-[#fbbf24]/30 bg-[#fbbf24]/5 flex items-center justify-center shadow-[0_0_15px_rgba(251,191,36,0.08)]">
+                      <Star className="w-5 h-5 text-[#fbbf24]" fill="none" />
                     </div>
-                    
-                    <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-4">Scout</h2>
-                    
-                    <div className="flex items-center gap-3 mb-6">
-                      <span className="bg-[#00e599]/10 text-[#00e599] border border-[#00e599]/30 px-3.5 py-1 rounded-full text-[10px] font-extrabold tracking-widest uppercase shadow-[0_0_10px_rgba(0,229,153,0.1)]">
-                        Legendary
-                      </span>
-                      <span className="text-gray-400 text-sm flex items-center gap-2 font-medium">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#00e599] shadow-[0_0_8px_#00e599]" /> Current Tier
-                      </span>
+                    <div>
+                      <div className="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-0.5">XP Earned</div>
+                      <div className="text-2xl font-black text-white leading-none font-mono">12,450</div>
                     </div>
-                    
-                    <p className="text-gray-400 text-[15px] leading-relaxed max-w-sm mb-8">
-                      Level up past the novice tiers by accumulating EP.
-                    </p>
                   </div>
-
-                  {/* Stat breakdown & Next Badge */}
-                  <div className="flex flex-col xl:flex-row gap-6 justify-between items-start xl:items-center w-full mt-auto">
-                    {/* Stats */}
-                    <div className="flex items-center gap-8">
-                      {/* XP Earned */}
+                  
+                  {/* Vertical Divider */}
+                  <div className="hidden sm:block h-10 w-[1px] bg-[#1a1f26]" />
+                  
+                  {/* Next Unlock Mini-Card */}
+                  <div className="w-full sm:w-auto flex-1 max-w-[280px]">
+                    <div className="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-2">Next Unlock</div>
+                    <div className="flex items-center justify-between bg-[#080a0d] border border-[#141920] hover:border-[#00e599]/30 px-4 py-3 rounded-2xl cursor-pointer group transition-all duration-300 shadow-[0_4px_12px_rgba(0,0,0,0.4)]">
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full border border-[#fbbf24]/30 bg-[#fbbf24]/5 flex items-center justify-center shadow-[0_0_10px_rgba(251,191,36,0.05)]">
-                          <Star className="w-5 h-5 text-[#fbbf24]" />
-                        </div>
-                        <div>
-                          <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-0.5">XP Earned</div>
-                          <div className="text-xl font-bold text-white leading-none font-mono">12,450</div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    {/* Next Badge mini-card */}
-                    <div className="flex items-center justify-between w-full xl:max-w-[280px] bg-[#0c0e12] border border-[#1a1f26] hover:border-[#00e599]/30 p-4 rounded-2xl cursor-pointer group transition-all duration-300">
-                      <div className="flex items-center gap-3">
-                        {/* Green chart circle */}
-                        <div className="w-12 h-12 rounded-full border border-[#00e599]/30 bg-[#00e599]/10 flex items-center justify-center shrink-0 relative shadow-[0_0_15px_rgba(0,229,153,0.15)]">
-                          <TrendingUp className="w-5 h-5 text-[#00e599]" />
+                        <div className="w-10 h-10 rounded-full border border-[#00e599]/30 bg-[#00e599]/5 flex items-center justify-center shrink-0 relative shadow-[0_0_12px_rgba(0,229,153,0.1)]">
+                          <TrendingUp className="w-4.5 h-4.5 text-[#00e599]" />
                           <div className="absolute inset-0 rounded-full border border-[#00e599]/10 scale-110" />
                         </div>
                         <div>
-                          <div className="text-[9px] text-gray-500 uppercase font-bold tracking-wider mb-0.5">Next Badge</div>
-                          <div className="text-sm font-bold text-white group-hover:text-[#00e599] transition-colors">Speculator</div>
-                          <div className="inline-block mt-0.5 text-[8px] font-extrabold text-[#00e599] bg-[#00e599]/10 border border-[#00e599]/30 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                          <div className="text-sm font-black text-white group-hover:text-[#00e599] transition-colors">Speculator</div>
+                          <div className="inline-block mt-0.5 text-[8px] font-extrabold text-[#00e599] bg-[#00e599]/10 border border-[#00e599]/20 px-2 py-0.5 rounded-full uppercase tracking-wider">
                             Common
                           </div>
                         </div>
@@ -433,239 +599,231 @@ export function Tasks() {
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* Divider 1 */}
-              <hr className="border-[#1a1f26] relative z-10" />
-
-              {/* SECTION 2: Progress to Speculator */}
-              <div className="relative z-10">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-xs font-bold text-[#00e599] uppercase tracking-[0.15em]">Progress to Speculator</h3>
-                  <span className="text-2xl font-black text-[#00e599] font-mono">80%</span>
-                </div>
-                
-                {/* Thick progress bar with diagonal stripes */}
-                <div className="w-full h-5 bg-[#111] rounded-full overflow-hidden border border-[#222] relative">
-                  <div 
-                    className="h-full rounded-full transition-all duration-1000 ease-out relative"
-                    style={{ 
-                      width: '80%',
-                      background: 'linear-gradient(90deg, #10b981, #00e599)'
-                    }}
-                  >
-                    {/* Diagonal stripe overlays */}
-                    <div 
-                      className="absolute inset-0 opacity-20"
-                      style={{
-                        backgroundImage: 'linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent)',
-                        backgroundSize: '16px 16px'
-                      }}
-                    />
+            {/* SECTION 2: Progress to Speculator (Card Box) */}
+            <div className="card-base p-6 md:p-8 border border-[#1a1f26] bg-[#0a0c0f]/80 backdrop-blur-md rounded-3xl relative overflow-hidden">
+              <div className="flex justify-between items-end mb-4">
+                <div>
+                  <h3 className="text-xs font-black text-[#00e599] uppercase tracking-[0.2em] mb-1">
+                    Progress to Speculator
+                  </h3>
+                  <div className="flex items-center gap-2 text-xs text-gray-400">
+                    <span className="text-white font-bold">Scout</span>
+                    <span className="text-gray-600">→</span>
+                    <span className="text-[#00e599] font-bold">Speculator</span>
                   </div>
                 </div>
-                
-                <div className="flex justify-between items-center mt-4 text-xs font-medium">
-                  <span className="font-mono text-gray-400">
-                    <span className="text-[#00e599] font-bold">12,000</span> <span className="text-gray-600">/ 15,000 XP</span>
-                  </span>
-                  <span className="text-gray-400">
-                    <span className="text-[#00e599] font-bold">3,000 XP</span> <span className="text-gray-600">to unlock Speculator</span>
-                  </span>
+                <span className="text-3xl font-black text-[#00e599] font-mono leading-none">80%</span>
+              </div>
+              
+              {/* Custom pointed gradient progress bar */}
+              <div className="w-full h-5 bg-[#07090b] rounded-full border border-[#1a1f26] relative overflow-hidden">
+                <div 
+                  className="h-full rounded-full transition-all duration-1000 ease-out relative"
+                  style={{ 
+                    width: '80%',
+                    background: 'linear-gradient(90deg, #10b981, #00e599)'
+                  }}
+                >
+                  {/* Pointy Diamond Head / Chevron end overlay */}
+                  <div className="absolute right-0 top-0 bottom-0 w-3 flex items-center justify-end">
+                    <div className="w-0 h-0 border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent border-l-[10px] border-l-[#00e599] translate-x-[3px]" />
+                  </div>
+
+                  {/* Diagonal stripe overlay */}
+                  <div 
+                    className="absolute inset-0 opacity-15"
+                    style={{
+                      backgroundImage: 'linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent)',
+                      backgroundSize: '16px 16px'
+                    }}
+                  />
                 </div>
               </div>
-
-              {/* Divider 2 */}
-              <hr className="border-[#1a1f26] relative z-10" />
-
-              {/* SECTION 3: Tier Progression */}
-              <div className="relative z-10">
-                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-[0.15em] mb-8">Tier Progression</h3>
-                
-                {/* Step timeline */}
-                <div className="flex items-center justify-between max-w-2xl mx-auto py-2">
-                  {/* Step 1: Scout */}
-                  <div className="flex flex-col items-center text-center relative z-10 w-24">
-                    <div className="w-9 h-9 rounded-full bg-[#00e599]/20 border border-[#00e599]/50 flex items-center justify-center shadow-[0_0_15px_rgba(0,229,153,0.3)]">
-                      <Check className="w-4 h-4 text-[#00e599]" strokeWidth={3} />
-                    </div>
-                    <span className="text-white font-bold text-xs mt-3">Scout</span>
-                    <span className="text-[#00e599] text-[10px] font-medium mt-0.5">Current</span>
-                  </div>
-                  
-                  {/* Dotted connector 1 */}
-                  <div className="flex-1 h-[2px] mx-4 relative min-w-[30px]">
-                    <div 
-                      className="absolute inset-0"
-                      style={{
-                        backgroundImage: 'linear-gradient(to right, #00e599 50%, transparent 50%)',
-                        backgroundSize: '8px 2px',
-                        backgroundRepeat: 'repeat-x'
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Step 2: Speculator */}
-                  <div className="flex flex-col items-center text-center relative z-10 w-24">
-                    <div className="w-9 h-9 rounded-full bg-[#00e599]/10 border border-[#00e599] flex items-center justify-center relative shadow-[0_0_15px_rgba(0,229,153,0.2)]">
-                      <div className="w-3.5 h-3.5 rounded-full bg-[#00e599] shadow-[0_0_8px_#00e599]" />
-                    </div>
-                    <span className="text-white font-bold text-xs mt-3">Speculator</span>
-                    <span className="text-[#00e599] text-[10px] font-medium mt-0.5">80%</span>
-                  </div>
-                  
-                  {/* Dotted connector 2 */}
-                  <div className="flex-1 h-[2px] mx-4 relative min-w-[30px]">
-                    <div 
-                      className="absolute inset-0"
-                      style={{
-                        backgroundImage: 'linear-gradient(to right, #333 50%, transparent 50%)',
-                        backgroundSize: '8px 2px',
-                        backgroundRepeat: 'repeat-x'
-                      }}
-                    />
-                  </div>
-                  
-                  {/* Step 3: Risk Taker */}
-                  <div className="flex flex-col items-center text-center relative z-10 w-24 opacity-60">
-                    <div className="w-9 h-9 rounded-full bg-[#111] border border-[#222] flex items-center justify-center">
-                      <Lock className="w-3.5 h-3.5 text-gray-500" />
-                    </div>
-                    <span className="text-gray-400 font-bold text-xs mt-3">Risk Taker</span>
-                    <span className="text-gray-500 text-[10px] font-medium mt-0.5">Locked</span>
-                  </div>
-                </div>
+              
+              <div className="flex justify-between items-center mt-4 text-xs font-semibold">
+                <span className="font-mono text-gray-400">
+                  <span className="text-[#00e599] font-bold">12,000</span> <span className="text-gray-600">/ 15,000 XP</span>
+                </span>
+                <span className="text-gray-400">
+                  <span className="text-[#00e599] font-bold">3,000 XP</span> <span className="text-gray-600">to unlock Speculator</span>
+                </span>
               </div>
             </div>
 
-            {/* Badge Journey Section */}
-            <div className="card-base p-8 border border-[#1a1f26] bg-[#0a0c0f] overflow-hidden">
-              <div className="flex justify-between items-start mb-12">
+            {/* SECTION 3: Badge Journey */}
+            <div className="card-base p-6 md:p-8 border border-[#1a1f26] bg-[#0a0c0f]/80 backdrop-blur-md rounded-3xl overflow-hidden">
+              <div className="flex justify-between items-start mb-10">
                 <div>
-                  <h3 className="text-lg font-bold text-white mb-1 uppercase tracking-widest">Badge Journey</h3>
-                  <p className="text-[#a0a0a0] text-sm">Complete badges in order to unlock the next tier.</p>
+                  <h3 className="text-xs font-black text-[#00e599] uppercase tracking-[0.2em] mb-1">Badge Journey</h3>
+                  <p className="text-gray-400 text-sm">Complete badges in order to unlock the next tier.</p>
                 </div>
-                <div className="flex items-center gap-2 border border-[#222] bg-[#111] px-4 py-2 rounded-lg cursor-pointer hover:bg-[#1a1a1a] transition-colors">
-                  <span className="text-sm font-medium text-gray-300">All Status</span>
+                <div className="flex items-center gap-2 border border-[#1a1f26] bg-[#080a0d] px-3.5 py-2 rounded-xl cursor-pointer hover:bg-[#11161d] transition-colors">
+                  <span className="text-xs font-bold text-gray-300">All Status</span>
                   <ChevronDown className="w-4 h-4 text-gray-500" />
                 </div>
               </div>
 
-              {/* Journey Map (Simplified Flex Layout for Desktop/Mobile) */}
+              {/* Journey Map Layout */}
               <div className="relative max-w-4xl mx-auto py-8">
                 
-                {/* Responsive Dotted Connecting Lines Background */}
-                <div className="absolute inset-0 z-0 hidden md:block">
-                  <svg className="w-full h-full" style={{ strokeDasharray: "4, 4" }}>
-                    <path d={`M 16.6% ${Y1} L 83.3% ${Y1}`} stroke="#222" strokeWidth="2" fill="none" />
-                    <path d={`M 12.5% ${Y2} L 87.5% ${Y2}`} stroke="#222" strokeWidth="2" fill="none" />
-                    <path d={`M 33.3% ${Y3} L 66.6% ${Y3}`} stroke="#222" strokeWidth="2" fill="none" />
-                    {/* Vertical drops */}
-                    <path d={`M 83.3% ${Y1} Q 95% ${Y1} 95% ${Y1 + 40} L 95% ${Y2 - 40} Q 95% ${Y2} 87.5% ${Y2}`} stroke="#222" strokeWidth="2" fill="none" />
-                    <path d={`M 12.5% ${Y2} Q 5% ${Y2} 5% ${Y2 + 40} L 5% ${Y3 - 40} Q 5% ${Y3} 33.3% ${Y3}`} stroke="#222" strokeWidth="2" fill="none" />
-                  </svg>
-                </div>
+                {/* Desktop Journey Layout (Visible on Desktop only) */}
+                <div className="hidden md:block relative h-[380px] w-full mt-4">
+                  {/* Responsive Dotted Connecting Lines Background */}
+                  <div className="absolute inset-0 z-0">
+                    <svg className="w-full h-full" viewBox="0 0 1000 380" preserveAspectRatio="none" style={{ pointerEvents: "none" }}>
+                      {/* Active/Completed line */}
+                      <path 
+                        d="M 100,80 L 300,80" 
+                        stroke="#00e599" 
+                        strokeWidth="2.5" 
+                        strokeDasharray="5, 5" 
+                        fill="none" 
+                      />
+                      {/* Locked line */}
+                      <path 
+                        d="M 300,80 L 900,80 C 945,80 965,120 965,180 L 35,180 C 35,240 55,280 200,280 L 800,280 C 845,280 875,280 910,310" 
+                        stroke="#1c232e" 
+                        strokeWidth="2" 
+                        strokeDasharray="5, 5" 
+                        fill="none" 
+                      />
+                      
+                      {/* Connection Dots */}
+                      {/* Dot 1 (Active) */}
+                      <circle cx="200" cy="80" r="4.5" fill="#050505" stroke="#00e599" strokeWidth="2.5" />
+                      {/* Dot 2 (Active/Transition) */}
+                      <circle cx="400" cy="80" r="4.5" fill="#050505" stroke="#00e599" strokeWidth="2.5" />
+                      {/* Dot 3 (Locked) */}
+                      <circle cx="600" cy="80" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
+                      {/* Dot 4 (Locked) */}
+                      <circle cx="800" cy="80" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
+                      {/* Dot 5 (Locked) */}
+                      <circle cx="300" cy="280" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
+                      {/* Dot 6 (Locked) */}
+                      <circle cx="500" cy="280" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
+                      {/* Dot 7 (Locked) */}
+                      <circle cx="700" cy="280" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
+                    </svg>
+                  </div>
 
-                {/* Row 1 (3 Items) */}
-                <div className="relative z-10 flex flex-col md:flex-row justify-between mb-12 md:mb-24 gap-12 md:gap-0">
-                  <div className="flex flex-col items-center text-center w-full md:w-1/3 relative group cursor-pointer">
-                    <div className="w-20 h-20 mb-3 relative z-10">
-                      <img src="/Images/Badges/scout_badge.png" className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(0,229,153,0.3)] group-hover:scale-110 transition-transform" />
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#00e599] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]">
-                        <CheckCircle2 className="w-3 h-3 text-[#0a0c0f]" />
+                  {/* Badges Absolute Placement */}
+                  {BADGES.map((badge, idx) => {
+                    // Helper to calculate center percentages
+                    const getBadgePosition = (index: number) => {
+                      if (index < 5) {
+                        return { left: `${index * 20 + 10}%`, top: '80px' };
+                      } else {
+                        return { left: `${(index - 5) * 20 + 20}%`, top: '280px' };
+                      }
+                    };
+                    
+                    const getRarityColorClasses = (rarity: string) => {
+                      switch (rarity.toLowerCase()) {
+                        case 'legendary':
+                          return 'border-[#00e599]/30 text-[#00e599] bg-[#00e599]/5';
+                        case 'epic':
+                          return 'border-[#eab308]/30 text-[#eab308] bg-[#eab308]/5';
+                        case 'rare':
+                          return 'border-[#8b5cf6]/30 text-[#8b5cf6] bg-[#8b5cf6]/5';
+                        default:
+                          return 'border-[#10b981]/30 text-[#10b981] bg-[#10b981]/5'; // Common
+                      }
+                    };
+
+                    const pos = getBadgePosition(idx);
+                    const isLocked = !badge.unlocked && !badge.active;
+                    return (
+                      <div 
+                        key={badge.id} 
+                        className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center text-center group cursor-pointer z-10 w-32"
+                        style={{ left: pos.left, top: pos.top }}
+                      >
+                        <HexagonBadge 
+                          icon={typeof badge.icon !== 'string' ? badge.icon : undefined} 
+                          iconSrc={typeof badge.icon === 'string' ? badge.icon : undefined}
+                          color={badge.color}
+                          glowColor={badge.glowColor}
+                          locked={isLocked}
+                          unlocked={badge.unlocked}
+                          size="w-[72px] h-[72px]"
+                        />
+                        <h4 className={cn(
+                          "font-bold text-xs mt-3 transition-colors tracking-tight truncate w-full px-1",
+                          badge.unlocked || badge.active ? "text-white" : "text-gray-400"
+                        )}>
+                          {badge.name}
+                        </h4>
+                        <span className={cn(
+                          "text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border mt-1.5 transition-colors",
+                          badge.unlocked || badge.active 
+                            ? getRarityColorClasses(badge.rarity)
+                            : "text-gray-500 bg-[#161a22]/50 border-gray-800"
+                        )}>
+                          {badge.rarity}
+                        </span>
                       </div>
-                    </div>
-                    <h4 className="text-white font-bold text-base mb-1.5">Scout</h4>
-                    <span className="text-[9px] font-bold uppercase tracking-widest text-[#00e599] bg-[#00e599]/10 px-2 py-0.5 rounded-full border border-[#00e599]/30">Legendary</span>
-                  </div>
+                    );
+                  })}
+                </div>
 
-                  <div className="flex flex-col items-center text-center w-full md:w-1/3 relative group cursor-pointer">
-                    <div className="w-20 h-20 rounded-full border border-[#00e599]/50 bg-[#00e599]/10 flex items-center justify-center mb-3 relative z-10 group-hover:scale-110 transition-transform shadow-[0_0_20px_rgba(0,229,153,0.1)]">
-                      <TrendingUp className="w-8 h-8 text-[#00e599]" />
-                    </div>
-                    <h4 className="text-white font-bold text-base mb-1.5">Speculator</h4>
-                    <span className="text-[9px] font-bold uppercase tracking-widest text-[#00e599] bg-[#00e599]/10 px-2 py-0.5 rounded-full border border-[#00e599]/30">Common</span>
-                  </div>
+                {/* Mobile Journey Layout (Visible on Mobile only) */}
+                <div className="md:hidden grid grid-cols-2 sm:grid-cols-3 gap-y-10 gap-x-4 py-4 relative z-10">
+                  {BADGES.map((badge) => {
+                    const isLocked = !badge.unlocked && !badge.active;
+                    
+                    const getRarityColorClasses = (rarity: string) => {
+                      switch (rarity.toLowerCase()) {
+                        case 'legendary':
+                          return 'border-[#00e599]/30 text-[#00e599] bg-[#00e599]/5';
+                        case 'epic':
+                          return 'border-[#eab308]/30 text-[#eab308] bg-[#eab308]/5';
+                        case 'rare':
+                          return 'border-[#8b5cf6]/30 text-[#8b5cf6] bg-[#8b5cf6]/5';
+                        default:
+                          return 'border-[#10b981]/30 text-[#10b981] bg-[#10b981]/5'; // Common
+                      }
+                    };
 
-                  <div className="flex flex-col items-center text-center w-full md:w-1/3 relative group opacity-50 cursor-not-allowed grayscale hover:grayscale-0 transition-all">
-                    <div className="w-20 h-20 rounded-full border border-[#333] bg-[#111] flex items-center justify-center mb-3 relative z-10">
-                      <Flame className="w-8 h-8 text-gray-500" />
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#1a1a1a] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]">
-                        <Lock className="w-2.5 h-2.5 text-gray-400" />
+                    return (
+                      <div key={badge.id} className="flex flex-col items-center text-center group">
+                        <HexagonBadge 
+                          icon={typeof badge.icon !== 'string' ? badge.icon : undefined} 
+                          iconSrc={typeof badge.icon === 'string' ? badge.icon : undefined}
+                          color={badge.color}
+                          glowColor={badge.glowColor}
+                          locked={isLocked}
+                          unlocked={badge.unlocked}
+                          size="w-[72px] h-[72px]"
+                        />
+                        <h4 className={cn(
+                          "font-bold text-xs mt-3 transition-colors",
+                          badge.unlocked || badge.active ? "text-white" : "text-gray-400"
+                        )}>
+                          {badge.name}
+                        </h4>
+                        <span className={cn(
+                          "text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border mt-1.5",
+                          badge.unlocked || badge.active 
+                            ? getRarityColorClasses(badge.rarity)
+                            : "text-gray-500 bg-[#161a22]/50 border-gray-800"
+                        )}>
+                          {badge.rarity}
+                        </span>
                       </div>
-                    </div>
-                    <h4 className="text-white font-bold text-base mb-1.5">Risk Taker</h4>
-                    <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400 bg-[#1a1a1a] px-2 py-0.5 rounded-full border border-[#333]">Common</span>
-                  </div>
-                </div>
-
-                {/* Row 2 (4 Items) */}
-                <div className="relative z-10 flex flex-col md:flex-row justify-between mb-12 md:mb-24 gap-12 md:gap-0">
-                  <div className="flex flex-col items-center text-center w-full md:w-1/4 relative opacity-50 grayscale">
-                    <div className="w-16 h-16 rounded-full border border-[#333] bg-[#111] flex items-center justify-center mb-3 relative z-10">
-                      <Target className="w-6 h-6 text-gray-500" />
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#1a1a1a] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]"><Lock className="w-2.5 h-2.5 text-gray-400" /></div>
-                    </div>
-                    <h4 className="text-white font-bold text-[13px] mb-1.5">Opportunity Hunter</h4>
-                    <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400 bg-[#1a1a1a] px-2 py-0.5 rounded-full border border-[#333]">Rare</span>
-                  </div>
-
-                  <div className="flex flex-col items-center text-center w-full md:w-1/4 relative opacity-50 grayscale">
-                    <div className="w-16 h-16 rounded-full border border-[#333] bg-[#111] flex items-center justify-center mb-3 relative z-10">
-                      <Activity className="w-6 h-6 text-gray-500" />
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#1a1a1a] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]"><Lock className="w-2.5 h-2.5 text-gray-400" /></div>
-                    </div>
-                    <h4 className="text-white font-bold text-[13px] mb-1.5">Position Architect</h4>
-                    <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400 bg-[#1a1a1a] px-2 py-0.5 rounded-full border border-[#333]">Rare</span>
-                  </div>
-
-                  <div className="flex flex-col items-center text-center w-full md:w-1/4 relative opacity-50 grayscale">
-                    <div className="w-16 h-16 rounded-full border border-[#333] bg-[#111] flex items-center justify-center mb-3 relative z-10">
-                      <Shield className="w-6 h-6 text-gray-500" />
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#1a1a1a] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]"><Lock className="w-2.5 h-2.5 text-gray-400" /></div>
-                    </div>
-                    <h4 className="text-white font-bold text-[13px] mb-1.5">Capital Commander</h4>
-                    <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400 bg-[#1a1a1a] px-2 py-0.5 rounded-full border border-[#333]">Epic</span>
-                  </div>
-
-                  <div className="flex flex-col items-center text-center w-full md:w-1/4 relative opacity-50 grayscale">
-                    <div className="w-16 h-16 rounded-full border border-[#333] bg-[#111] flex items-center justify-center mb-3 relative z-10">
-                      <Zap className="w-6 h-6 text-gray-500" />
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#1a1a1a] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]"><Lock className="w-2.5 h-2.5 text-gray-400" /></div>
-                    </div>
-                    <h4 className="text-white font-bold text-[13px] mb-1.5">Volatility Rider</h4>
-                    <span className="text-[8px] font-bold uppercase tracking-widest text-gray-400 bg-[#1a1a1a] px-2 py-0.5 rounded-full border border-[#333]">Epic</span>
-                  </div>
-                </div>
-
-                {/* Row 3 (2 Items) */}
-                <div className="relative z-10 flex flex-col md:flex-row justify-center mb-8 gap-12 md:gap-32">
-                  <div className="flex flex-col items-center text-center relative opacity-50 grayscale">
-                    <div className="w-20 h-20 rounded-full border border-[#333] bg-[#111] flex items-center justify-center mb-3 relative z-10">
-                      <span className="text-2xl font-serif text-gray-500 italic font-bold">α</span>
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#1a1a1a] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]"><Lock className="w-2.5 h-2.5 text-gray-400" /></div>
-                    </div>
-                    <h4 className="text-white font-bold text-base mb-1.5">Alpha Generator</h4>
-                    <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400 bg-[#1a1a1a] px-2 py-0.5 rounded-full border border-[#333]">Epic</span>
-                  </div>
-
-                  <div className="flex flex-col items-center text-center relative opacity-50 grayscale">
-                    <div className="w-20 h-20 rounded-full border border-[#333] bg-[#111] flex items-center justify-center mb-3 relative z-10">
-                      <Trophy className="w-8 h-8 text-gray-500" />
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#1a1a1a] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]"><Lock className="w-2.5 h-2.5 text-gray-400" /></div>
-                    </div>
-                    <h4 className="text-white font-bold text-base mb-1.5">Yield Conqueror</h4>
-                    <span className="text-[9px] font-bold uppercase tracking-widest text-gray-400 bg-[#1a1a1a] px-2 py-0.5 rounded-full border border-[#333]">Legendary</span>
-                  </div>
+                    );
+                  })}
                 </div>
 
               </div>
 
               {/* Informational Disclaimer */}
-              <div className="mt-8 flex items-center gap-3 p-4 bg-[#050505] rounded-xl border border-[#1a1f26]">
+              <div className="mt-8 flex items-center gap-3 p-4 bg-[#050505]/60 rounded-2xl border border-[#1a1f26]">
                 <div className="w-5 h-5 rounded-full border border-gray-600 flex items-center justify-center shrink-0">
                   <span className="text-gray-400 text-xs italic font-serif">i</span>
                 </div>
-                <p className="text-gray-400 text-sm">Badges must be completed in order. Each badge unlocks the next milestone.</p>
+                <p className="text-gray-400 text-xs">Badges must be completed in order. Each badge unlocks the next milestone.</p>
               </div>
             </div>
 
