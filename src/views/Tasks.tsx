@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Target, CheckCircle2, Circle, Trophy, Star, Gift, Clock, ShieldCheck, TrendingUp, DollarSign, Award, Lock, Activity, Flame, Layers, Shield, ChevronRight, ChevronDown, Zap } from 'lucide-react';
+import { Target, CheckCircle2, Circle, Trophy, Star, Gift, Clock, ShieldCheck, TrendingUp, DollarSign, Award, Lock, Activity, Flame, Layers, Shield, ChevronRight, ChevronDown, Zap, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface Task {
@@ -172,121 +172,123 @@ export function Tasks() {
   const Y3 = 520;
 
   return (
-    <div className="h-full flex-1 flex flex-col overflow-y-auto bg-[#050505] relative">
+    <div className="h-full flex-1 flex flex-col overflow-y-auto overflow-x-hidden bg-[#050505] relative">
       {/* Background glow effects */}
       <div className="absolute top-0 left-0 w-full h-[400px] bg-gradient-to-b from-[#34d399]/5 to-transparent pointer-events-none" />
       <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] bg-[#34d399]/10 blur-[150px] rounded-full pointer-events-none" />
       
       <div className="max-w-5xl w-full mx-auto p-6 md:p-8 relative z-10 flex-1 flex flex-col font-sans">
         
+        {/* Navigation Tabs (Moved above Header Section) */}
+        <div className="flex w-full md:w-auto p-1 bg-transparent rounded-[14px] border border-[#1a1f26] gap-1 max-w-max mb-6">
+          <button
+            onClick={() => setActiveTab('daily')}
+            className={cn(
+              "flex-1 md:w-[110px] py-2.5 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
+              activeTab === 'daily' ? "bg-[#34d399]/10 text-[#34d399]" : "text-gray-400 hover:text-white"
+            )}
+          >
+            <Clock className="w-3.5 h-3.5" /> Daily Tasks
+          </button>
+          <button
+            onClick={() => setActiveTab('weekly')}
+            className={cn(
+              "flex-1 md:w-[110px] py-2.5 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
+              activeTab === 'weekly' ? "bg-[#34d399]/10 text-[#34d399]" : "text-gray-400 hover:text-white"
+            )}
+          >
+            <ShieldCheck className="w-3.5 h-3.5" /> Weekly Tasks
+          </button>
+          <button
+            onClick={() => setActiveTab('referrals')}
+            className={cn(
+              "flex-1 md:w-[110px] py-2.5 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
+              activeTab === 'referrals' ? "bg-[#34d399]/10 text-[#34d399]" : "text-gray-400 hover:text-white"
+            )}
+          >
+            <Gift className="w-3.5 h-3.5" /> Referrals
+          </button>
+          <button
+            onClick={() => setActiveTab('badges')}
+            className={cn(
+              "flex-1 md:w-[110px] py-2.5 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
+              activeTab === 'badges' ? "border border-[#00e599]/30 bg-[#00e599]/10 text-[#00e599]" : "text-gray-400 hover:text-white"
+            )}
+          >
+            <Award className="w-3.5 h-3.5" /> Badges
+          </button>
+        </div>
+
         {/* Header Section */}
-        <div className="mb-8 flex flex-col xl:flex-row items-start xl:items-start justify-between gap-6">
-          <div className="max-w-xl">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="w-3 h-3 rounded-full bg-[#00e599] shadow-[0_0_10px_#00e599]" />
-              <h1 className="text-3xl md:text-[32px] font-black text-white tracking-tight leading-none">
-                Missions & Referrals
-              </h1>
-            </div>
-            <p className="text-[#a0a0a0] text-[15px] leading-relaxed">
-              Complete your daily and weekly trading tasks to earn XP. Accumulate XP to unlock premium tiers, fee discounts, and exclusive AI agent tools, and earn up to 70% fee share by referring users.
-            </p>
-          </div>
-          
-          {/* Quick Stats - Distinct Cards */}
-          <div className="flex flex-col sm:flex-row items-center gap-4 w-full xl:w-auto">
-            {/* Total XP Card */}
-            <div className="flex items-center gap-4 bg-[#0a0c0f]/80 backdrop-blur-md border border-[#1a1f26] px-5 py-4 rounded-2xl w-full sm:w-[220px]">
-              <div className="w-12 h-12 rounded-full border-2 border-[#fbbf24]/30 flex items-center justify-center shrink-0">
-                <Star className="w-5 h-5 text-[#fbbf24]" />
+        {activeTab !== 'badges' && (
+          <div className="mb-8 flex flex-col xl:flex-row items-start xl:items-start justify-between gap-6">
+            <div className="max-w-xl space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-3 h-3 rounded-full bg-[#00e599] shadow-[0_0_10px_#00e599]" />
+                <h1 className="text-3xl md:text-[32px] font-black text-white tracking-tight leading-none">
+                  Missions & Referrals
+                </h1>
               </div>
-              <div>
-                <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-0.5">Total XP</div>
-                <div className="text-white font-bold text-xl leading-none">12,450</div>
-              </div>
+              
+              <p className="text-[#a0a0a0] text-[15px] leading-relaxed">
+                Complete your daily and weekly trading tasks to earn XP. Accumulate XP to unlock premium tiers, fee discounts, and exclusive AI agent tools, and earn up to 70% fee share by referring users.
+              </p>
             </div>
+            
+            {/* Quick Stats - Distinct Cards */}
+            <div className="flex flex-col sm:flex-row items-center gap-4 w-full xl:w-auto">
+              {/* Total XP Card */}
+              <div className="flex items-center gap-4 bg-[#0a0c0f]/80 backdrop-blur-md border border-[#1a1f26] px-5 py-4 rounded-2xl w-full sm:w-[220px]">
+                <div className="w-12 h-12 rounded-full border-2 border-[#fbbf24]/30 flex items-center justify-center shrink-0">
+                  <Star className="w-5 h-5 text-[#fbbf24]" />
+                </div>
+                <div>
+                  <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-0.5">Total XP</div>
+                  <div className="text-white font-bold text-xl leading-none">12,450</div>
+                </div>
+              </div>
 
-            {/* Current Tier Card */}
-            <div className="flex items-center gap-4 bg-[#0a0c0f]/80 backdrop-blur-md border border-[#1a1f26] px-5 py-4 rounded-2xl w-full sm:w-[220px]">
-              <div className="w-12 h-12 rounded-full border-2 border-[#34d399]/30 flex items-center justify-center shrink-0">
-                <Trophy className="w-5 h-5 text-[#34d399]" />
-              </div>
-              <div>
-                <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-0.5">Current Tier</div>
-                <div className="text-white font-bold text-xl leading-none">Pro Trader</div>
+              {/* Current Tier Card */}
+              <div className="flex items-center gap-4 bg-[#0a0c0f]/80 backdrop-blur-md border border-[#1a1f26] px-5 py-4 rounded-2xl w-full sm:w-[220px]">
+                <div className="w-12 h-12 rounded-full border-2 border-[#34d399]/30 flex items-center justify-center shrink-0">
+                  <Trophy className="w-5 h-5 text-[#34d399]" />
+                </div>
+                <div>
+                  <div className="text-[10px] text-gray-500 uppercase tracking-widest font-bold mb-0.5">Current Tier</div>
+                  <div className="text-white font-bold text-xl leading-none">Pro Trader</div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
-        {/* Tabs and Progress */}
-        <div className="mb-6 flex flex-col md:flex-row items-center justify-between gap-6">
-          
-          {/* Navigation Tabs */}
-          <div className="flex w-full md:w-auto p-1 bg-transparent rounded-[14px] border border-[#1a1f26] gap-1">
-            <button
-              onClick={() => setActiveTab('daily')}
-              className={cn(
-                "flex-1 md:w-[110px] py-2.5 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
-                activeTab === 'daily' ? "bg-[#34d399]/10 text-[#34d399]" : "text-gray-400 hover:text-white"
-              )}
-            >
-              <Clock className="w-3.5 h-3.5" /> Daily Tasks
-            </button>
-            <button
-              onClick={() => setActiveTab('weekly')}
-              className={cn(
-                "flex-1 md:w-[110px] py-2.5 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
-                activeTab === 'weekly' ? "bg-[#34d399]/10 text-[#34d399]" : "text-gray-400 hover:text-white"
-              )}
-            >
-              <ShieldCheck className="w-3.5 h-3.5" /> Weekly Tasks
-            </button>
-            <button
-              onClick={() => setActiveTab('referrals')}
-              className={cn(
-                "flex-1 md:w-[110px] py-2.5 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
-                activeTab === 'referrals' ? "bg-[#34d399]/10 text-[#34d399]" : "text-gray-400 hover:text-white"
-              )}
-            >
-              <Gift className="w-3.5 h-3.5" /> Referrals
-            </button>
-            <button
-              onClick={() => setActiveTab('badges')}
-              className={cn(
-                "flex-1 md:w-[110px] py-2.5 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
-                activeTab === 'badges' ? "border border-[#00e599]/30 bg-[#00e599]/10 text-[#00e599]" : "text-gray-400 hover:text-white"
-              )}
-            >
-              <Award className="w-3.5 h-3.5" /> Badges
-            </button>
-          </div>
-
-          {/* Progress Bar aligned to the right */}
-          <div className="w-full md:w-[320px] flex flex-col gap-2 relative">
-            <div className="flex justify-between text-xs font-bold items-center mb-1">
-              <span className="text-gray-500 uppercase tracking-widest text-[10px]">Progress</span>
-              {activeTab === 'badges' ? (
-                <span className="text-[#00e599] font-mono">{completedBadgesCount} / {BADGES.length} ({badgesProgressPercent}%)</span>
-              ) : activeTab === 'referrals' ? (
-                <span className="text-[#00e599] font-mono">0%</span>
-              ) : (
-                <span className="text-[#00e599] font-mono">{completedCount} / {tasks.length} ({progressPercent}%)</span>
-              )}
-            </div>
-            <div className="w-full h-2.5 bg-[#111] rounded-full overflow-hidden border border-[#222]">
-              <div 
-                className="h-full rounded-full transition-all duration-1000 ease-out relative"
-                style={{ 
-                  width: `${activeTab === 'badges' ? badgesProgressPercent : activeTab === 'referrals' ? 0 : progressPercent}%`,
-                  background: 'linear-gradient(90deg, #10b981, #00e599)'
-                }}
-              >
-                <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:16px_16px] opacity-30" />
+        {/* Tabs and Progress (Now just Progress, aligned to Right) */}
+        {activeTab !== 'badges' && (
+          <div className="mb-6 flex justify-end">
+            {/* Progress Bar aligned to the right */}
+            <div className="w-full md:w-[320px] flex flex-col gap-2 relative">
+              <div className="flex justify-between text-xs font-bold items-center mb-1">
+                <span className="text-gray-500 uppercase tracking-widest text-[10px]">Progress</span>
+                {activeTab === 'referrals' ? (
+                  <span className="text-[#00e599] font-mono">0%</span>
+                ) : (
+                  <span className="text-[#00e599] font-mono">{completedCount} / {tasks.length} ({progressPercent}%)</span>
+                )}
+              </div>
+              <div className="w-full h-2.5 bg-[#111] rounded-full overflow-hidden border border-[#222]">
+                <div 
+                  className="h-full rounded-full transition-all duration-1000 ease-out relative"
+                  style={{ 
+                    width: `${activeTab === 'referrals' ? 0 : progressPercent}%`,
+                    background: 'linear-gradient(90deg, #10b981, #00e599)'
+                  }}
+                >
+                  <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.2)_50%,transparent_75%)] bg-[length:16px_16px] opacity-30" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Task List Grid or Referrals */}
         {activeTab === 'referrals' ? (
@@ -354,162 +356,192 @@ export function Tasks() {
             </div>
           </div>
         ) : activeTab === 'badges' ? (
-          <div className="space-y-8 pb-12 mt-4">
+          <div className="space-y-6 pb-12 mt-4">
             
-            {/* Badges Hero Section */}
-            <div className="flex flex-col lg:flex-row gap-6">
+            {/* Single Unified Card wrapping all progression UI */}
+            <div className="card-base p-6 md:p-8 border border-[#1a1f26] bg-[#0a0c0f] relative overflow-hidden flex flex-col gap-6">
+              {/* Background glow */}
+              <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[#00e599]/10 blur-[100px] rounded-full pointer-events-none" />
               
-              {/* Left: Current Badge */}
-              <div className="flex-1 card-base p-8 border border-[#1a1f26] bg-[#0a0c0f] relative overflow-hidden flex flex-col md:flex-row items-center gap-10">
-                {/* Background glow */}
-                <div className="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-[#00e599]/10 blur-[100px] rounded-full pointer-events-none" />
-                
-                <div className="w-full flex justify-between items-start md:hidden mb-2">
-                  <span className="text-[11px] font-bold text-[#00e599] tracking-widest uppercase">Current Badge</span>
-                </div>
-
-                <div className="relative shrink-0 w-48 h-48 md:w-56 md:h-56 z-10">
-                  <img src="/badges/scout.png" alt="Scout Badge" className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(0,229,153,0.3)] relative z-10" />
+              {/* SECTION 1: Current Badge Info */}
+              <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
+                <div className="relative shrink-0 w-48 h-48 md:w-56 md:h-56">
+                  <img src="/Images/Badges/scout_badge.png" alt="Scout Badge" className="w-full h-full object-contain drop-shadow-[0_0_30px_rgba(0,229,153,0.3)] relative z-10" />
                   {/* Decorative glowing rim behind the badge */}
                   <div className="absolute inset-0 rounded-full border border-[#00e599]/20 scale-[1.15] bg-[radial-gradient(circle,rgba(0,229,153,0.1)_0%,transparent_70%)]" />
                 </div>
 
-                <div className="flex-1 w-full z-10 flex flex-col justify-between">
+                <div className="flex-1 w-full flex flex-col justify-between">
                   <div>
-                    <div className="hidden md:block text-[11px] font-bold text-[#00e599] tracking-widest uppercase mb-2">Current Badge</div>
+                    {/* Decorative CURRENT BADGE Header */}
+                    <div className="flex items-center gap-2 mb-2 text-[#00e599]">
+                      <span className="w-6 h-[1.5px] bg-[#00e599]/40" />
+                      <span className="text-[10px] font-extrabold tracking-[0.2em] uppercase">Current Badge</span>
+                      <span className="w-6 h-[1.5px] bg-[#00e599]/40" />
+                    </div>
+                    
                     <h2 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-4">Scout</h2>
+                    
                     <div className="flex items-center gap-3 mb-6">
-                      <span className="bg-[#00e599]/10 text-[#00e599] border border-[#00e599]/30 px-3 py-1 rounded-full text-xs font-bold tracking-widest uppercase shadow-[0_0_10px_rgba(0,229,153,0.1)]">
+                      <span className="bg-[#00e599]/10 text-[#00e599] border border-[#00e599]/30 px-3.5 py-1 rounded-full text-[10px] font-extrabold tracking-widest uppercase shadow-[0_0_10px_rgba(0,229,153,0.1)]">
                         Legendary
                       </span>
-                      <span className="text-gray-500 text-sm flex items-center gap-2">
-                        <span className="w-1 h-1 rounded-full bg-gray-500" /> Current Tier
+                      <span className="text-gray-400 text-sm flex items-center gap-2 font-medium">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#00e599] shadow-[0_0_8px_#00e599]" /> Current Tier
                       </span>
                     </div>
-                    <p className="text-[#a0a0a0] text-[15px] leading-relaxed max-w-sm mb-8">
+                    
+                    <p className="text-gray-400 text-[15px] leading-relaxed max-w-sm mb-8">
                       Level up past the novice tiers by accumulating EP.
                     </p>
                   </div>
 
-                  <div className="flex flex-col gap-5 mt-auto">
-                    <div className="flex justify-between items-end">
+                  {/* Stat breakdown & Next Badge */}
+                  <div className="flex flex-col xl:flex-row gap-6 justify-between items-start xl:items-center w-full mt-auto">
+                    {/* Stats */}
+                    <div className="flex items-center gap-8">
+                      {/* XP Earned */}
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full border border-[#fbbf24]/30 bg-[#fbbf24]/10 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full border border-[#fbbf24]/30 bg-[#fbbf24]/5 flex items-center justify-center shadow-[0_0_10px_rgba(251,191,36,0.05)]">
                           <Star className="w-5 h-5 text-[#fbbf24]" />
                         </div>
                         <div>
                           <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-0.5">XP Earned</div>
-                          <div className="text-xl font-bold text-white leading-none">12,450</div>
+                          <div className="text-xl font-bold text-white leading-none font-mono">12,450</div>
                         </div>
                       </div>
-                      <div className="text-right">
+                      
+                      <div className="h-8 w-[1px] bg-[#1a1f26]" />
+                      
+                      {/* Next Badge */}
+                      <div>
                         <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-0.5">Next Badge</div>
-                        <div className="text-lg font-bold text-[#00e599] leading-none">Speculator</div>
+                        <div className="text-xl font-bold text-[#00e599] leading-none">Speculator</div>
                       </div>
                     </div>
                     
-                    {/* XP Progress Bar */}
-                    <div className="flex items-center gap-4">
-                      <div className="flex-1 h-3.5 bg-[#111] rounded-full overflow-hidden border border-[#222]">
-                        <div className="h-full bg-gradient-to-r from-[#10b981] to-[#00e599] w-[80%] rounded-full shadow-[0_0_10px_rgba(0,229,153,0.3)]" />
+                    {/* Next Badge mini-card */}
+                    <div className="flex items-center justify-between w-full xl:max-w-[280px] bg-[#0c0e12] border border-[#1a1f26] hover:border-[#00e599]/30 p-4 rounded-2xl cursor-pointer group transition-all duration-300">
+                      <div className="flex items-center gap-3">
+                        {/* Green chart circle */}
+                        <div className="w-12 h-12 rounded-full border border-[#00e599]/30 bg-[#00e599]/10 flex items-center justify-center shrink-0 relative shadow-[0_0_15px_rgba(0,229,153,0.15)]">
+                          <TrendingUp className="w-5 h-5 text-[#00e599]" />
+                          <div className="absolute inset-0 rounded-full border border-[#00e599]/10 scale-110" />
+                        </div>
+                        <div>
+                          <div className="text-[9px] text-gray-500 uppercase font-bold tracking-wider mb-0.5">Next Badge</div>
+                          <div className="text-sm font-bold text-white group-hover:text-[#00e599] transition-colors">Speculator</div>
+                          <div className="inline-block mt-0.5 text-[8px] font-extrabold text-[#00e599] bg-[#00e599]/10 border border-[#00e599]/30 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                            Common
+                          </div>
+                        </div>
                       </div>
-                      <span className="text-xs font-mono font-bold shrink-0">
-                        <span className="text-[#00e599]">12,000</span> <span className="text-gray-500">/ 15,000 XP (80%)</span>
-                      </span>
+                      <ChevronRight className="w-4 h-4 text-gray-500 group-hover:text-white transition-colors" />
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Right: Badge Progress */}
-              <div className="w-full lg:w-[380px] card-base p-8 border border-[#1a1f26] bg-[#0a0c0f] flex flex-col justify-between">
-                <div className="text-[11px] font-bold text-[#00e599] tracking-widest uppercase mb-8">Badge Progress</div>
+              {/* Divider 1 */}
+              <hr className="border-[#1a1f26] relative z-10" />
+
+              {/* SECTION 2: Progress to Speculator */}
+              <div className="relative z-10">
+                <div className="flex justify-between items-center mb-4">
+                  <h3 className="text-xs font-bold text-[#00e599] uppercase tracking-[0.15em]">Progress to Speculator</h3>
+                  <span className="text-2xl font-black text-[#00e599] font-mono">80%</span>
+                </div>
                 
-                {/* Circular Chart */}
-                <div className="relative w-48 h-48 mx-auto mb-10">
-                  <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                    {/* Background Ring */}
-                    <circle cx="50" cy="50" r="45" fill="transparent" stroke="#111" strokeWidth="8" />
-                    {/* Progress Ring (67% of 283 = 190) */}
-                    <circle 
-                      cx="50" cy="50" r="45" 
-                      fill="transparent" 
-                      stroke="url(#progressGradient)" 
-                      strokeWidth="8" 
-                      strokeDasharray="282.7" 
-                      strokeDashoffset="93" 
-                      strokeLinecap="round"
-                      className="drop-shadow-[0_0_10px_rgba(0,229,153,0.4)]"
+                {/* Thick progress bar with diagonal stripes */}
+                <div className="w-full h-5 bg-[#111] rounded-full overflow-hidden border border-[#222] relative">
+                  <div 
+                    className="h-full rounded-full transition-all duration-1000 ease-out relative"
+                    style={{ 
+                      width: '80%',
+                      background: 'linear-gradient(90deg, #10b981, #00e599)'
+                    }}
+                  >
+                    {/* Diagonal stripe overlays */}
+                    <div 
+                      className="absolute inset-0 opacity-20"
+                      style={{
+                        backgroundImage: 'linear-gradient(45deg, rgba(255, 255, 255, 0.15) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, 0.15) 50%, rgba(255, 255, 255, 0.15) 75%, transparent 75%, transparent)',
+                        backgroundSize: '16px 16px'
+                      }}
                     />
-                    <defs>
-                      <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                        <stop offset="0%" stopColor="#10b981" />
-                        <stop offset="100%" stopColor="#00e599" />
-                      </linearGradient>
-                    </defs>
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                    <span className="text-5xl font-black text-white font-mono tracking-tighter">67%</span>
-                    <span className="text-[9px] text-gray-500 font-bold tracking-widest uppercase mt-1">Completion</span>
                   </div>
                 </div>
-
-                {/* Stat Breakdown */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between pb-4 border-b border-[#1a1f26]">
-                    <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 rounded border border-[#00e599]/30 bg-[#00e599]/10 flex items-center justify-center">
-                        <ShieldCheck className="w-3.5 h-3.5 text-[#00e599]" />
-                      </div>
-                      <span className="text-[13px] text-gray-400 font-medium">Badges Unlocked</span>
-                    </div>
-                    <span className="text-sm font-mono font-bold"><span className="text-white">6</span> <span className="text-gray-500">/ 9</span></span>
-                  </div>
-                  <div className="flex items-center justify-between pb-4 border-b border-[#1a1f26]">
-                    <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 rounded border border-gray-700 bg-gray-800/50 flex items-center justify-center">
-                        <Lock className="w-3.5 h-3.5 text-gray-500" />
-                      </div>
-                      <span className="text-[13px] text-gray-400 font-medium">Badges Locked</span>
-                    </div>
-                    <span className="text-sm font-mono font-bold text-white">3</span>
-                  </div>
-                  <div className="flex items-center justify-between pt-1">
-                    <div className="flex items-center gap-3">
-                      <div className="w-6 h-6 rounded border border-[#fbbf24]/30 bg-[#fbbf24]/10 flex items-center justify-center">
-                        <Star className="w-3.5 h-3.5 text-[#fbbf24]" />
-                      </div>
-                      <span className="text-[13px] text-gray-400 font-medium">Rarest Badge</span>
-                    </div>
-                    <span className="text-[13px] text-[#00e599] font-bold">Legendary</span>
-                  </div>
+                
+                <div className="flex justify-between items-center mt-4 text-xs font-medium">
+                  <span className="font-mono text-gray-400">
+                    <span className="text-[#00e599] font-bold">12,000</span> <span className="text-gray-600">/ 15,000 XP</span>
+                  </span>
+                  <span className="text-gray-400">
+                    <span className="text-[#00e599] font-bold">3,000 XP</span> <span className="text-gray-600">to unlock Speculator</span>
+                  </span>
                 </div>
               </div>
-            </div>
 
-            {/* Next Badge Strip */}
-            <div className="card-base p-6 border border-[#1a1f26] bg-[#0a0c0f] flex flex-col md:flex-row items-center justify-between gap-6 hover:border-[#00e599]/30 transition-colors cursor-pointer group">
-              <div className="flex items-center gap-6">
-                <div className="w-16 h-16 rounded-full border border-[#00e599]/30 bg-[#00e599]/10 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                  <TrendingUp className="w-8 h-8 text-[#00e599]" />
-                </div>
-                <div>
-                  <div className="text-[11px] font-bold text-[#00e599] tracking-widest uppercase mb-1">Next Badge</div>
-                  <h3 className="text-xl font-bold text-white mb-1">Speculator</h3>
-                  <p className="text-[#a0a0a0] text-sm">Execute your first trade of any size on the platform.</p>
-                </div>
-              </div>
-              <div className="w-full md:w-[300px] flex items-center gap-6">
-                <div className="flex-1">
-                  <div className="text-[11px] font-bold text-[#00e599] tracking-widest uppercase mb-2">80% Ready</div>
-                  <div className="h-2 bg-[#111] rounded-full overflow-hidden border border-[#222] mb-2">
-                    <div className="h-full bg-[#00e599] w-[80%] rounded-full shadow-[0_0_10px_rgba(0,229,153,0.3)]" />
+              {/* Divider 2 */}
+              <hr className="border-[#1a1f26] relative z-10" />
+
+              {/* SECTION 3: Tier Progression */}
+              <div className="relative z-10">
+                <h3 className="text-xs font-bold text-gray-500 uppercase tracking-[0.15em] mb-8">Tier Progression</h3>
+                
+                {/* Step timeline */}
+                <div className="flex items-center justify-between max-w-2xl mx-auto py-2">
+                  {/* Step 1: Scout */}
+                  <div className="flex flex-col items-center text-center relative z-10 w-24">
+                    <div className="w-9 h-9 rounded-full bg-[#00e599]/20 border border-[#00e599]/50 flex items-center justify-center shadow-[0_0_15px_rgba(0,229,153,0.3)]">
+                      <Check className="w-4 h-4 text-[#00e599]" strokeWidth={3} />
+                    </div>
+                    <span className="text-white font-bold text-xs mt-3">Scout</span>
+                    <span className="text-[#00e599] text-[10px] font-medium mt-0.5">Current</span>
                   </div>
-                  <div className="text-[11px] font-mono font-bold text-gray-500">
-                    <span className="text-[#00e599]">12,000</span> / 15,000 XP
+                  
+                  {/* Dotted connector 1 */}
+                  <div className="flex-1 h-[2px] mx-4 relative min-w-[30px]">
+                    <div 
+                      className="absolute inset-0"
+                      style={{
+                        backgroundImage: 'linear-gradient(to right, #00e599 50%, transparent 50%)',
+                        backgroundSize: '8px 2px',
+                        backgroundRepeat: 'repeat-x'
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Step 2: Speculator */}
+                  <div className="flex flex-col items-center text-center relative z-10 w-24">
+                    <div className="w-9 h-9 rounded-full bg-[#00e599]/10 border border-[#00e599] flex items-center justify-center relative shadow-[0_0_15px_rgba(0,229,153,0.2)]">
+                      <div className="w-3.5 h-3.5 rounded-full bg-[#00e599] shadow-[0_0_8px_#00e599]" />
+                    </div>
+                    <span className="text-white font-bold text-xs mt-3">Speculator</span>
+                    <span className="text-[#00e599] text-[10px] font-medium mt-0.5">80%</span>
+                  </div>
+                  
+                  {/* Dotted connector 2 */}
+                  <div className="flex-1 h-[2px] mx-4 relative min-w-[30px]">
+                    <div 
+                      className="absolute inset-0"
+                      style={{
+                        backgroundImage: 'linear-gradient(to right, #333 50%, transparent 50%)',
+                        backgroundSize: '8px 2px',
+                        backgroundRepeat: 'repeat-x'
+                      }}
+                    />
+                  </div>
+                  
+                  {/* Step 3: Risk Taker */}
+                  <div className="flex flex-col items-center text-center relative z-10 w-24 opacity-60">
+                    <div className="w-9 h-9 rounded-full bg-[#111] border border-[#222] flex items-center justify-center">
+                      <Lock className="w-3.5 h-3.5 text-gray-500" />
+                    </div>
+                    <span className="text-gray-400 font-bold text-xs mt-3">Risk Taker</span>
+                    <span className="text-gray-500 text-[10px] font-medium mt-0.5">Locked</span>
                   </div>
                 </div>
-                <ChevronRight className="w-5 h-5 text-gray-600 group-hover:text-white transition-colors" />
               </div>
             </div>
 
@@ -545,7 +577,7 @@ export function Tasks() {
                 <div className="relative z-10 flex flex-col md:flex-row justify-between mb-12 md:mb-24 gap-12 md:gap-0">
                   <div className="flex flex-col items-center text-center w-full md:w-1/3 relative group cursor-pointer">
                     <div className="w-20 h-20 mb-3 relative z-10">
-                      <img src="/badges/scout.png" className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(0,229,153,0.3)] group-hover:scale-110 transition-transform" />
+                      <img src="/Images/Badges/scout_badge.png" className="w-full h-full object-contain drop-shadow-[0_0_20px_rgba(0,229,153,0.3)] group-hover:scale-110 transition-transform" />
                       <div className="absolute -top-1 -right-1 w-5 h-5 bg-[#00e599] rounded-full flex items-center justify-center border-2 border-[#0a0c0f]">
                         <CheckCircle2 className="w-3 h-3 text-[#0a0c0f]" />
                       </div>

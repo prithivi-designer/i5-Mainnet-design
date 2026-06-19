@@ -1,5 +1,19 @@
 @import "tailwindcss";
 
+/* Prevent horizontal scroll globally on layouts and pages */
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+.overflow-y-auto {
+  overflow-x: hidden;
+}
+
+.overflow-auto {
+  overflow-x: hidden;
+}
+
 /* ============================================================
    GLOBAL DESIGN TOKENS
    Exact colors extracted from the source project + screenshots:
