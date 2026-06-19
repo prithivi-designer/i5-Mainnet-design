@@ -410,14 +410,6 @@ export function Tasks() {
                           <div className="text-xl font-bold text-white leading-none font-mono">12,450</div>
                         </div>
                       </div>
-                      
-                      <div className="h-8 w-[1px] bg-[#1a1f26]" />
-                      
-                      {/* Next Badge */}
-                      <div>
-                        <div className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-0.5">Next Badge</div>
-                        <div className="text-xl font-bold text-[#00e599] leading-none">Speculator</div>
-                      </div>
                     </div>
                     
                     {/* Next Badge mini-card */}
