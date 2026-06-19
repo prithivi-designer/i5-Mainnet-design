@@ -325,10 +325,40 @@ export function Tasks() {
   const completedBadgesCount = BADGES.filter(b => b.unlocked).length;
   const badgesProgressPercent = Math.round((completedBadgesCount / BADGES.length) * 100);
 
-  // Badge Journey Y positions for connecting lines
-  const Y1 = 76;
-  const Y2 = 298;
-  const Y3 = 520;
+  // Define transitions for the badge journey line path
+  const transitions = [
+    { start: 0, end: 1, path: "M 100,45 L 300,45" },
+    { start: 1, end: 2, path: "M 300,45 L 500,45" },
+    { start: 2, end: 3, path: "M 500,45 L 700,45" },
+    { start: 3, end: 4, path: "M 700,45 L 900,45" },
+    { start: 4, end: 5, path: "M 900,45 L 940,45 A 20,20 0 0 1 960,65 L 960,210 A 20,20 0 0 1 940,230 L 60,230 A 20,20 0 0 1 40,210 L 40,170 A 20,20 0 0 1 60,150 L 300,150" },
+    { start: 5, end: 6, path: "M 300,150 L 500,150" },
+    { start: 6, end: 7, path: "M 500,150 L 700,150" },
+    { start: 7, end: 8, path: "M 700,150 L 900,150" },
+  ];
+
+  const firstLockedIndex = BADGES.findIndex(b => !b.unlocked && !b.active);
+  const activeLimit = firstLockedIndex === -1 ? BADGES.length - 1 : firstLockedIndex;
+
+  const activePath = transitions
+    .filter(t => t.start < activeLimit)
+    .map(t => t.path)
+    .join(' ');
+
+  const lockedPath = transitions
+    .filter(t => t.start >= activeLimit)
+    .map(t => t.path)
+    .join(' ');
+
+  const connectionDots = [
+    { cx: 200, cy: 45, transitionIndex: 0 },
+    { cx: 400, cy: 45, transitionIndex: 1 },
+    { cx: 600, cy: 45, transitionIndex: 2 },
+    { cx: 800, cy: 45, transitionIndex: 3 },
+    { cx: 400, cy: 150, transitionIndex: 5 },
+    { cx: 600, cy: 150, transitionIndex: 6 },
+    { cx: 800, cy: 150, transitionIndex: 7 },
+  ];
 
   return (
     <div className="h-full flex-1 flex flex-col overflow-y-auto overflow-x-hidden bg-[#050505] relative">
@@ -685,42 +715,46 @@ export function Tasks() {
               <div className="relative max-w-4xl mx-auto py-2">
 
                 {/* Desktop Journey Layout (Visible on Desktop only) */}
-                <div className="hidden md:block relative h-[220px] w-full mt-2">
+                <div className="hidden md:block relative h-[260px] w-full mt-2">
                   {/* Responsive Dotted Connecting Lines Background */}
                   <div className="absolute inset-0 z-0">
-                    <svg className="w-full h-full" viewBox="0 0 1000 220" preserveAspectRatio="none" style={{ pointerEvents: "none" }}>
+                    <svg className="w-full h-full" viewBox="0 0 1000 260" preserveAspectRatio="none" style={{ pointerEvents: "none" }}>
                       {/* Active/Completed line */}
-                      <path
-                        d="M 100,50 L 300,50"
-                        stroke="#00e599"
-                        strokeWidth="2.5"
-                        strokeDasharray="5, 5"
-                        fill="none"
-                      />
+                      {activePath && (
+                        <path
+                          d={activePath}
+                          stroke="#00e599"
+                          strokeWidth="2.5"
+                          strokeDasharray="5, 5"
+                          fill="none"
+                        />
+                      )}
                       {/* Locked line */}
-                      <path
-                        d="M 300,50 L 900,50 C 945,50 965,80 965,110 L 35,110 C 35,140 55,170 200,170 L 800,170 C 845,170 875,170 910,190"
-                        stroke="#1c232e"
-                        strokeWidth="2"
-                        strokeDasharray="5, 5"
-                        fill="none"
-                      />
+                      {lockedPath && (
+                        <path
+                          d={lockedPath}
+                          stroke="#1c232e"
+                          strokeWidth="2"
+                          strokeDasharray="5, 5"
+                          fill="none"
+                        />
+                      )}
 
                       {/* Connection Dots */}
-                      {/* Dot 1 (Active) */}
-                      <circle cx="200" cy="50" r="4.5" fill="#050505" stroke="#00e599" strokeWidth="2.5" />
-                      {/* Dot 2 (Active/Transition) */}
-                      <circle cx="400" cy="50" r="4.5" fill="#050505" stroke="#00e599" strokeWidth="2.5" />
-                      {/* Dot 3 (Locked) */}
-                      <circle cx="600" cy="50" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
-                      {/* Dot 4 (Locked) */}
-                      <circle cx="800" cy="50" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
-                      {/* Dot 5 (Locked) */}
-                      <circle cx="300" cy="170" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
-                      {/* Dot 6 (Locked) */}
-                      <circle cx="500" cy="170" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
-                      {/* Dot 7 (Locked) */}
-                      <circle cx="700" cy="170" r="4" fill="#050505" stroke="#1c232e" strokeWidth="2" />
+                      {connectionDots.map((dot, idx) => {
+                        const isActive = dot.transitionIndex < activeLimit;
+                        return (
+                          <circle
+                            key={idx}
+                            cx={dot.cx}
+                            cy={dot.cy}
+                            r={isActive ? 4.5 : 4}
+                            fill="#050505"
+                            stroke={isActive ? "#00e599" : "#1c232e"}
+                            strokeWidth={isActive ? 2.5 : 2}
+                          />
+                        );
+                      })}
                     </svg>
                   </div>
 
@@ -729,9 +763,9 @@ export function Tasks() {
                     // Helper to calculate center percentages
                     const getBadgePosition = (index: number) => {
                       if (index < 5) {
-                        return { left: `${index * 20 + 10}%`, top: '50px' };
+                        return { left: `${index * 20 + 10}%`, top: '45px' };
                       } else {
-                        return { left: `${(index - 5) * 20 + 20}%`, top: '170px' };
+                        return { left: `${(index - 5) * 20 + 30}%`, top: '150px' };
                       }
                     };
 
@@ -753,7 +787,7 @@ export function Tasks() {
                     return (
                       <div
                         key={badge.id}
-                        className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center text-center group cursor-pointer z-10 w-32"
+                        className="absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center text-center group cursor-pointer z-10 w-32 h-[60px]"
                         style={{ left: pos.left, top: pos.top }}
                       >
                         <HexagonBadge
@@ -765,20 +799,22 @@ export function Tasks() {
                           unlocked={badge.unlocked}
                           size="w-[60px] h-[60px]"
                         />
-                        <h4 className={cn(
-                          "font-bold text-xs mt-3 transition-colors tracking-tight truncate w-full px-1",
-                          badge.unlocked || badge.active ? "text-white" : "text-gray-400"
-                        )}>
-                          {badge.name}
-                        </h4>
-                        <span className={cn(
-                          "text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border mt-1.5 transition-colors",
-                          badge.unlocked || badge.active
-                            ? getRarityColorClasses(badge.rarity)
-                            : "text-gray-500 bg-[#161a22]/50 border-gray-800"
-                        )}>
-                          {badge.rarity}
-                        </span>
+                        <div className="absolute top-[65px] w-32 flex flex-col items-center text-center">
+                          <h4 className={cn(
+                            "font-bold text-xs transition-colors tracking-tight truncate w-full px-1",
+                            badge.unlocked || badge.active ? "text-white" : "text-gray-400"
+                          )}>
+                            {badge.name}
+                          </h4>
+                          <span className={cn(
+                            "text-[8px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border mt-1.5 transition-colors",
+                            badge.unlocked || badge.active
+                              ? getRarityColorClasses(badge.rarity)
+                              : "text-gray-500 bg-[#161a22]/50 border-gray-800"
+                          )}>
+                            {badge.rarity}
+                          </span>
+                        </div>
                       </div>
                     );
                   })}
