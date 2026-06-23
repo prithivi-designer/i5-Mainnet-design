@@ -1,9 +1,12 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
+import { TradeNav } from '@/components/TradeNav';
 import {
   ChevronDown, Settings, Camera, BookOpen, Scale, Skull, Target,
-  Filter, Share2, X, Send, TrendingUp, Bell, Sparkles, Bot, Settings2, ArrowRightLeft, User, Search, SlidersHorizontal, Info, CheckCircle2, ShieldAlert, Wallet, CreditCard, ChevronRight, Play, Check, Zap, Star, Activity, Download
+  Filter, Share2, X, Send, TrendingUp, Bell, Sparkles, Bot, Settings2, ArrowRightLeft, User, Search, SlidersHorizontal, Info, CheckCircle2, ShieldAlert, Wallet, CreditCard, ChevronRight, Play, Check, Zap, Star, Activity, Download,
+  Users, Crown, Diamond, Coins, Ghost, Flame, ArrowDownRight, ArrowRight, ArrowUpRight, Award, Globe
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -151,12 +154,7 @@ export function Trade() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2 shrink-0">
-            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#333] text-gray-300 hover:text-white hover:border-[#444] transition-all text-[11px] font-semibold">
-              <Bell className="w-3 h-3" />
-              Set Alert
-            </button>
-          </div>
+          <TradeNav />
         </div>
 
         {/* ── Main Body ── */}
