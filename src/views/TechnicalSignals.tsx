@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Clock, HelpCircle, FileText, ArrowUpRight, ArrowDownRight, SlidersHorizontal, Settings, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUserStore } from '@/store';
+import { SignalOrderModal } from '@/components/SignalOrderModal';
 
 const tabs = ['Top 10 Aggregate', 'By Chart Analyzer', 'By News Analyzer', 'By Telegram Analyzer'];
 
@@ -36,6 +37,7 @@ const initialSignals: SignalData[] = [
 export function TechnicalSignals({ hideHeader, onTradeClick }: { hideHeader?: boolean; onTradeClick?: () => void }) {
   const { tier } = useUserStore();
   const [activeTab, setActiveTab] = useState('Top 10 Aggregate');
+  const [modalData, setModalData] = useState<{ asset: string, side: 'Long' | 'Short' } | null>(null);
 
   const filteredSignals = initialSignals.filter(s => {
     if (activeTab === 'Top 10 Aggregate') return true;
@@ -248,7 +250,7 @@ export function TechnicalSignals({ hideHeader, onTradeClick }: { hideHeader?: bo
                   {/* Column 6: Action Buttons */}
                   <div className="w-[26%] flex items-center justify-end gap-2 pl-2">
                     <button
-                      onClick={onTradeClick}
+                      onClick={() => setModalData({ asset: signal.asset, side: 'Long' })}
                       className="px-3.5 py-2 rounded-xl flex items-center gap-1.5 text-[12px] font-bold text-[#34d399] border border-[#34d399]/20 bg-[#34d399]/[0.02] hover:bg-[#34d399]/10 transition-colors shrink-0"
                     >
                       <ArrowUpRight className="w-3.5 h-3.5" />
@@ -256,7 +258,7 @@ export function TechnicalSignals({ hideHeader, onTradeClick }: { hideHeader?: bo
                     </button>
                     
                     <button
-                      onClick={onTradeClick}
+                      onClick={() => setModalData({ asset: signal.asset, side: 'Short' })}
                       className="px-3.5 py-2 rounded-xl flex items-center gap-1.5 text-[12px] font-bold text-[#fa6432] border border-[#fa6432]/20 bg-[#fa6432]/[0.02] hover:bg-[#fa6432]/10 transition-colors shrink-0"
                     >
                       <ArrowDownRight className="w-3.5 h-3.5" />
@@ -292,6 +294,12 @@ export function TechnicalSignals({ hideHeader, onTradeClick }: { hideHeader?: bo
         </a>
       </div>
 
+      <SignalOrderModal
+        isOpen={!!modalData}
+        onClose={() => setModalData(null)}
+        asset={modalData?.asset || 'HYPE'}
+        initialSide={modalData?.side || 'Long'}
+      />
     </div>
   );
 }
