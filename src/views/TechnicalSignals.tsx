@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Clock, HelpCircle, FileText, ArrowUpRight, ArrowDownRight, SlidersHorizontal, Settings, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useUserStore } from '@/store';
+import { SignalOrderModal } from '@/components/SignalOrderModal';
 
 const tabs = ['Top 10 Aggregate', 'By Chart Analyzer', 'By News Analyzer', 'By Telegram Analyzer'];
 
@@ -14,39 +15,38 @@ interface SignalData {
   title: string; // Analyzer title
   name: string; // Signal title
   type: 'Long' | 'Short';
-  winRate: string;
-  rr: string;
+  riskFactor: 'Low' | 'Medium' | 'High';
   range: string;
   time: string;
   reqPro?: boolean;
 }
 
 const initialSignals: SignalData[] = [
-  { id: 1, asset: 'BTC', assetName: 'Bitcoin', title: 'Chart Analyzer', name: 'Bitcoin RSI Oversold Bounce', type: 'Long', winRate: '68%', rr: '12.5', range: '$62,400 - $63,100', time: '4 mins ago' },
-  { id: 2, asset: 'ETH', assetName: 'Ethereum', title: 'News Analyzer', name: 'ETF Inflows Spiking heavily', type: 'Long', winRate: '62%', rr: '11.8', range: '$3,450 - $3,380', time: '12 mins ago' },
-  { id: 3, asset: 'SOL', assetName: 'Solana', title: 'Telegram Analyzer', name: 'Whale Accumulation Ping locally', type: 'Long', winRate: '71%', rr: '13.0', range: '$142.50 - $148.00', time: '1 hour ago' },
-  { id: 4, asset: 'ARB', assetName: 'Arbitrum', title: 'Telegram Analyzer', name: 'Private Alpha: Funding Rates turning', type: 'Short', winRate: '67%', rr: '1:1.23', range: '$0.124 - $0.125', time: '2 hours ago' },
-  { id: 5, asset: 'HYPE', assetName: 'Hype', title: 'Chart Analyzer', name: 'Bluechip range breakout prep', type: 'Short', winRate: '65%', rr: '1:4.38', range: '$42.09 - $42.30', time: '3 hours ago' },
-  { id: 6, asset: 'PEPE', assetName: 'Pepe', title: 'News Analyzer', name: 'Exchange Listing Rumors detected', type: 'Long', winRate: '54%', rr: '1:5.0', range: '$0.000008 - $0.00001', time: '4 hours ago', reqPro: true },
-  { id: 7, asset: 'LINK', assetName: 'Chainlink', title: 'Chart Analyzer', name: 'MACD bullish divergence on 4h', type: 'Long', winRate: '72%', rr: '12.0', range: '$14.20 - $15.50', time: '5 hours ago', reqPro: true },
-  { id: 8, asset: 'DOGE', assetName: 'Dogecoin', title: 'Telegram Analyzer', name: 'Sudden Sentiment Spike across 10 groups', type: 'Long', winRate: '58%', rr: '1:3.5', range: '$0.15 - $0.18', time: '6 hours ago', reqPro: true },
-  { id: 9, asset: 'AVAX', assetName: 'Avalanche', title: 'Chart Analyzer', name: 'Liquidation cluster approaching - Fade setup', type: 'Short', winRate: '64%', rr: '1:1.5', range: '$35.20 - $34.00', time: '8 hours ago', reqPro: true },
-  { id: 10, asset: 'SUI', assetName: 'Sui', title: 'News Analyzer', name: 'Network Upgrade announcement digested', type: 'Long', winRate: '61%', rr: '11.4', range: '$1.45 - $1.60', time: '10 hours ago', reqPro: true }
+  { id: 1, asset: 'BTC', assetName: 'Bitcoin', title: 'Chart Analyzer', name: 'Bitcoin RSI Oversold Bounce', type: 'Long', riskFactor: 'Low', range: '$62,400 - $63,100', time: '4 mins ago' },
+  { id: 2, asset: 'ETH', assetName: 'Ethereum', title: 'News Analyzer', name: 'ETF Inflows Spiking heavily', type: 'Long', riskFactor: 'Medium', range: '$3,450 - $3,380', time: '12 mins ago' },
+  { id: 3, asset: 'SOL', assetName: 'Solana', title: 'Telegram Analyzer', name: 'Whale Accumulation Ping locally', type: 'Long', riskFactor: 'Low', range: '$142.50 - $148.00', time: '1 hour ago' },
+  { id: 4, asset: 'ARB', assetName: 'Arbitrum', title: 'Telegram Analyzer', name: 'Private Alpha: Funding Rates turning', type: 'Short', riskFactor: 'Medium', range: '$0.124 - $0.125', time: '2 hours ago' },
+  { id: 5, asset: 'HYPE', assetName: 'Hype', title: 'Chart Analyzer', name: 'Bluechip range breakout prep', type: 'Short', riskFactor: 'Medium', range: '$42.09 - $42.30', time: '3 hours ago' },
+  { id: 6, asset: 'PEPE', assetName: 'Pepe', title: 'News Analyzer', name: 'Exchange Listing Rumors detected', type: 'Long', riskFactor: 'High', range: '$0.000008 - $0.00001', time: '4 hours ago', reqPro: true },
+  { id: 7, asset: 'LINK', assetName: 'Chainlink', title: 'Chart Analyzer', name: 'MACD bullish divergence on 4h', type: 'Long', riskFactor: 'Low', range: '$14.20 - $15.50', time: '5 hours ago', reqPro: true },
+  { id: 8, asset: 'DOGE', assetName: 'Dogecoin', title: 'Telegram Analyzer', name: 'Sudden Sentiment Spike across 10 groups', type: 'Long', riskFactor: 'High', range: '$0.15 - $0.18', time: '6 hours ago', reqPro: true },
+  { id: 9, asset: 'AVAX', assetName: 'Avalanche', title: 'Chart Analyzer', name: 'Liquidation cluster approaching - Fade setup', type: 'Short', riskFactor: 'Medium', range: '$35.20 - $34.00', time: '8 hours ago', reqPro: true },
+  { id: 10, asset: 'SUI', assetName: 'Sui', title: 'News Analyzer', name: 'Network Upgrade announcement digested', type: 'Long', riskFactor: 'Medium', range: '$1.45 - $1.60', time: '10 hours ago', reqPro: true }
 ];
 
 export function TechnicalSignals({ hideHeader, onTradeClick }: { hideHeader?: boolean; onTradeClick?: () => void }) {
   const { tier } = useUserStore();
   const [activeTab, setActiveTab] = useState('Top 10 Aggregate');
+  const [modalData, setModalData] = useState<{ asset: string, side: 'Long' | 'Short' } | null>(null);
 
   const filteredSignals = initialSignals.filter(s => {
     if (activeTab === 'Top 10 Aggregate') return true;
     return s.title === activeTab.replace('By ', '');
   });
 
-  const getSignalStrength = (rate: string) => {
-    const num = parseInt(rate);
-    if (num >= 70) return 3;
-    if (num >= 60) return 2;
+  const getSignalStrength = (risk: 'Low' | 'Medium' | 'High') => {
+    if (risk === 'Low') return 3;
+    if (risk === 'Medium') return 2;
     return 1;
   };
 
@@ -92,9 +92,8 @@ export function TechnicalSignals({ hideHeader, onTradeClick }: { hideHeader?: bo
           
           {/* Header Row */}
           <div className="flex items-center px-6 py-2.5 text-[10px] uppercase font-bold tracking-widest text-gray-600 border-b border-[#141414]">
-            <div className="w-[30%]">Signal</div>
-            <div className="w-[10%] text-center">Win %</div>
-            <div className="w-[10%] text-center">R/R</div>
+            <div className="w-[35%]">Signal</div>
+            <div className="w-[15%] text-center">Risk Factor</div>
             <div className="w-[12%] text-center">Range</div>
             <div className="w-[12%] text-center">Time</div>
             <div className="w-[26%] text-right pr-2">Action</div>
@@ -104,7 +103,7 @@ export function TechnicalSignals({ hideHeader, onTradeClick }: { hideHeader?: bo
           <div className="space-y-3">
             {filteredSignals.map((signal) => {
               const isLocked = signal.reqPro && tier === 'Free';
-              const strength = getSignalStrength(signal.winRate);
+              const strength = getSignalStrength(signal.riskFactor);
 
               return (
                 <div
@@ -123,7 +122,7 @@ export function TechnicalSignals({ hideHeader, onTradeClick }: { hideHeader?: bo
                   )}
 
                   {/* Column 1: Signal detail */}
-                  <div className="w-[30%] flex items-center gap-4">
+                  <div className="w-[35%] flex items-center gap-4">
                     {/* Coin Rounded Square */}
                     <div className="w-12 h-12 icon-squircle flex-shrink-0">
                       {signal.asset === 'BTC' && (
@@ -185,10 +184,17 @@ export function TechnicalSignals({ hideHeader, onTradeClick }: { hideHeader?: bo
                     </div>
                   </div>
 
-                  {/* Column 2: Win % */}
-                  <div className="w-[10%] flex flex-col items-center justify-center">
-                    <div className="flex items-center gap-1">
-                      <span className="text-[14px] font-bold text-[#34d399]">{signal.winRate}</span>
+                  {/* Column 2: Risk Factor */}
+                  <div className="w-[15%] flex flex-col items-center justify-center">
+                    <div className="flex items-center gap-1.5">
+                      <span className={cn(
+                        "text-[14px] font-bold uppercase",
+                        signal.riskFactor === 'Low' ? "text-[#34d399]" :
+                        signal.riskFactor === 'Medium' ? "text-yellow-400" :
+                        "text-[#fa6432]"
+                      )}>
+                        {signal.riskFactor}
+                      </span>
                       {/* Signal Strength bars */}
                       <div className="flex items-end gap-[1.5px] h-3">
                         <div className={cn("w-[2px] rounded-full transition-colors", strength >= 1 ? "bg-[#34d399]" : "bg-[#222]")} style={{ height: '5px' }} />
@@ -196,13 +202,7 @@ export function TechnicalSignals({ hideHeader, onTradeClick }: { hideHeader?: bo
                         <div className={cn("w-[2px] rounded-full transition-colors", strength >= 3 ? "bg-[#34d399]" : "bg-[#222]")} style={{ height: '11px' }} />
                       </div>
                     </div>
-                    <span className="text-[10px] text-gray-600 mt-1 font-bold">Win %</span>
-                  </div>
-
-                  {/* Column 3: R/R */}
-                  <div className="w-[10%] flex flex-col items-center justify-center">
-                    <span className="text-[14px] font-bold text-[#34d399]">{signal.rr}</span>
-                    <span className="text-[10px] text-gray-600 mt-1 font-bold">R/R</span>
+                    <span className="text-[10px] text-gray-600 mt-1 font-bold">Risk Factor</span>
                   </div>
 
                   {/* Column 4: Range */}
@@ -250,7 +250,7 @@ export function TechnicalSignals({ hideHeader, onTradeClick }: { hideHeader?: bo
                   {/* Column 6: Action Buttons */}
                   <div className="w-[26%] flex items-center justify-end gap-2 pl-2">
                     <button
-                      onClick={onTradeClick}
+                      onClick={() => setModalData({ asset: signal.asset, side: 'Long' })}
                       className="px-3.5 py-2 rounded-xl flex items-center gap-1.5 text-[12px] font-bold text-[#34d399] border border-[#34d399]/20 bg-[#34d399]/[0.02] hover:bg-[#34d399]/10 transition-colors shrink-0"
                     >
                       <ArrowUpRight className="w-3.5 h-3.5" />
@@ -258,7 +258,7 @@ export function TechnicalSignals({ hideHeader, onTradeClick }: { hideHeader?: bo
                     </button>
                     
                     <button
-                      onClick={onTradeClick}
+                      onClick={() => setModalData({ asset: signal.asset, side: 'Short' })}
                       className="px-3.5 py-2 rounded-xl flex items-center gap-1.5 text-[12px] font-bold text-[#fa6432] border border-[#fa6432]/20 bg-[#fa6432]/[0.02] hover:bg-[#fa6432]/10 transition-colors shrink-0"
                     >
                       <ArrowDownRight className="w-3.5 h-3.5" />
@@ -294,6 +294,12 @@ export function TechnicalSignals({ hideHeader, onTradeClick }: { hideHeader?: bo
         </a>
       </div>
 
+      <SignalOrderModal
+        isOpen={!!modalData}
+        onClose={() => setModalData(null)}
+        asset={modalData?.asset || 'HYPE'}
+        initialSide={modalData?.side || 'Long'}
+      />
     </div>
   );
 }
