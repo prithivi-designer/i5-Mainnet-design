@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Target, CheckCircle2, Circle, Trophy, Star, Gift, Clock, ShieldCheck, TrendingUp, DollarSign, Award, Lock, Activity, Flame, Layers, Shield, ChevronRight, ChevronDown, Zap, Check, Crown } from 'lucide-react';
+import { Target, CheckCircle2, Circle, Trophy, Star, Gift, Clock, ShieldCheck, TrendingUp, DollarSign, Award, Lock, Activity, Flame, Layers, Shield, ChevronRight, ChevronDown, Zap, Check, Crown, Users, Copy, Share, UserPlus, Coins, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // Custom high-fidelity SVG icons to match mockup
@@ -224,7 +224,7 @@ const BADGES = [
     requirement: 'Complete 1 trade',
     unlocked: false,
     active: true,
-    icon: TrendingUp,
+    icon: '/Images/Badges/Speculator.png',
     color: '#10b981',
     glowColor: 'rgba(16, 185, 129, 0.4)',
     rarity: 'Common' as const,
@@ -236,7 +236,7 @@ const BADGES = [
     requirement: '10x+ leverage trade',
     unlocked: false,
     active: false,
-    icon: Flame,
+    icon: '/Images/Badges/risk_taker.png',
     color: '#f97316',
     glowColor: 'rgba(249, 115, 22, 0.4)',
     rarity: 'Common' as const,
@@ -248,7 +248,7 @@ const BADGES = [
     requirement: '1 AI signal trade',
     unlocked: false,
     active: false,
-    icon: Target,
+    icon: '/Images/Badges/opportunity_hunter.png',
     color: '#a855f7',
     glowColor: 'rgba(168, 85, 247, 0.4)',
     rarity: 'Rare' as const,
@@ -260,7 +260,7 @@ const BADGES = [
     requirement: 'Bracket order set',
     unlocked: false,
     active: false,
-    icon: DraftingCompassIcon,
+    icon: '/Images/Badges/position_architect.png',
     color: '#3b82f6',
     glowColor: 'rgba(59, 130, 246, 0.4)',
     rarity: 'Rare' as const,
@@ -272,7 +272,7 @@ const BADGES = [
     requirement: '$50,000 trading volume',
     unlocked: false,
     active: false,
-    icon: Crown,
+    icon: '/Images/Badges/capital_Commander.png',
     color: '#eab308',
     glowColor: 'rgba(234, 179, 8, 0.4)',
     rarity: 'Epic' as const,
@@ -284,7 +284,7 @@ const BADGES = [
     requirement: '1 high-vol volatility trade',
     unlocked: false,
     active: false,
-    icon: Activity,
+    icon: '/Images/Badges/volatality_rider.png',
     color: '#f59e0b',
     glowColor: 'rgba(245, 158, 11, 0.4)',
     rarity: 'Epic' as const,
@@ -296,7 +296,7 @@ const BADGES = [
     requirement: 'Top 5% weekly PnL',
     unlocked: false,
     active: false,
-    icon: AlphaIcon,
+    icon: '/Images/Badges/alpha_generator.png',
     color: '#ef4444',
     glowColor: 'rgba(239, 68, 68, 0.4)',
     rarity: 'Epic' as const,
@@ -308,7 +308,7 @@ const BADGES = [
     requirement: '100 total trades',
     unlocked: false,
     active: false,
-    icon: Trophy,
+    icon: '/Images/Badges/yield_conqueror.png',
     color: '#14b8a6',
     glowColor: 'rgba(20, 184, 166, 0.4)',
     rarity: 'Legendary' as const,
@@ -481,67 +481,153 @@ export function Tasks() {
 
         {/* Task List Grid or Referrals */}
         {activeTab === 'referrals' ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pb-12 items-start mt-4">
-            <div className="card-base p-8 space-y-6 border border-[#222] bg-[#0c0c0c]">
-              <div className="flex items-center gap-3">
-                <Gift className="w-6 h-6 text-[#34d399]" />
-                <h2 className="text-2xl font-bold tracking-tight text-white">Refer users</h2>
-              </div>
-              <h3 className="text-4xl md:text-5xl font-bold text-[#34d399] leading-tight tracking-tight">
-                Earn up to 70% fee share
-              </h3>
-              <div className="space-y-2">
-                <h4 className="text-[20px] font-semibold text-white leading-snug">
-                  Create your custom referral code
-                </h4>
-                <p className="text-gray-400 text-[15px]">
-                  Share this code with friends to start earning your fee share.
-                </p>
-              </div>
-              <div className="space-y-4 pt-4">
-                <div className="flex flex-col sm:flex-row items-center gap-3">
-                  <div className="relative flex-1 w-full">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 font-mono">hi5.com/ref/</span>
-                    <input
-                      type="text"
-                      placeholder="YOUR-CODE"
-                      className="w-full bg-[#0a0a0a] border border-[#222] rounded-xl pl-[105px] pr-4 py-3.5 text-white font-mono uppercase outline-none focus:border-[#34d399]/50 transition-colors placeholder:text-gray-700"
-                    />
-                  </div>
-                  <button className="w-full sm:w-auto bg-gradient-to-r from-[#34d399] to-[#2bb280] text-[#050505] font-bold px-8 py-3.5 rounded-xl hover:opacity-90 transition-opacity shrink-0 shadow-[0_0_20px_rgba(52,211,153,0.2)]">
-                    Create Link
-                  </button>
+          <div className="flex flex-col gap-4 mt-4 pb-12">
+            <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-4 items-stretch">
+              {/* Left Block */}
+              <div className="card-base p-8 border border-[#222] bg-[#0c0c0c] rounded-2xl flex flex-col h-full">
+                <div className="flex items-center gap-3 mb-6">
+                  <Users className="w-6 h-6 text-[#34d399]" />
+                  <h2 className="text-xl font-bold tracking-tight text-white">i5 Multi-Tier Referrals</h2>
                 </div>
-                <p className="text-sm text-gray-500">
-                  Codes must be 4-15 characters long and can only contain letters and numbers.
+                
+                <h3 className="text-4xl md:text-5xl font-bold text-white leading-tight tracking-tight mb-4">
+                  Earn More Together <br />
+                  <span className="text-[#34d399]">With i5 Referrals</span>
+                </h3>
+                
+                <p className="text-gray-400 text-[16px] mb-8 leading-relaxed max-w-md">
+                  Invite, trade, and build a powerful network. <br />
+                  You earn. Your team earns. Everyone wins.
                 </p>
+
+                <div className="space-y-3 mb-8">
+                  <h4 className="text-[14px] font-semibold text-white">Your Referral Link</h4>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 bg-[#050505] border border-[#222] rounded-xl flex items-center justify-between px-4 py-3">
+                      <span className="text-[#34d399] font-mono text-[15px] truncate">https://i5.finance/ref?code=ABC123</span>
+                      <button className="text-gray-400 hover:text-white transition-colors ml-4 shrink-0">
+                        <Copy className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 mb-8">
+                  <div className="bg-[#050505] border border-[#222] rounded-xl p-5 flex flex-col">
+                    <div className="flex items-center gap-2 mb-2 text-gray-400">
+                      <User className="w-5 h-5" />
+                      <span className="text-[13px]">Total Referrals</span>
+                    </div>
+                    <div className="text-3xl font-bold text-[#34d399]">128</div>
+                  </div>
+                  <div className="bg-[#050505] border border-[#222] rounded-xl p-5 flex flex-col">
+                    <div className="flex items-center gap-2 mb-2 text-gray-400">
+                      <Coins className="w-5 h-5" />
+                      <span className="text-[13px]">Total Points Earned</span>
+                    </div>
+                    <div className="text-3xl font-bold text-[#34d399]">24,750</div>
+                  </div>
+                </div>
+
+                <button className="w-full bg-[#111] border border-[#222] hover:bg-[#1a1a1a] text-[#34d399] font-bold px-8 py-4 rounded-xl transition-all flex items-center justify-center gap-2 mt-auto shadow-[0_0_20px_rgba(52,211,153,0.05)] hover:shadow-[0_0_20px_rgba(52,211,153,0.1)]">
+                  <Share className="w-5 h-5" />
+                  Share Now & Earn
+                </button>
               </div>
-              <hr className="border-[#222] my-6" />
-              <p className="text-gray-400 text-[15px] leading-relaxed">
-                Activate a referral code to get an 8% fee discount for lifetime on trading volume. <br />
-                <a href="#" className="text-[#34d399] hover:underline italic">Learn more.</a>
-              </p>
+
+              {/* Right Block */}
+              <div className="flex flex-col gap-4 h-full">
+                {/* Instant Referral Reward */}
+                <div className="card-base p-6 border border-[#222] bg-[#0c0c0c] rounded-2xl flex items-center gap-5 h-[140px]">
+                  <div className="w-12 h-12 rounded-full bg-[#111] border border-[#222] flex items-center justify-center shrink-0">
+                    <Gift className="w-6 h-6 text-[#34d399]" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-[16px] font-bold text-white mb-2">Instant Referral Reward</h3>
+                    <p className="text-gray-400 text-[13px] leading-relaxed">
+                      Earn 500 points for every successful referral<br/>when they complete onboarding.
+                    </p>
+                  </div>
+                  <div className="text-right shrink-0 px-2">
+                    <div className="text-3xl font-bold text-[#34d399]">500</div>
+                    <div className="text-[11px] text-[#34d399] font-semibold tracking-wider uppercase mt-1">POINTS</div>
+                  </div>
+                </div>
+
+                {/* Multi-Tier Rewards */}
+                <div className="card-base p-6 border border-[#222] bg-[#0c0c0c] rounded-2xl flex flex-col md:flex-row gap-6 h-[170px]">
+                  <div className="flex-[1.2] flex flex-col justify-center">
+                    <h3 className="text-[16px] font-bold text-white mb-3">Multi-Tier Rewards</h3>
+                    <p className="text-gray-400 text-[13px] leading-relaxed">
+                      Earn a percentage of the points your referrals<br/>earn from trading and platform activities.
+                    </p>
+                  </div>
+                  <div className="flex-1 flex flex-col justify-center space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 text-gray-300 text-[14px]">
+                        <User className="w-4 h-4 text-[#34d399]" />
+                        <span>Tier 1 (Direct)</span>
+                      </div>
+                      <span className="text-[#34d399] font-bold text-[16px]">5%</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 text-gray-300 text-[14px]">
+                        <User className="w-4 h-4 text-yellow-400" />
+                        <span>Tier 2</span>
+                      </div>
+                      <span className="text-[#34d399] font-bold text-[16px]">2.5%</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3 text-gray-300 text-[14px]">
+                        <User className="w-4 h-4 text-orange-500" />
+                        <span>Tier 3</span>
+                      </div>
+                      <span className="text-[#34d399] font-bold text-[16px]">1%</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* How It Works */}
+                <div className="card-base p-6 border border-[#222] bg-[#0c0c0c] rounded-2xl flex-1">
+                  <h3 className="text-[16px] font-bold text-white mb-5">How It Works</h3>
+                  <div className="space-y-5">
+                    <div className="flex items-center gap-4">
+                      <div className="w-8 h-8 rounded-full bg-[#111] flex items-center justify-center shrink-0 border border-[#222]">
+                        <UserPlus className="w-4 h-4 text-[#34d399]" />
+                      </div>
+                      <span className="text-gray-300 text-[14px]">Invite friends using your referral link.</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="w-8 h-8 rounded-full bg-[#111] flex items-center justify-center shrink-0 border border-[#222]">
+                        <TrendingUp className="w-4 h-4 text-yellow-400" />
+                      </div>
+                      <span className="text-gray-300 text-[14px]">They trade and earn points through activities.</span>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="w-8 h-8 rounded-full bg-[#111] flex items-center justify-center shrink-0 border border-[#222]">
+                        <Gift className="w-4 h-4 text-purple-400" />
+                      </div>
+                      <span className="text-gray-300 text-[14px]">You earn rewards across 3 tiers automatically!</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div className="space-y-4">
-              <div className="card-base p-6 hover:border-[#333] transition-colors border border-[#222] bg-[#0c0c0c]">
-                <h3 className="text-[18px] font-semibold text-white mb-2 tracking-tight">Create and share a referral link</h3>
-                <p className="text-gray-400 leading-relaxed text-[15px]">
-                  When a new user is onboarded with your code, they become your active referral.
-                </p>
+            {/* Bottom Banner */}
+            <div className="card-base p-5 border border-[#222] bg-[#0c0c0c] rounded-2xl flex items-center justify-between mt-1">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-[#111] border border-[#222] flex items-center justify-center shrink-0">
+                  <ShieldCheck className="w-5 h-5 text-[#34d399]" />
+                </div>
+                <div>
+                  <h3 className="text-[15px] font-bold text-[#34d399] mb-1">Fair. Transparent. Sustainable.</h3>
+                  <p className="text-gray-400 text-[13px]">Rewards are calculated from base points only. No rewards are generated on rewards.</p>
+                </div>
               </div>
-              <div className="card-base p-6 hover:border-[#333] transition-colors border border-[#222] bg-[#0c0c0c]">
-                <h3 className="text-[18px] font-semibold text-white mb-2 tracking-tight">Gift fee discount to your referrals</h3>
-                <p className="text-gray-400 leading-relaxed text-[15px]">
-                  Your referrals get an 8% discount on fees for lifetime on their trading volume.
-                </p>
-              </div>
-              <div className="card-base p-6 hover:border-[#333] transition-colors border border-[#222] bg-[#0c0c0c]">
-                <h3 className="text-[18px] font-semibold text-white mb-2 tracking-tight">Earn Rewards</h3>
-                <p className="text-gray-400 leading-relaxed text-[15px]">
-                  You receive up to 70% of the fee share generated by your referrals.
-                </p>
-              </div>
+              <a href="#" className="text-gray-400 hover:text-white transition-colors text-[14px] flex items-center gap-1 shrink-0 px-4">
+                Learn more <ChevronRight className="w-4 h-4" />
+              </a>
             </div>
           </div>
         ) : activeTab === 'badges' ? (
