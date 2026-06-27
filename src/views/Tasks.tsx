@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Target, CheckCircle2, Circle, Trophy, Star, Gift, Clock, ShieldCheck, TrendingUp, DollarSign, Award, Lock, Activity, Flame, Layers, Shield, ChevronRight, ChevronDown, Zap, Check, Crown, Users, Copy, Share, UserPlus, Coins, User } from 'lucide-react';
+import { Target, CheckCircle2, Circle, Trophy, Star, Gift, Clock, ShieldCheck, TrendingUp, DollarSign, Award, Lock, Activity, Flame, Layers, Shield, ChevronRight, ChevronDown, Zap, Check, Crown, Users, Copy, Share, UserPlus, Coins, User, BarChart3 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 // Custom high-fidelity SVG icons to match mockup
@@ -315,8 +315,142 @@ const BADGES = [
   },
 ];
 
+// --- MISSIONS DATA ---
+type MissionStatus = 'completed' | 'claim' | 'locked';
+
+interface Mission {
+  id: string;
+  name: string;
+  reward: number;
+  status: MissionStatus;
+  current: number;
+  target: number;
+}
+
+const TRADE_MISSIONS: Mission[] = [
+  { id: 'tm1', name: 'First Trade', reward: 250, status: 'completed', current: 1, target: 1 },
+  { id: 'tm2', name: '10 Trades', reward: 100, status: 'completed', current: 10, target: 10 },
+  { id: 'tm3', name: '25 Trades', reward: 250, status: 'claim', current: 25, target: 25 },
+  { id: 'tm4', name: '50 Trades', reward: 500, status: 'locked', current: 25, target: 50 },
+  { id: 'tm5', name: '100 Trades', reward: 1000, status: 'locked', current: 25, target: 100 },
+  { id: 'tm6', name: '250 Trades', reward: 1250, status: 'locked', current: 25, target: 250 },
+  { id: 'tm7', name: '500 Trades', reward: 5000, status: 'locked', current: 25, target: 500 },
+];
+
+const VOLUME_MISSIONS: Mission[] = [
+  { id: 'vm1', name: '$1,000 Volume', reward: 100, status: 'completed', current: 1000, target: 1000 },
+  { id: 'vm2', name: '$5,000 Volume', reward: 500, status: 'completed', current: 5000, target: 5000 },
+  { id: 'vm3', name: '$10,000 Volume', reward: 1000, status: 'claim', current: 10000, target: 10000 },
+  { id: 'vm4', name: '$25,000 Volume', reward: 2500, status: 'locked', current: 10000, target: 25000 },
+  { id: 'vm5', name: '$50,000 Volume', reward: 5000, status: 'locked', current: 10000, target: 50000 },
+  { id: 'vm6', name: '$100,000 Volume', reward: 10000, status: 'locked', current: 10000, target: 100000 },
+  { id: 'vm7', name: '$250,000 Volume', reward: 25000, status: 'locked', current: 10000, target: 250000 },
+];
+
+// --- Mission Card Component ---
+function MissionCard({ mission }: { mission: Mission }) {
+  const progress = Math.min(Math.round((mission.current / mission.target) * 100), 100);
+  const isCompleted = mission.status === 'completed';
+  const isClaim = mission.status === 'claim';
+  const isLocked = mission.status === 'locked';
+
+  return (
+    <div
+      className={cn(
+        "relative rounded-2xl border p-5 transition-all duration-300",
+        isCompleted
+          ? "bg-[#080808] border-[#1a1a1a] opacity-60"
+          : isClaim
+          ? "bg-[#0c0c0c] border-[#34d399]/50 shadow-[0_0_20px_rgba(52,211,153,0.08)]"
+          : "bg-[#0a0a0a] border-[#1a1a1a] opacity-40"
+      )}
+    >
+      <div className="flex items-start justify-between gap-3 mb-4">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          {/* Icon */}
+          <div className={cn(
+            "w-10 h-10 rounded-full flex items-center justify-center shrink-0 border",
+            isCompleted
+              ? "bg-[#111] border-[#222]"
+              : isClaim
+              ? "bg-[#34d399]/15 border-[#34d399]/40"
+              : "bg-[#111] border-[#222]"
+          )}>
+            {isCompleted ? (
+              <CheckCircle2 className="w-5 h-5 text-[#34d399]" />
+            ) : isLocked ? (
+              <Lock className="w-4 h-4 text-gray-600" />
+            ) : (
+              <Star className="w-5 h-5 text-[#34d399]" />
+            )}
+          </div>
+          <div className="min-w-0">
+            <h4 className={cn(
+              "text-[15px] font-bold truncate",
+              isCompleted ? "text-gray-500 line-through decoration-gray-700" : isLocked ? "text-gray-600" : "text-white"
+            )}>
+              {mission.name}
+            </h4>
+            <div className={cn(
+              "text-[12px] font-semibold mt-0.5",
+              isCompleted ? "text-gray-600" : isClaim ? "text-[#34d399]" : "text-gray-600"
+            )}>
+              {mission.current.toLocaleString()} / {mission.target.toLocaleString()}
+            </div>
+          </div>
+        </div>
+
+        {/* Right side: reward or status */}
+        <div className="shrink-0 flex flex-col items-end gap-1">
+          {isCompleted ? (
+            <span className="text-[11px] font-semibold text-gray-500 bg-[#111] border border-[#222] px-3 py-1 rounded-lg">
+              Claimed
+            </span>
+          ) : isClaim ? (
+            <button className="bg-[#34d399] hover:bg-[#2bb280] text-[#050505] font-bold text-[11px] px-4 py-1.5 rounded-lg transition-all shadow-[0_0_12px_rgba(52,211,153,0.3)] hover:shadow-[0_0_20px_rgba(52,211,153,0.4)]">
+              Claim
+            </button>
+          ) : (
+            <Lock className="w-4 h-4 text-gray-600" />
+          )}
+          <div className={cn(
+            "flex items-center gap-1 text-[11px] font-bold",
+            isCompleted ? "text-gray-600" : isLocked ? "text-gray-600" : "text-[#fbbf24]"
+          )}>
+            <Coins className="w-3 h-3" />
+            +{mission.reward.toLocaleString()}
+          </div>
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      <div className="w-full h-2 bg-[#111] rounded-full overflow-hidden border border-[#1a1a1a]">
+        <div
+          className="h-full rounded-full transition-all duration-700 ease-out relative"
+          style={{
+            width: `${progress}%`,
+            background: isCompleted
+              ? '#333'
+              : isLocked
+              ? '#222'
+              : 'linear-gradient(90deg, #10b981, #34d399)',
+          }}
+        />
+      </div>
+      <div className="flex justify-end mt-1.5">
+        <span className={cn(
+          "text-[10px] font-bold",
+          isCompleted ? "text-gray-700" : isLocked ? "text-gray-700" : "text-[#34d399]"
+        )}>
+          {progress}%
+        </span>
+      </div>
+    </div>
+  );
+}
+
 export function Tasks() {
-  const [activeTab, setActiveTab] = useState<'daily' | 'weekly' | 'referrals' | 'badges'>('daily');
+  const [activeTab, setActiveTab] = useState<'daily' | 'weekly' | 'missions' | 'referrals' | 'badges'>('daily');
 
   const tasks = activeTab === 'daily' ? DAILY_TASKS : WEEKLY_TASKS;
   const completedCount = tasks.filter(t => t.completed).length;
@@ -389,6 +523,15 @@ export function Tasks() {
             <ShieldCheck className="w-3.5 h-3.5" /> Weekly Tasks
           </button>
           <button
+            onClick={() => setActiveTab('missions')}
+            className={cn(
+              "flex-1 md:w-[110px] py-2.5 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
+              activeTab === 'missions' ? "bg-[#34d399]/10 text-[#34d399]" : "text-gray-400 hover:text-white"
+            )}
+          >
+            <BarChart3 className="w-3.5 h-3.5" /> Missions
+          </button>
+          <button
             onClick={() => setActiveTab('referrals')}
             className={cn(
               "flex-1 md:w-[110px] py-2.5 text-xs font-medium rounded-xl transition-all flex items-center justify-center gap-1.5 whitespace-nowrap",
@@ -409,7 +552,7 @@ export function Tasks() {
         </div>
 
         {/* Header Section */}
-        {activeTab !== 'badges' && (
+        {activeTab !== 'badges' && activeTab !== 'missions' && (
           <div className="mb-8 flex flex-col xl:flex-row items-start xl:items-start justify-between gap-6">
             <div className="max-w-xl space-y-4">
               <div className="flex items-center gap-3">
@@ -452,7 +595,7 @@ export function Tasks() {
         )}
 
         {/* Tabs and Progress (Now just Progress, aligned to Right) */}
-        {activeTab !== 'badges' && (
+        {activeTab !== 'badges' && activeTab !== 'missions' && (
           <div className="mb-6 flex justify-end">
             {/* Progress Bar aligned to the right */}
             <div className="w-full md:w-[320px] flex flex-col gap-2 relative">
@@ -480,7 +623,68 @@ export function Tasks() {
         )}
 
         {/* Task List Grid or Referrals */}
-        {activeTab === 'referrals' ? (
+        {activeTab === 'missions' ? (
+          <div className="pb-12 mt-4">
+            {/* Missions Header */}
+            <div className="mb-8">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="w-3 h-3 rounded-full bg-[#00e599] shadow-[0_0_10px_#00e599]" />
+                <h1 className="text-3xl md:text-[32px] font-black text-white tracking-tight leading-none">
+                  Missions
+                </h1>
+              </div>
+              <p className="text-[#a0a0a0] text-[15px] leading-relaxed">
+                Complete trading milestones and volume targets to earn credit rewards. Missions unlock sequentially as you progress.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Trade Missions Column */}
+              <div>
+                <div className="flex items-center gap-2.5 mb-5">
+                  <div className="w-8 h-8 rounded-full bg-[#34d399]/10 border border-[#34d399]/20 flex items-center justify-center">
+                    <TrendingUp className="w-4 h-4 text-[#34d399]" />
+                  </div>
+                  <h2 className="text-lg font-bold text-white tracking-tight">Trade Missions</h2>
+                  <span className="text-[11px] text-gray-500 bg-[#111] border border-[#222] px-2 py-0.5 rounded-full font-semibold">
+                    {TRADE_MISSIONS.filter(m => m.status === 'completed').length}/{TRADE_MISSIONS.length}
+                  </span>
+                </div>
+                <div className="space-y-3">
+                  {TRADE_MISSIONS.map(mission => (
+                    <MissionCard key={mission.id} mission={mission} />
+                  ))}
+                </div>
+              </div>
+
+              {/* Volume Missions Column */}
+              <div>
+                <div className="flex items-center gap-2.5 mb-5">
+                  <div className="w-8 h-8 rounded-full bg-[#fbbf24]/10 border border-[#fbbf24]/20 flex items-center justify-center">
+                    <DollarSign className="w-4 h-4 text-[#fbbf24]" />
+                  </div>
+                  <h2 className="text-lg font-bold text-white tracking-tight">Volume Missions</h2>
+                  <span className="text-[11px] text-gray-500 bg-[#111] border border-[#222] px-2 py-0.5 rounded-full font-semibold">
+                    {VOLUME_MISSIONS.filter(m => m.status === 'completed').length}/{VOLUME_MISSIONS.length}
+                  </span>
+                </div>
+                <div className="space-y-3">
+                  {VOLUME_MISSIONS.map(mission => (
+                    <MissionCard key={mission.id} mission={mission} />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom info banner */}
+            <div className="mt-8 flex items-center gap-3 p-4 bg-[#050505]/60 rounded-2xl border border-[#1a1f26]">
+              <div className="w-5 h-5 rounded-full border border-gray-600 flex items-center justify-center shrink-0">
+                <span className="text-gray-400 text-xs italic font-serif">i</span>
+              </div>
+              <p className="text-gray-400 text-xs">Missions unlock sequentially. Complete the current mission to unlock the next one. Credits are awarded upon claiming.</p>
+            </div>
+          </div>
+        ) : activeTab === 'referrals' ? (
           <div className="flex flex-col gap-4 mt-4 pb-12">
             <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-4 items-stretch">
               {/* Left Block */}
